@@ -1,0 +1,52 @@
+spring:
+  profiles:
+    active: dev
+
+
+  jpa:
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: true  #打开二级缓存
+          use_query_cache: true #打开查询缓存，可以缓存列表集合
+          region:
+            factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+      javax:
+        persistence:
+          sharedCache:
+            mode: ENABLE_SELECTIVE #只有在实体上注解的才能缓存
+
+  #不限制单个文件上传大小
+  http:
+    multipart:
+      maxFileSize: -1
+      maxRequestSize: -1
+
+security:
+  basic:
+    enabled: false
+
+  #业务自定义配置
+  #   管理员角色id
+bizconfig:
+  user:
+    admin_role_id: admin
+    admin_role_name: admin
+  #   匿名角色id
+    anonymous_role_id: anonymous
+    anonymous_role_name: anonymous
+  #   管理员用户id
+    admin_user_id: admin
+    admin_user_name: admin
+  #   游客用户id
+    guest_user_id: guest
+    guest_user_name: guest
+
+  #   序列号相关
+  serial_number:
+    weixing_name: weixing
+    weixing_basis: "[date:yyyy]{4}"
+
+  #   权限
+  permission:
+    all_permissions: ChangdiPermission.READ,ChangdiPermission.WRITE,ChangdiPermission.FINISH  #系统支持的权限

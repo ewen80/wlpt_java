@@ -1,0 +1,27 @@
+logging:
+  level:
+#    root: DEBUG
+
+spring:
+  output:
+    ansi:
+      enabled: DETECT
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/changdi?useSSL=false&characterEncoding=utf8
+    username: wenliang
+    password: wenliang
+
+  #业务自定义配置
+  #   文件上传路径
+bizconfig:
+  file:
+    file_upload_root_path: D:\\开发项目\\WLPT\\wlpt_angular_alain\\downloads\\  #以斜杠结尾，表示目录
