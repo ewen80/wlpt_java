@@ -20,6 +20,7 @@ import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by wenliang on 17-4-12.
@@ -35,12 +36,12 @@ public class ResourceRangeService {
         this.resourceRangeRepository = resourceRangeRepository;
     }
 
-    public ResourceRange findOne(long id) {
-        return resourceRangeRepository.findOne(id);
+    public Optional<ResourceRange> findOne(long id) {
+        return resourceRangeRepository.findById(id);
     }
 
     public List<ResourceRange> findByResourceType(String resourceTypeClassName){
-        Assert.hasText(resourceTypeClassName);
+        Assert.hasText(resourceTypeClassName, "resourceTypeClassName不能为空");
 
         SearchSpecificationsBuilder<ResourceRange> builder = new SearchSpecificationsBuilder<>();
         return this.resourceRangeRepository.findAll(builder.build("resourceType.className:" + resourceTypeClassName));
@@ -120,7 +121,7 @@ public class ResourceRangeService {
 //    @PreAuthorize("hasAuthority('" + BizConfig.adminRoleId + "')")
     public void delete(String[] resourceRangeIds){
         for(String id : resourceRangeIds){
-            this.resourceRangeRepository.delete(Long.parseLong(id));
+            this.resourceRangeRepository.deleteById(Long.parseLong(id));
         }
     }
 }

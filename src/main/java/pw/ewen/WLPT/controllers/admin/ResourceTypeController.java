@@ -5,6 +5,8 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.configs.biz.BizConfig;
@@ -34,13 +36,13 @@ public class ResourceTypeController {
         this.roleService = roleService;
     }
 
-    //转为DTO对象的内部辅助类
-    static class ResourceTypeDTOConverter implements Converter<ResourceType, ResourceTypeDTO> {
-        @Override
-        public ResourceTypeDTO convert(ResourceType resourceType) {
-            return  ResourceTypeDTO.convertFromResourceType(resourceType);
-        }
-    }
+//    //转为DTO对象的内部辅助类
+//    static class ResourceTypeDTOConverter implements Converter<ResourceType, ResourceTypeDTO> {
+//        @Override
+//        public ResourceTypeDTO convert(ResourceType resourceType) {
+//            return  ResourceTypeDTO.convertFromResourceType(resourceType);
+//        }
+//    }
 
     /**
      * 获取资源类型（分页，查询）
@@ -56,7 +58,7 @@ public class ResourceTypeController {
             resourceTypes =  this.resourceTypeService.findAll(pageInfo.getFilter(), pr);
         }
 
-        return resourceTypes.map(new ResourceTypeDTOConverter());
+        return resourceTypes.map(ResourceTypeDTO::convertFromResourceType);
     }
 
     /**
@@ -64,8 +66,10 @@ public class ResourceTypeController {
      * @param className 资源类型类名
      */
     @RequestMapping(value="/{className}", method=RequestMethod.GET, produces="application/json")
-    public ResourceTypeDTO getOne(@PathVariable("className") String className){
-        return ResourceTypeDTO.convertFromResourceType(resourceTypeService.findOne(className));
+    public ResponseEntity<ResourceTypeDTO> getOne(@PathVariable("className") String className){
+        return resourceTypeService.findOne(className)
+                .map((rt) -> new ResponseEntity<ResourceTypeDTO>(ResourceTypeDTO.convertFromResourceType(rt), HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -94,6 +98,6 @@ public class ResourceTypeController {
      */
     @RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/check/{className}/")
     public boolean checkClassNameExist(@PathVariable("className") String className) {
-        return resourceTypeService.findOne(className) != null;
+        return resourceTypeService.findOne(className).isPresent();
     }
 }

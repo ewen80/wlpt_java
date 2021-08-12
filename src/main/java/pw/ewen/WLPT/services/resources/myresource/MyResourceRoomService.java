@@ -10,6 +10,7 @@ import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder
 import pw.ewen.WLPT.services.FileService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * created by wenliang on 2021-05-11
@@ -24,8 +25,8 @@ public class MyResourceRoomService {
         this.roomRepository = roomRepository;
     }
 
-    public MyResourceRoom findOne(long id) {
-        return  this.roomRepository.findOne(id);
+    public Optional<MyResourceRoom> findOne(long id) {
+        return  this.roomRepository.findById(id);
     }
 
     public List<MyResourceRoom> findAll() {
@@ -50,6 +51,6 @@ public class MyResourceRoomService {
     }
 
     public void delete(long roomId) {
-        this.roomRepository.delete(roomId);
+        this.roomRepository.deleteById(roomId);
     }
 }

@@ -37,18 +37,18 @@ public class PermissionService {
      * @return  如果ResourceRange和Role根据id值没有找到对应对象，或者没有对应权限则返回null
      */
     public ResourceRangePermissionWrapper getByResourceRange(long resourceRangeId) {
-        ResourceRange range = this.resourceRangeService.findOne(resourceRangeId);
-        if(range != null){
+        Optional<ResourceRange> range = this.resourceRangeService.findOne(resourceRangeId);
+        if(range.isPresent()){
             Set<Permission> permissions = new HashSet<>();
             ObjectIdentityImpl oi = new ObjectIdentityImpl(range);
-            Sid sid = new GrantedAuthoritySid(range.getRole().getId());
+            Sid sid = new GrantedAuthoritySid(range.get().getRole().getId());
             try {
                 MutableAcl mutableAcl = (MutableAcl)aclService.readAclById(oi, Collections.singletonList(sid));
                 List<AccessControlEntry> entries = mutableAcl.getEntries();
                 for(AccessControlEntry entry : entries) {
                     permissions.add(entry.getPermission());
                 }
-                return new ResourceRangePermissionWrapper(range, permissions);
+                return new ResourceRangePermissionWrapper(range.get(), permissions);
             } catch ( org.springframework.security.acls.model.NotFoundException ignored) {
                 //aclService.readAclById 没有找到Acl
             }
@@ -64,12 +64,12 @@ public class PermissionService {
         Assert.notNull(permission);
 
         MutableAcl mutableAcl;
-        ResourceRange resourceRange = this.resourceRangeService.findOne(resourceRangeId);
-        if(resourceRange != null) {
-            Sid sid = new GrantedAuthoritySid(resourceRange.getRole().getId());
-            if(!isThisPermissionExist(resourceRange, sid, permission)) {
+        Optional<ResourceRange> resourceRange = this.resourceRangeService.findOne(resourceRangeId);
+        if(resourceRange.isPresent()) {
+            Sid sid = new GrantedAuthoritySid(resourceRange.get().getRole().getId());
+            if(!isThisPermissionExist(resourceRange.get(), sid, permission)) {
                 // 如果acl中找不到对应权限
-                if(!isThisResourceRangeExist(resourceRange)) {
+                if(!isThisResourceRangeExist(resourceRange.get())) {
                     // 如果acl中找不到对应ResourceRange
                     mutableAcl = aclService.createAcl(new ObjectIdentityImpl(resourceRange));
                 } else {
@@ -107,10 +107,10 @@ public class PermissionService {
         Assert.notNull(permission);
 
         MutableAcl mutableAcl;
-        ResourceRange resourceRange = this.resourceRangeService.findOne(resourceRangeId);
-        if(resourceRange != null) {
-            Sid sid = new GrantedAuthoritySid(resourceRange.getRole().getId());
-            if(isThisPermissionExist(resourceRange, sid, permission)){
+        Optional<ResourceRange> resourceRange = this.resourceRangeService.findOne(resourceRangeId);
+        if(resourceRange.isPresent()) {
+            Sid sid = new GrantedAuthoritySid(resourceRange.get().getRole().getId());
+            if(isThisPermissionExist(resourceRange.get(), sid, permission)){
                 //存在规则
                 ObjectIdentityImpl oi = new ObjectIdentityImpl(resourceRange);
                 mutableAcl = (MutableAcl)aclService.readAclById(oi, Collections.singletonList(sid));

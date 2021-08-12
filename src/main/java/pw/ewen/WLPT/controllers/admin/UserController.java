@@ -4,14 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.exceptions.domain.FindUserException;
+import pw.ewen.WLPT.repositories.RoleRepository;
+import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 import pw.ewen.WLPT.services.RoleService;
 import pw.ewen.WLPT.services.UserService;
 
@@ -35,13 +39,13 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	//将user对象转为DTO对象的内部辅助类
-	static class UserDTOConverter implements Converter<User, UserDTO>{
-		@Override
-		public UserDTO convert(User source) {
-			return  UserDTO.convertFromUser(source);
-		}
-	}
+//	//将user对象转为DTO对象的内部辅助类
+//	static class UserDTOConverter implements Converter<User, UserDTO>{
+//		@Override
+//		public UserDTO convert(User source) {
+//			return  UserDTO.convertFromUser(source);
+//		}
+//	}
 	/**
 	 * 获取用户
 	 * @param pageInfo 分页信息
@@ -57,7 +61,7 @@ public class UserController {
 		}else{
 			userResults =  this.userService.findAll(pageInfo.getFilter(), pr);
 		}
-		return userResults.map(new UserDTOConverter());
+		return userResults.map(UserDTO::convertFromUser);
 	}
 
 	/**
@@ -67,9 +71,9 @@ public class UserController {
 	 */
 	@RequestMapping(value="/{userId}", method=RequestMethod.GET, produces="application/json")
 	public ResponseEntity<UserDTO> getOne(@PathVariable("userId") String userId){
-		User user = this.userService.findOne(userId);
-
-		return user == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(UserDTO.convertFromUser(user), HttpStatus.OK);
+		return this.userService.findOne(userId)
+				.map((user) -> new ResponseEntity<>(UserDTO.convertFromUser(user), HttpStatus.OK))
+				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
 	/**
@@ -78,7 +82,7 @@ public class UserController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/check/{userId}")
 	public boolean checkUserExist(@PathVariable("userId") String userId) {
-		return userService.findOne(userId) != null;
+		return userService.findOne(userId).isPresent();
 	}
 
 	/**
@@ -94,7 +98,7 @@ public class UserController {
 
 		String filter = "role.id:" + roleId + "," + pageInfo.getFilter();
 		users = this.userService.findAll(filter, pr);
-		return users.map(new UserDTOConverter());
+		return users.map(UserDTO::convertFromUser);
 	}
 
 	/**
@@ -142,7 +146,7 @@ public class UserController {
 	// TODO 不能向接口返回异常
     @RequestMapping(method = RequestMethod.PUT, value = "/{userId}")
     public void setPassword(@PathVariable("userId") String userId, @RequestBody String passwordMD5) throws FindUserException {
-		this.userService.setpassword(userId, passwordMD5);
+		this.userService.setPassWord(userId, passwordMD5);
 	}
 
 	/**
@@ -152,7 +156,9 @@ public class UserController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/checkPassword")
 	public boolean checkPassword(@RequestParam(value = "userId") String userId, @RequestParam(value = "passwordMD5") String passwordMD5) {
-		return userService.checkPassword(userId, passwordMD5);
+		return this.userService.findOne(userId)
+				.map(user -> user.getPasswordMD5().equals(passwordMD5))
+				.orElse(false);
 	}
 
 	/**

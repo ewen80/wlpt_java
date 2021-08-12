@@ -10,6 +10,7 @@ import pw.ewen.WLPT.security.UserContext;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -30,8 +31,8 @@ public class ResourceCheckInService {
         this.userContext = userContext;
     }
 
-    public  ResourceCheckIn findOne(UUID id) {
-        return this.resourceCheckInRepository.findOne(id);
+    public Optional<ResourceCheckIn> findOne(UUID id) {
+        return this.resourceCheckInRepository.findById(id);
     }
 
 //    public ResourceCheckIn save() {

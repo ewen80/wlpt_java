@@ -43,13 +43,13 @@ public class WeixingResourceController {
         this.signatureDTOConvertor = signatureDTOConvertor;
     }
 
-    //将实体对象转为DTO对象的内部辅助类
-    class dtoConvertor implements Converter<WeixingResource, WeixingResourceDTO> {
-        @Override
-        public WeixingResourceDTO convert(WeixingResource weixingResource) {
-            return  weixingResourceDTOConvertor.toDTO(weixingResource);
-        }
-    }
+//    //将实体对象转为DTO对象的内部辅助类
+//    class dtoConvertor implements Converter<WeixingResource, WeixingResourceDTO> {
+//        @Override
+//        public WeixingResourceDTO convert(WeixingResource weixingResource) {
+//            return  weixingResourceDTOConvertor.toDTO(weixingResource);
+//        }
+//    }
 
     /**
      * 获取卫星场地核查信息
@@ -78,7 +78,7 @@ public class WeixingResourceController {
 
         List<WeixingResource> allResource = pageInfo.getFilter().isEmpty() ? this.weixingResourceService.findAll() : this.weixingResourceService.findAll(pageInfo.getFilter());
         resourceResult = new MyPage<>(allResource, pr).getPage();
-        return resourceResult.map(new dtoConvertor());
+        return resourceResult.map(weixingResourceDTOConvertor::toDTO);
     }
 
     /**
@@ -88,9 +88,9 @@ public class WeixingResourceController {
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<WeixingResourceDTO> getOne(@PathVariable(value = "id") long id) {
-        WeixingResource weixingResource = weixingResourceService.findOne(id);
-
-        return weixingResource == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(weixingResourceDTOConvertor.toDTO(weixingResource, false), HttpStatus.OK);
+        return weixingResourceService.findOne(id)
+                .map(weixingResource -> new ResponseEntity<>(weixingResourceDTOConvertor.toDTO(weixingResource, false), HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -103,8 +103,7 @@ public class WeixingResourceController {
         idsList.forEach( (id) -> {
             long longId = Long.parseLong(id);
             try {
-                WeixingResource weixingResource = weixingResourceService.findOne(longId);
-                weixingResourceService.delete(weixingResource);
+                weixingResourceService.findOne(longId).ifPresent(weixingResourceService::delete);
             } catch (NumberFormatException ignored) {}
         });
     }
@@ -127,11 +126,14 @@ public class WeixingResourceController {
      * @apiNote 签名图片后缀名不要加点号,保存 jpg 或者 png字样.base64字段只保存图片信息,不要添加data:image等前缀字符.
      */
     @PostMapping(value = "/signature/{id}")
-    public WeixingResourceDTO saveSignature(@PathVariable(value = "id") long id, @RequestBody SignatureDTO signatureDTO) {
+    public ResponseEntity<WeixingResourceDTO> saveSignature(@PathVariable(value = "id") long id, @RequestBody SignatureDTO signatureDTO) {
         Signature signature = signatureDTOConvertor.toSignature(signatureDTO);
-        WeixingResource weixingResource = weixingResourceService.findOne(id);
-        weixingResource.setSign(signature);
-        weixingResourceService.save(weixingResource);
-        return weixingResourceDTOConvertor.toDTO(weixingResource, false);
+        return weixingResourceService.findOne(id)
+                        .map(weixingResource -> {
+                            weixingResource.setSign(signature);
+                            weixingResourceService.save(weixingResource);
+                            return new ResponseEntity<WeixingResourceDTO>(weixingResourceDTOConvertor.toDTO(weixingResource, false), HttpStatus.OK);
+                        })
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

@@ -26,7 +26,7 @@ public class ResourceFinishDTOConvertor {
 
     public ResourceFinish toResourceFinish(ResourceFinishDTO dto) {
         String userId = dto.getFinishUserId();
-        User user = userService.findOne(userId);
+        User user = userService.findOne(userId).orElse(null);
         LocalDateTime finishedDateTime = LocalDateTime.parse(dto.getFinishDateTime(), formatter);
         ResourceFinish resourceFinish = new ResourceFinish(finishedDateTime, user, dto.isFinished());
         resourceFinish.setId(dto.getId());

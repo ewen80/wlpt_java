@@ -17,6 +17,7 @@ import pw.ewen.WLPT.services.UserService;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,13 +38,13 @@ public class RoleController {
         this.bizConfig = bizConfig;
     }
 
-    //将role对象转为DTO对象的内部辅助类
-    static class RoleDTOConverter implements Converter<Role, RoleDTO> {
-        @Override
-        public RoleDTO convert(Role source) {
-            return  RoleDTO.convertFromRole(source);
-        }
-    }
+//    //将role对象转为DTO对象的内部辅助类
+//    static class RoleDTOConverter implements Converter<Role, RoleDTO> {
+//        @Override
+//        public RoleDTO convert(Role source) {
+//            return  RoleDTO.convertFromRole(source);
+//        }
+//    }
 
     /**
      * 获取全部角色
@@ -69,7 +70,7 @@ public class RoleController {
             roles =  this.roleService.findAll(pageInfo.getFilter(), pr);
         }
 
-        return roles.map(new RoleDTOConverter());
+        return roles.map(RoleDTO::convertFromRole);
     }
 
     /**
@@ -78,10 +79,10 @@ public class RoleController {
      * @apiNote  如果找不到返回404
      */
     @RequestMapping(value="/{roleId}", method=RequestMethod.GET, produces="application/json")
-    public ResponseEntity<?> getOneRole(@PathVariable("roleId") String roleId){
-        Role role = roleService.findOne(roleId);
-        if(role == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(RoleDTO.convertFromRole(role), HttpStatus.OK);
+    public ResponseEntity<RoleDTO> getOneRole(@PathVariable("roleId") String roleId){
+        return roleService.findOne(roleId)
+                .map((role) -> new ResponseEntity<RoleDTO>(RoleDTO.convertFromRole(role), HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -131,22 +132,23 @@ public class RoleController {
      */
     @RequestMapping(value = "/setusers/{roleId}", method = RequestMethod.PUT)
     public void setUsers(@PathVariable("roleId") String roleId, @RequestBody String[] userIds) {
-        Role anonymousRole = roleService.findOne(bizConfig.getUser().getAnonymousRoleId());
-
-        Role role = roleService.findOne(roleId);
-        if( role != null ) {
+        Optional<Role> anonymousRole = roleService.findOne(bizConfig.getUser().getAnonymousRoleId());
+        Optional<Role> role = roleService.findOne(roleId);
+        if( role.isPresent() ) {
             // 清空该角色原本的用户,被清空的用户角色归入anonymous组
-            Set<User> users = role.getUsers();
+            Set<User> users = role.get().getUsers();
             users.forEach( (user -> {
-                user.setRole(anonymousRole);
+                user.setRole(anonymousRole.orElse(null));
             }));
             // 将指定用户加入该角色
             for (String userId : userIds ) {
-                User user = this.userService.findOne(userId);
-                user.setRole(role);
-                this.userService.save(user);
+                Optional<User> user = this.userService.findOne(userId);
+                if(user.isPresent()){
+                    user.get().setRole(role.get());
+                    this.userService.save(user.get());
+                }
             }
+            roleService.save(role.get());
         }
-        roleService.save(role);
     }
 }

@@ -26,6 +26,7 @@ import pw.ewen.WLPT.services.resources.ResourceCheckInService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * created by wenliang on 2021/5/1
@@ -55,8 +56,8 @@ public class MyResourceService {
     }
 
     @PostAuthorize("hasPermission(returnObject, 'read')")
-    public MyResource findOne(long id) {
-        return this.myResourceRepository.findOne(id);
+    public Optional<MyResource> findOne(long id) {
+        return this.myResourceRepository.findById(id);
     }
 
     @PreAuthorize("hasPermission(#myResource, 'write')")
@@ -75,7 +76,7 @@ public class MyResourceService {
     // 为了做权限控制单独将单个删除做成一个方法
     @PreAuthorize("hasPermission(#myResource, 'write')")
     public void delete(MyResource myResource) {
-        this.myResourceRepository.delete(myResource.getId());
+        this.myResourceRepository.deleteById(myResource.getId());
     }
 
 //    public void delete(long id) {

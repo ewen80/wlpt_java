@@ -13,13 +13,13 @@ public class UserDTOConvertor {
 
     public User toUser(UserDTO dto, RoleService roleService) {
 
-        Role role = roleService.findOne(dto.getRoleId());
-        User user = new User(dto.getId(), dto.getName(), role, dto.getQxId());
-        if(!dto.getAvatar().isEmpty()) {
-            user.setAvatar(dto.getAvatar());
-        }
-
-        return user;
+        return roleService.findOne(dto.getRoleId()).map(role -> {
+            User user = new User(dto.getId(), dto.getName(), role, dto.getQxId());
+            if(!dto.getAvatar().isEmpty()) {
+                user.setAvatar(dto.getAvatar());
+            }
+            return user;
+        }).orElse(null);
     }
 
     public UserDTO toDTO(User user) {

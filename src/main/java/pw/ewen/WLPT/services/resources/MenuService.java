@@ -14,7 +14,6 @@ import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
 import pw.ewen.WLPT.security.acl.ObjectIdentityRetrievalStrategyWLPTImpl;
-import pw.ewen.WLPT.services.PermissionService;
 import pw.ewen.WLPT.services.UserService;
 
 import javax.persistence.EntityManager;
@@ -59,9 +58,10 @@ public class MenuService {
     /**
      * 获取一个菜单
      * @param id    菜单id
+     * @return
      */
-    public Menu findOne(long id) {
-        return this.menuRepository.findOne(id);
+    public Optional<Menu> findOne(long id) {
+        return this.menuRepository.findById(id);
     }
 
     // 获取子节点
@@ -103,12 +103,8 @@ public class MenuService {
      * @return  userId对应的有权限的菜单树，如果userId没有对应的用户则返回null
      */
     public List<Menu> findPermissionMenuTree(String userId){
-        User user = this.userService.findOne(userId);
-        if(user != null){
-            return this.findPermissionMenuTree(user);
-        } else {
-            return null;
-        }
+        Optional<User> user = this.userService.findOne(userId);
+        return user.map(this::findPermissionMenuTree).orElse(null);
     }
 
     public Menu save(Menu  menu) {
@@ -136,11 +132,11 @@ public class MenuService {
      * 批量保存
      */
     public void batchSave(Set<Menu> menus) {
-        this.menuRepository.save(menus);
+        this.menuRepository.saveAll(menus);
     }
 
     public void delete(long id) {
-        this.menuRepository.delete(id);
+        this.menuRepository.deleteById(id);
     }
 
 

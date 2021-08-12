@@ -8,6 +8,7 @@ import pw.ewen.WLPT.repositories.AttachmentRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * created by wenliang on 2021/5/17
@@ -15,15 +16,15 @@ import java.util.List;
 @Service
 public class AttachmentService {
 
-    private AttachmentRepository attachmentRepository;
+    private final AttachmentRepository attachmentRepository;
 
     @Autowired
     public AttachmentService(AttachmentRepository attachmentRepository) {
         this.attachmentRepository = attachmentRepository;
     }
 
-    public Attachment findOne(String id) {
-        return this.attachmentRepository.findOne(id);
+    public Optional<Attachment> findOne(String id) {
+        return this.attachmentRepository.findById(id);
     }
 
     public List<Attachment> findAll(String filter) {

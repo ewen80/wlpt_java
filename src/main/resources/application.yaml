@@ -17,14 +17,14 @@ spring:
             mode: ENABLE_SELECTIVE #只有在实体上注解的才能缓存
 
   #不限制单个文件上传大小
-  http:
+  servlet:
     multipart:
       maxFileSize: -1
       maxRequestSize: -1
 
-security:
-  basic:
-    enabled: false
+#security:
+#  basic:
+#    enabled: false
 
   #业务自定义配置
   #   管理员角色id

@@ -7,6 +7,7 @@ import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.services.resources.MenuService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * created by wenliang on 2021/4/10
@@ -22,11 +23,11 @@ public class MenuDTOConvertor {
         menu.setIconClass(menuDTO.getIconClass());
         menu.setPath(menuDTO.getPath());
 
-        Menu parent = null;
+        Optional<Menu> parent = null;
         if(menuDTO.getParentId() != 0 ) {
             parent = menuService.findOne(menuDTO.getParentId());
-            if(parent != null) {
-                menu.setParent(parent);
+            if(parent.isPresent()) {
+                menu.setParent(parent.get());
             }
         }
 

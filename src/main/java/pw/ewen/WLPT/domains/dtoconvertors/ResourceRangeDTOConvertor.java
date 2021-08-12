@@ -18,14 +18,8 @@ public class ResourceRangeDTOConvertor {
         ResourceRange range = new ResourceRange();
         range.setId(dto.getId());
         range.setFilter(dto.getFilter());
-        Role role = roleService.findOne(dto.getRoleId());
-        if(role != null){
-            range.setRole(role);
-        }
-        ResourceType type = resourceTypeService.findOne((dto.getResourceTypeClassName()));
-        if(type != null){
-            range.setResourceType(type);
-        }
+        roleService.findOne(dto.getRoleId()).ifPresent(range::setRole);
+        resourceTypeService.findOne((dto.getResourceTypeClassName())).ifPresent(range::setResourceType);
         return range;
     }
 

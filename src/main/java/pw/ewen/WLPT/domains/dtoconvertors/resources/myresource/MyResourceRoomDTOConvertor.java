@@ -31,7 +31,7 @@ public class MyResourceRoomDTOConvertor {
         room.setId(dto.getId());
         room.setName(dto.getName());
         room.setDescription(dto.getDescription());
-        room.setMyResource(myResourceService.findOne(dto.getMyResourceId()));
+        room.setMyResource(myResourceService.findOne(dto.getMyResourceId()).orElse(null));
         room.setAttachments(dto.getAttachments());
         return room;
     }

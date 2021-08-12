@@ -16,23 +16,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.repositories.UserRepository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * Created by wen on 17-2-8.
  * Spring Security 配置类
  * Web级别
  */
-@Configuration
 @EnableWebSecurity  //启用web安全性
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -73,6 +68,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.csrf().disable(); //关闭CSRF检查
-        http.cors();//允许CORS跨域请求
+        http.cors(); //允许CORS跨域请求
     }
+
+    @Bean
+    CorsConfiguration corsConfiguration() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setExposedHeaders(Arrays.asList("Authorization"));
+        return corsConfiguration;
+    }
+
 }

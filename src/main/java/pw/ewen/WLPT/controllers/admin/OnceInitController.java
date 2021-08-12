@@ -16,8 +16,10 @@ import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.services.*;
 import pw.ewen.WLPT.services.resources.MenuService;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -100,10 +102,14 @@ public class OnceInitController {
     @RequestMapping(value = "/admin/menuinit", method = RequestMethod.PUT, produces = "application/json" )
     @Transactional
     public List<MenuDTO> adminMenuInit() {
-        Role adminRole = this.roleService.findOne(bizConfig.getUser().getAdminRoleId());
-        this.authorizeMenu(adminRole);
-        this.authorizeMyResource(adminRole);
-        return this.menuService.findPermissionMenuTree(adminRole).stream().map(MenuDTO::convertFromMenu).collect(Collectors.toList());
+        Optional<Role> adminRole = this.roleService.findOne(bizConfig.getUser().getAdminRoleId());
+        if(adminRole.isPresent()) {
+            this.authorizeMenu(adminRole.get());
+            this.authorizeMyResource(adminRole.get());
+            return this.menuService.findPermissionMenuTree(adminRole.get()).stream().map(MenuDTO::convertFromMenu).collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
     }
 
 }

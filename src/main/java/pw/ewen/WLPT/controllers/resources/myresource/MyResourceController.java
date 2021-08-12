@@ -21,6 +21,7 @@ import pw.ewen.WLPT.services.resources.myresource.MyResourceService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 我的资源
@@ -44,13 +45,13 @@ public class MyResourceController {
         this.signatureDTOConvertor = signatureDTOConvertor;
     }
 
-    //将实体对象转为DTO对象的内部辅助类
-    class dtoConvertor implements Converter<MyResource, MyResourceDTO> {
-        @Override
-        public MyResourceDTO convert(MyResource myResource) {
-            return  myResourceDTOConvertor.toDTO(myResource);
-        }
-    }
+//    //将实体对象转为DTO对象的内部辅助类
+//    class dtoConvertor implements Converter<MyResource, MyResourceDTO> {
+//        @Override
+//        public MyResourceDTO convert(MyResource myResource) {
+//            return  myResourceDTOConvertor.toDTO(myResource);
+//        }
+//    }
 
     /**
      * 获取资源
@@ -79,7 +80,7 @@ public class MyResourceController {
 
         List<MyResource> allResource = pageInfo.getFilter().isEmpty() ? this.myResourceService.findAll() : this.myResourceService.findAll(pageInfo.getFilter());
         resourceResult = new MyPage<>(allResource, pr).getPage();
-        return resourceResult.map(new dtoConvertor());
+        return resourceResult.map(myResourceDTOConvertor::toDTO);
     }
 
     /**
@@ -89,8 +90,9 @@ public class MyResourceController {
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<MyResourceDTO> getOne(@PathVariable(value = "id") long id) {
-        MyResource myResource = myResourceService.findOne(id);
-        return myResource == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(myResourceDTOConvertor.toDTO(myResource, false), HttpStatus.OK);
+        return myResourceService.findOne(id)
+                .map((myResource -> new ResponseEntity<>(myResourceDTOConvertor.toDTO(myResource, false), HttpStatus.OK)))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -103,8 +105,8 @@ public class MyResourceController {
         idsList.forEach( (id) -> {
             long longId = Long.parseLong(id);
             try {
-                MyResource myResource = myResourceService.findOne(longId);
-                myResourceService.delete(myResource);
+                Optional<MyResource> myResource = myResourceService.findOne(longId);
+                myResource.ifPresent(myResourceService::delete);
             } catch (NumberFormatException ignored) {}
         });
     }
@@ -126,12 +128,15 @@ public class MyResourceController {
      * @apiNote 签名图片后缀名不要加点号,保存 jpg 或者 png字样.base64字段只保存图片信息,不要添加data:image等前缀字符.
      */
     @PostMapping(value = "/signature/{id}")
-    public MyResourceDTO saveSignature(@PathVariable(value = "id") long id, @RequestBody  SignatureDTO signatureDTO) {
+    public ResponseEntity<MyResourceDTO> saveSignature(@PathVariable(value = "id") long id, @RequestBody  SignatureDTO signatureDTO) {
         Signature signature = signatureDTOConvertor.toSignature(signatureDTO);
-        MyResource myResource = myResourceService.findOne(id);
-        myResource.setSign(signature);
-        myResourceService.save(myResource);
-        return myResourceDTOConvertor.toDTO(myResource, false);
+        return  myResourceService.findOne(id)
+                        .map(myResource -> {
+                            myResource.setSign(signature);
+                            myResourceService.save(myResource);
+                            return new ResponseEntity<>(myResourceDTOConvertor.toDTO(myResource, false), HttpStatus.OK);
+                        })
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -140,7 +145,6 @@ public class MyResourceController {
      */
     @PutMapping(value = "/finish/{id}")
     public void finish(@PathVariable(value = "id") long id) {
-        MyResource myResource = myResourceService.findOne(id);
-        myResourceService.finish(myResource);
+        myResourceService.findOne(id).ifPresent(myResourceService::finish);
     }
 }

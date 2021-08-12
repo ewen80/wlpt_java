@@ -89,6 +89,8 @@ public class Role implements Serializable {
 	public Set<ResourceRange> getResourceRanges() { return this.resourceRanges;}
 	public void setResourceRanges(Set<ResourceRange> resourceRanges) { this.resourceRanges = resourceRanges;}
 
+
+
 	/**
 	 * @return 获取所有用户包含被软删除的用户
 	 */

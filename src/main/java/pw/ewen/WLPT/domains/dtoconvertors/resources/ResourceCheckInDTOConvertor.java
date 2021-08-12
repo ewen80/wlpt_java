@@ -35,7 +35,10 @@ public class ResourceCheckInDTOConvertor {
             resourceFinish = resourceFinishDTOConvertor.toResourceFinish(dto.getResourceFinish());
         }
 
-        ResourceCheckIn resourceCheckIn = new ResourceCheckIn(dto.isFinished(), resourceFinish, LocalDateTime.parse(dto.getCreatedDateTime(), formatter), userService.findOne(dto.getCreatedUserId()));
+        ResourceCheckIn resourceCheckIn = new ResourceCheckIn(dto.isFinished(),
+                                                                resourceFinish,
+                                                                LocalDateTime.parse(dto.getCreatedDateTime(), formatter),
+                                                                userService.findOne(dto.getCreatedUserId()).orElse(null));
         resourceCheckIn.setId(UUID.fromString(dto.getId()));
         return resourceCheckIn;
     }

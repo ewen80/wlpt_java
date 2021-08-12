@@ -13,6 +13,7 @@ import pw.ewen.WLPT.security.acl.ChangdiPermission;
 import pw.ewen.WLPT.services.ResourceRangeService;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,13 +32,13 @@ public class ResourceRangePermissionWrapperDTOConvertor {
 
     // 无法转换返回null
     public ResourceRangePermissionWrapper toResourceRangePermissionWrapper(ResourceRangePermissionWrapperDTO dto, ResourceRangeService resourceRangeService) {
-        ResourceRange range = resourceRangeService.findOne(dto.getResourceRangeDTO().getId());
-        if(range != null) {
+        Optional<ResourceRange> range = resourceRangeService.findOne(dto.getResourceRangeDTO().getId());
+        if(range.isPresent()) {
             Set<Permission> permissions = new HashSet<>();
             for(PermissionDTO pDTO : dto.getPermissions()) {
                 permissions.add(permissionDTOConvertor.toPermission(pDTO));
             }
-            return  new ResourceRangePermissionWrapper(range, permissions);
+            return  new ResourceRangePermissionWrapper(range.get(), permissions);
         } else {
             return null;
         }

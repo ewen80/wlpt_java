@@ -11,6 +11,8 @@ import pw.ewen.WLPT.exceptions.domain.DeleteResourceTypeException;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 
+import java.util.Optional;
+
 /**
  * created by wenliang on 20210226
  */
@@ -38,13 +40,13 @@ public class ResourceTypeService {
         return this.resourceTypeRepository.findAll(pr);
     }
 
-    public ResourceType findOne(String className) {
-        return this.resourceTypeRepository.findOne(className);
+    public Optional<ResourceType> findOne(String className) {
+        return this.resourceTypeRepository.findById(className);
     }
 
     public void delete(String className) throws DeleteResourceTypeException {
         if(checkCanDelete(className)) {
-            this.resourceTypeRepository.delete(className);
+            this.resourceTypeRepository.deleteById(className);
         } else {
             throw new DeleteResourceTypeException("删除ResourceType错误：ResourceType存在关联的ResourceRange");
         }
@@ -57,8 +59,7 @@ public class ResourceTypeService {
     }
 
     private boolean checkCanDelete(String className) {
-        ResourceType resourceType = this.resourceTypeRepository.findOne(className);
-        if (resourceType == null) return true;
-        return resourceType.getResourceRanges().size() == 0;
+        Optional<ResourceType> resourceType = this.resourceTypeRepository.findById(className);
+        return resourceType.map(type->type.getResourceRanges().size()==0).orElse(true);
     }
 }

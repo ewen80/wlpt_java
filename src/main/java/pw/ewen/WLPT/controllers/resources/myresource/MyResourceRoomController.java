@@ -57,8 +57,9 @@ public class MyResourceRoomController {
      */
     @GetMapping("/{roomId}")
     public ResponseEntity<MyResourceRoomDTO> getOne(@PathVariable("roomId") long roomId) {
-        MyResourceRoom room = this.myResourceRoomService.findOne(roomId);
-        return room == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(myResourceRoomDTOConvertor.toDTO(room), HttpStatus.OK);
+        return this.myResourceRoomService.findOne(roomId)
+                .map(room -> new ResponseEntity<>(myResourceRoomDTOConvertor.toDTO(room), HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**

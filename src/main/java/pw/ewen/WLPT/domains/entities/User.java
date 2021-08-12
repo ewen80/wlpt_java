@@ -30,6 +30,7 @@ public class User implements Serializable {
 	@Column(nullable = false)
 	private String qxId = "0";
 
+	@Column
 	private boolean deleted = false;	//软删除标志
 
 	public boolean isDeleted() {
@@ -89,6 +90,10 @@ public class User implements Serializable {
 
 	public void setQxId(String qxId) {
 		this.qxId = qxId;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	@Override

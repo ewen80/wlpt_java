@@ -42,7 +42,7 @@ public class UserContext {
             return null;
         }
 
-        return userRepository.findOne(userId);
+        return userRepository.findById(userId).orElse(null);
     }
 
     public void setCurrentUser(User user) {

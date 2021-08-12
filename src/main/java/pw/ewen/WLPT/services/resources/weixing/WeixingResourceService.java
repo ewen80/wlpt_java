@@ -18,6 +18,7 @@ import pw.ewen.WLPT.services.SerialNumberService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * created by wenliang on 2021-07-21
@@ -50,8 +51,8 @@ public class WeixingResourceService {
     }
 
     @PostAuthorize("hasPermission(returnObject, 'read')")
-    public WeixingResource findOne(long id) {
-        return this.weixingResourceRepository.findOne(id);
+    public Optional<WeixingResource> findOne(long id) {
+        return this.weixingResourceRepository.findById(id);
     }
 
     @PreAuthorize("hasPermission(#weixingResource, 'write')")
@@ -77,6 +78,6 @@ public class WeixingResourceService {
 
     @PreAuthorize("hasPermission(#weixingResource, 'write')")
     public void delete(WeixingResource weixingResource) {
-        this.weixingResourceRepository.delete(weixingResource.getId());
+        this.weixingResourceRepository.deleteById(weixingResource.getId());
     }
 }

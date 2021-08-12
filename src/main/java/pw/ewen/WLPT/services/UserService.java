@@ -5,14 +5,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.exceptions.domain.FindUserException;
 import pw.ewen.WLPT.repositories.UserRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
+import pw.ewen.WLPT.security.UserContext;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by wenliang on 17-4-14.
@@ -22,12 +24,10 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public Page<User> findAll(String filter, PageRequest pr) {
@@ -69,40 +69,24 @@ public class UserService {
      * @return 如果没有找到返回null
      */
     @PreAuthorize("#id == @userContext.getCurrentUser().getId() or hasAuthority(@bizConfig.user.adminRoleId)")
-    public User findOne(String id){
-        return this.userRepository.findOne(id);
+    public Optional<User> findOne(String id){
+        return this.userRepository.findById(id);
     }
 
     public User save(User user){
         return this.userRepository.save(user);
     }
 
-    /**
-     * 修改用户密码
-     * @param userId 用户id
-     * @param passwordMD5 用户原始密码MD5
-     * @throws FindUserException
-     */
-    public void setpassword(String userId, String passwordMD5) throws  FindUserException {
-        User user = this.userRepository.findOne(userId);
-        if (user != null) {
-            String encodedPassword = passwordEncoder.encode(passwordMD5);
-            user.setPassword(encodedPassword);
-            this.userRepository.save(user);
+    // 修改密码
+    public void setPassWord(String userId, String passwordMD5) throws  FindUserException {
+        Optional<User> user = this.userRepository.findById(userId);
+        if (user.isPresent()) {
+            user.get().setPasswordMD5(passwordMD5);
+            this.userRepository.save(user.get());
         } else {
             throw new FindUserException("找不到指定的用户");
         }
-    }
 
-    /**
-     * 检查密码是否正确
-     * @param userId 用户id
-     * @param passwordMD5 经过MD5后的待验证密码
-     * @return 密码是否正确
-     */
-    public boolean checkPassword(String userId, String passwordMD5) {
-        String correctEncodedPassword = this.findOne(userId).getPassword();
-        return passwordEncoder.matches(passwordMD5, correctEncodedPassword);
     }
 
     /**

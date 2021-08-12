@@ -15,6 +15,7 @@ import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder
 import pw.ewen.WLPT.services.resources.MenuService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * created by wenliang on 2021/3/6
@@ -47,36 +48,34 @@ public class ApplicationInit implements ApplicationRunner {
     // 初始化用户和角色，生成角色："admin"、"anonymous".生成用户："admin"
     private void initUserAndRole() {
         // 检查角色表中是否有anonymous角色,没有就新建
-        Role anonymousRole = roleRepository.findOne(bizConfig.getUser().getAnonymousRoleId());
-        if(anonymousRole == null) {
-            anonymousRole = roleRepository.save(new Role(bizConfig.getUser().getAnonymousRoleId(), bizConfig.getUser().getAnonymousRoleName()));
-        }
+        Optional<Role> anonymousRoleOpt = roleRepository.findById(bizConfig.getUser().getAnonymousRoleId());
+        Role anonymousRole = anonymousRoleOpt.orElseGet(() -> roleRepository.save(new Role(bizConfig.getUser().getAnonymousRoleId(), bizConfig.getUser().getAnonymousRoleName())));
 
-        Role adminRole = roleRepository.findOne(bizConfig.getUser().getAdminRoleId());
-        if(adminRole == null) {
-            // 新建admin角色
-            adminRole = roleRepository.save(new Role(bizConfig.getUser().getAdminRoleId(), bizConfig.getUser().getAdminRoleName()));
-        }
+        Optional<Role> adminRoleOpt = roleRepository.findById(bizConfig.getUser().getAdminRoleId());
+        // 新建admin角色
+        Role adminRole = adminRoleOpt.orElseGet(() -> roleRepository.save(new Role(bizConfig.getUser().getAdminRoleId(), bizConfig.getUser().getAdminRoleName())));
 
         // 检查是否存在admin用户，没有就新建，默认加入admin角色
-        User adminUser = userRepository.findOne(bizConfig.getUser().getAdminUserId());
-        if(adminUser == null) {
+        Optional<User> adminUserOpt = userRepository.findById(bizConfig.getUser().getAdminUserId());
+        User adminUser = adminUserOpt.orElseGet(() -> {
             //新建用户admin
             User user = new User(bizConfig.getUser().getAdminUserId(), bizConfig.getUser().getAdminUserName(), adminRole);
-            user.setPassword(DigestUtils.md5DigestAsHex("admin".getBytes()).toUpperCase());  // 默认密码admin
+            user.setPasswordMD5(DigestUtils.md5DigestAsHex("admin".getBytes()).toUpperCase());  // 默认密码admin
+            // TODO: 测试语句是否可以删除
             adminRole.getUsers().add(user);
-            userRepository.save(user);
-        }
+            return userRepository.save(user);
+        });
 
         // 检查是否存在guest用户，没有就新建，默认加入anonymous角色
-        User guestUser = userRepository.findOne(bizConfig.getUser().getGuestUserId());
-        if(guestUser == null) {
+        Optional<User> guestUserOpt = userRepository.findById(bizConfig.getUser().getGuestUserId());
+        User guestUser = guestUserOpt.orElseGet(() -> {
             // 新建用户guest
             User user = new User(bizConfig.getUser().getGuestUserId(), bizConfig.getUser().getGuestUserName(), anonymousRole);
-            user.setPassword(DigestUtils.md5DigestAsHex("guest".getBytes()).toUpperCase());  // 默认密码guest
+            user.setPasswordMD5(DigestUtils.md5DigestAsHex("guest".getBytes()).toUpperCase());  // 默认密码guest
+            // TODO: 测试语句是否可以删除
             anonymousRole.getUsers().add(user);
-            userRepository.save(user);
-        }
+            return userRepository.save(user);
+        });
     }
 
     //初始化菜单数据

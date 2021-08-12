@@ -1,5 +1,6 @@
 package pw.ewen.WLPT.controllers.resources;
 
+import jdk.nashorn.internal.runtime.options.Option;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.services.resources.MenuService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -66,9 +68,12 @@ public class MenuController {
     @RequestMapping(method=RequestMethod.DELETE, value="/{menuId}")
     public void delete(@PathVariable("menuId") String menuId) throws NumberFormatException{
         long longMenuId = Long.parseLong(menuId);
-        Menu menu = this.menuService.findOne(longMenuId);
-        MenuDTO menuDTO = menuDTOConvertor.toDTO(menu);
-        this.delete(menuDTO);
+        Optional<Menu> menu = this.menuService.findOne(longMenuId);
+        if(menu.isPresent()) {
+            MenuDTO menuDTO = menuDTOConvertor.toDTO(menu.get());
+            this.delete(menuDTO);
+        }
+
     }
 
     @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")  // 只有管理员能删除菜单
