@@ -2,8 +2,6 @@ package pw.ewen.WLPT.repositories.specifications.core;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -81,7 +79,7 @@ public class SearchSpecificationsBuilder<T> {
 
         Specification<T> result = specs.get(0);
         for (int i = 1; i < specs.size(); i++) {
-            result = Specifications.where(result).and(specs.get(i));
+            result = Specification.where(result).and(specs.get(i));
         }
         return result;
     }

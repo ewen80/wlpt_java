@@ -20,6 +20,7 @@ spring:
     username: wenliang
     password: wenliang
 
+
   #业务自定义配置
   #   文件上传路径
 bizconfig:

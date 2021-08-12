@@ -26,10 +26,12 @@ spring:
 #  basic:
 #    enabled: false
 
+
+
   #业务自定义配置
-  #   管理员角色id
 bizconfig:
   user:
+  #   管理员角色id
     admin_role_id: admin
     admin_role_name: admin
   #   匿名角色id

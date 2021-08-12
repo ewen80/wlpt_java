@@ -12,15 +12,17 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.repositories.UserRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created by wen on 17-2-8.
@@ -35,15 +37,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
     private BizConfig bizConfig;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // TODO NoOpPasswordEncoder过期，进行修改，评估密码保存格式变化对其他方面的影响
         auth
-            .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder);
+            .userDetailsService(userDetailsService).passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 
     @Override
@@ -68,18 +68,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.csrf().disable(); //关闭CSRF检查
-        http.cors(); //允许CORS跨域请求
+        http.cors().configurationSource(this.getCorsConfigurationSource()); //允许CORS跨域请求
     }
 
-    @Bean
-    CorsConfiguration corsConfiguration() {
+    // TODO 改用angular cli代理解决CORS问题，参见 https://ng-alain.com/docs/server/zh
+    CorsConfigurationSource getCorsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
-        corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type", "x-requested-with", "token"));
+        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setExposedHeaders(Arrays.asList("Authorization"));
-        return corsConfiguration;
+        corsConfiguration.setExposedHeaders(Collections.singletonList("Authorization"));
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
     }
 
 }

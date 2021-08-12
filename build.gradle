@@ -33,7 +33,7 @@ springBoot  {
 }
 
 compileJava {
-    options.compilerArgs << '-Xlint:deprecation'
+//    options.compilerArgs << '-Xlint:deprecation'
 }
 
 // In this section you declare the dependencies for your production and test code
