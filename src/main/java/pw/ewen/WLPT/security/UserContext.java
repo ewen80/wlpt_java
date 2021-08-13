@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.UserRepository;
-import pw.ewen.WLPT.services.UserService;
 
 /**
  * Created by wen on 17-2-26.
@@ -51,7 +50,7 @@ public class UserContext {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getId());
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
-                user.getPasswordMD5(),userDetails.getAuthorities());
+                user.getPassword(),userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

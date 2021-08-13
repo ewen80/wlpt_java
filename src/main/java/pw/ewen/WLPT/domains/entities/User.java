@@ -22,7 +22,7 @@ public class User implements Serializable {
 	private Role role;	// 用户角色
 
 	@Column(nullable = false)
-	private String passwordMD5 = "";
+	private String password = "";
 
 	@Column(nullable = true)
 	private String avatar;
@@ -66,8 +66,8 @@ public class User implements Serializable {
 		this.name = name;
 	}
 
-	public String getPasswordMD5(){ return passwordMD5;}
-	public void setPasswordMD5(String passwordMD5){ this.passwordMD5 = passwordMD5;}
+	public String getPassword(){ return password;}
+	public void setPassword(String password){ this.password = password;}
 
 	public String getAvatar() {
 		return avatar;

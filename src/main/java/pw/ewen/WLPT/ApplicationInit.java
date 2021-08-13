@@ -63,7 +63,7 @@ public class ApplicationInit implements ApplicationRunner {
         if(adminUser == null) {
             //新建用户admin
             User user = new User(bizConfig.getUser().getAdminUserId(), bizConfig.getUser().getAdminUserName(), adminRole);
-            user.setPasswordMD5(DigestUtils.md5DigestAsHex("admin".getBytes()).toUpperCase());  // 默认密码admin
+            user.setPassword(DigestUtils.md5DigestAsHex("admin".getBytes()).toUpperCase());  // 默认密码admin
             adminRole.getUsers().add(user);
             userRepository.save(user);
         }
@@ -73,7 +73,7 @@ public class ApplicationInit implements ApplicationRunner {
         if(guestUser == null) {
             // 新建用户guest
             User user = new User(bizConfig.getUser().getGuestUserId(), bizConfig.getUser().getGuestUserName(), anonymousRole);
-            user.setPasswordMD5(DigestUtils.md5DigestAsHex("guest".getBytes()).toUpperCase());  // 默认密码guest
+            user.setPassword(DigestUtils.md5DigestAsHex("guest".getBytes()).toUpperCase());  // 默认密码guest
             anonymousRole.getUsers().add(user);
             userRepository.save(user);
         }

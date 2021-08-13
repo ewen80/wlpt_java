@@ -4,18 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.exceptions.domain.FindUserException;
-import pw.ewen.WLPT.repositories.RoleRepository;
-import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 import pw.ewen.WLPT.services.RoleService;
 import pw.ewen.WLPT.services.UserService;
 
@@ -146,7 +142,7 @@ public class UserController {
 	// TODO 不能向接口返回异常
     @RequestMapping(method = RequestMethod.PUT, value = "/{userId}")
     public void setPassword(@PathVariable("userId") String userId, @RequestBody String passwordMD5) throws FindUserException {
-		this.userService.setPassWord(userId, passwordMD5);
+		this.userService.setpassword(userId, passwordMD5);
 	}
 
 	/**
@@ -156,7 +152,7 @@ public class UserController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/checkPassword")
 	public boolean checkPassword(@RequestParam(value = "userId") String userId, @RequestParam(value = "passwordMD5") String passwordMD5) {
-		return this.userService.findOne(userId).getPasswordMD5().equals(passwordMD5);
+		return userService.checkPassword(userId, passwordMD5);
 	}
 
 	/**
