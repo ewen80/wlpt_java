@@ -55,7 +55,7 @@ public class MyResourceService {
         return this.myResourceRepository.findAll(builder.build(filter));
     }
 
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PostAuthorize("hasPermission(returnObject.get(), 'read')")
     public Optional<MyResource> findOne(long id) {
         return this.myResourceRepository.findById(id);
     }

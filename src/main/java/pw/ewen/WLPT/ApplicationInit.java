@@ -3,6 +3,7 @@ package pw.ewen.WLPT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 import pw.ewen.WLPT.configs.biz.BizConfig;
@@ -27,16 +28,17 @@ public class ApplicationInit implements ApplicationRunner {
     private final UserRepository userRepository;
     private final MenuService menuService;
     private final BizConfig bizConfig;
-
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public ApplicationInit(RoleRepository roleRepository,
                            UserRepository userRepository,
-                           MenuService menuService, BizConfig bizConfig) {
+                           MenuService menuService, BizConfig bizConfig, PasswordEncoder passwordEncoder) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.menuService = menuService;
         this.bizConfig = bizConfig;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -60,9 +62,8 @@ public class ApplicationInit implements ApplicationRunner {
         User adminUser = adminUserOpt.orElseGet(() -> {
             //新建用户admin
             User user = new User(bizConfig.getUser().getAdminUserId(), bizConfig.getUser().getAdminUserName(), adminRole);
-            user.setPasswordMD5(DigestUtils.md5DigestAsHex("admin".getBytes()).toUpperCase());  // 默认密码admin
-            // TODO: 测试语句是否可以删除
-            adminRole.getUsers().add(user);
+            String passwordMD5 = DigestUtils.md5DigestAsHex("admin".getBytes()).toUpperCase();
+            user.setPassword(passwordEncoder.encode(passwordMD5));  // 默认密码admin
             return userRepository.save(user);
         });
 
@@ -71,9 +72,8 @@ public class ApplicationInit implements ApplicationRunner {
         User guestUser = guestUserOpt.orElseGet(() -> {
             // 新建用户guest
             User user = new User(bizConfig.getUser().getGuestUserId(), bizConfig.getUser().getGuestUserName(), anonymousRole);
-            user.setPasswordMD5(DigestUtils.md5DigestAsHex("guest".getBytes()).toUpperCase());  // 默认密码guest
-            // TODO: 测试语句是否可以删除
-            anonymousRole.getUsers().add(user);
+            String passwordMD5 = DigestUtils.md5DigestAsHex("guest".getBytes()).toUpperCase();
+            user.setPassword(passwordEncoder.encode(passwordMD5));  // 默认密码guest
             return userRepository.save(user);
         });
     }

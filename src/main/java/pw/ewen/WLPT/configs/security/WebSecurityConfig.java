@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -41,12 +42,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private BizConfig bizConfig;
     @Value("${frontendUrls}")
     private String frontendUrls;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // TODO NoOpPasswordEncoder过期，进行修改，评估密码保存格式变化对其他方面的影响
         auth
-            .userDetailsService(userDetailsService).passwordEncoder(NoOpPasswordEncoder.getInstance());
+            .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder);
     }
 
     @Override

@@ -50,7 +50,7 @@ public class WeixingResourceService {
         return this.weixingResourceRepository.findAll(builder.build(filter));
     }
 
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PostAuthorize("hasPermission(returnObject.get(), 'read')")
     public Optional<WeixingResource> findOne(long id) {
         return this.weixingResourceRepository.findById(id);
     }

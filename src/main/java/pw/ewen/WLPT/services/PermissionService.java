@@ -40,7 +40,7 @@ public class PermissionService {
         Optional<ResourceRange> range = this.resourceRangeService.findOne(resourceRangeId);
         if(range.isPresent()){
             Set<Permission> permissions = new HashSet<>();
-            ObjectIdentityImpl oi = new ObjectIdentityImpl(range);
+            ObjectIdentityImpl oi = new ObjectIdentityImpl(range.get());
             Sid sid = new GrantedAuthoritySid(range.get().getRole().getId());
             try {
                 MutableAcl mutableAcl = (MutableAcl)aclService.readAclById(oi, Collections.singletonList(sid));

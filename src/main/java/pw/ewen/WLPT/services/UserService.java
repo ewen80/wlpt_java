@@ -5,13 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.exceptions.domain.FindUserException;
 import pw.ewen.WLPT.repositories.UserRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
-import pw.ewen.WLPT.security.UserContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,10 +23,12 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Page<User> findAll(String filter, PageRequest pr) {
@@ -77,16 +78,32 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
-    // 修改密码
-    public void setPassWord(String userId, String passwordMD5) throws  FindUserException {
+    /**
+     * 修改密码
+     * @param userId 用户id
+     * @param passwordMD5 md5编码后的用户密码
+     * @throws FindUserException
+     */
+    public void setpassword(String userId, String passwordMD5) throws  FindUserException {
         Optional<User> user = this.userRepository.findById(userId);
         if (user.isPresent()) {
-            user.get().setPasswordMD5(passwordMD5);
+            user.get().setPassword(passwordEncoder.encode(passwordMD5));
             this.userRepository.save(user.get());
         } else {
             throw new FindUserException("找不到指定的用户");
         }
+    }
 
+    /**
+     * 检查密码
+     * @param userId 用户id
+     * @param passwordMd5 md5编码后的用户密码
+     * @return 密码是否正确
+     */
+    public boolean checkPassword(String userId, String passwordMd5) {
+        return findOne(userId)
+                .map(user -> this.passwordEncoder.matches(passwordMd5, user.getPassword()))
+                .orElse(false);
     }
 
     /**
