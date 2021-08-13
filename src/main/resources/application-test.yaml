@@ -17,3 +17,5 @@ spring:
 bizconfig:
   file:
     file_upload_root_path: /home/wenliang/Webs/frontends/wlpt_ng_alain/downloads/
+
+frontendUrls: http://aliyun.ewen.pw:9101  # 前端程序部署地址

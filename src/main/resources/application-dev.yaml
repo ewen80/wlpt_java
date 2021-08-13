@@ -26,3 +26,5 @@ spring:
 bizconfig:
   file:
     file_upload_root_path: D:\\开发项目\\WLPT\\wlpt_angular_alain\\downloads\\  #以斜杠结尾，表示目录
+
+frontendUrls: http://localhost:4200  # 前端程序部署地址
