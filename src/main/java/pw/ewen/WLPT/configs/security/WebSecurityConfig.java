@@ -2,18 +2,15 @@ package pw.ewen.WLPT.configs.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
+import org.springframework.boot.autoconfigure.security.StaticResourceLocation;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.autoconfigure.security.servlet.StaticResourceRequest;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
@@ -22,7 +19,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.repositories.UserRepository;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -63,8 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
             .authorizeRequests()
-                .antMatchers("/h2console/**").permitAll()   //对嵌入式数据库console不做用户认证
-                .antMatchers("/doc/**").permitAll()  // 对api静态文档不做用户认证
+                .antMatchers("/h2console/**", "/doc/**").permitAll()   //对嵌入式数据库,对文档静态资源不做用户认证console不做用户认证
                 .antMatchers("/adminmenuinit").hasAuthority(bizConfig.getUser().getAdminRoleId()) //对admin角色进行菜单授权，只有admin角色才能操作
                 .anyRequest().authenticated()                            //其他访问都需要经过认证
                 .and()

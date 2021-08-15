@@ -62,11 +62,9 @@ public class MenuController {
     /**
      * 删除菜单
      * @param menuId 菜单id
-     * @throws NumberFormatException
      */
-    // TODO 不向接口外返回异常
     @RequestMapping(method=RequestMethod.DELETE, value="/{menuId}")
-    public void delete(@PathVariable("menuId") String menuId) throws NumberFormatException{
+    public void delete(@PathVariable("menuId") String menuId){
         long longMenuId = Long.parseLong(menuId);
         Optional<Menu> menu = this.menuService.findOne(longMenuId);
         if(menu.isPresent()) {

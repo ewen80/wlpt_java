@@ -137,9 +137,8 @@ public class UserController {
 	 * @param userId 用户id
 	 * @param passwordMD5 MD5加密后的用户密码
 	 */
-	// TODO 不能向接口返回异常
     @RequestMapping(method = RequestMethod.PUT, value = "/{userId}")
-    public void setPassword(@PathVariable("userId") String userId, @RequestBody String passwordMD5) throws FindUserException {
+    public void setPassword(@PathVariable("userId") String userId, @RequestBody String passwordMD5) {
 		this.userService.setpassword(userId, passwordMD5);
 	}
 
