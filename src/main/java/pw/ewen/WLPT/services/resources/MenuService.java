@@ -44,7 +44,8 @@ public class MenuService {
      * 获取所有菜单
      */
     public List<Menu> findAll() {
-        return this.menuRepository.findAll(new Sort("orderId"));
+//        return this.menuRepository.findAll(new Sort("orderId"));
+        return this.menuRepository.findAll(Sort.by("orderId"));
     }
 
     /**
@@ -58,7 +59,6 @@ public class MenuService {
     /**
      * 获取一个菜单
      * @param id    菜单id
-     * @return
      */
     public Optional<Menu> findOne(long id) {
         return this.menuRepository.findById(id);
@@ -165,7 +165,7 @@ public class MenuService {
                         parent.getChildren().add(menu);
                     }
                 } catch (HibernateException e){ //捕获hibernate的懒加载报错，如果报错说明还没有set过children集合
-                    parent.setChildren(new ArrayList<Menu>());
+                    parent.setChildren(new ArrayList<>());
                     parent.getChildren().add(menu);
                 }
 

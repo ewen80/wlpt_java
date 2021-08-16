@@ -61,7 +61,7 @@ public class PermissionService {
      */
     @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
     public void insertPermission(long resourceRangeId, Permission permission) throws  EntityNotFoundException {
-        Assert.notNull(permission);
+        Assert.notNull(permission, "权限不能为空");
 
         MutableAcl mutableAcl;
         Optional<ResourceRange> resourceRange = this.resourceRangeService.findOne(resourceRangeId);
@@ -100,11 +100,11 @@ public class PermissionService {
 
     /**
      * 删除权限规则
-     * @Return 如果删除一条ACE则返回true，如果没有找到对应ACE，即没有实际删除数据返回false
+     * @return 如果删除一条ACE则返回true，如果没有找到对应ACE，即没有实际删除数据返回false
      */
     @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
     public boolean deletePermission(long resourceRangeId, Permission  permission) {
-        Assert.notNull(permission);
+        Assert.notNull(permission, "权限不能为空");
 
         MutableAcl mutableAcl;
         Optional<ResourceRange> resourceRange = this.resourceRangeService.findOne(resourceRangeId);

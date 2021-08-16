@@ -31,9 +31,9 @@ public class PageInfo {
 
     public PageRequest getPageRequest() {
         if(this.sortField.isEmpty()) {
-            return new PageRequest(this.getPageIndex(), this.getPageSize());
+            return PageRequest.of(this.getPageIndex(), this.getPageSize());
         } else {
-            return new PageRequest(this.getPageIndex(), this.getPageSize(), new Sort(Sort.Direction.fromString(this.getSortDirection()), this.getSortField()));
+            return PageRequest.of(this.getPageIndex(), this.getPageSize(), Sort.by(Sort.Direction.fromString(this.getSortDirection()), this.getSortField()));
         }
 
     }
