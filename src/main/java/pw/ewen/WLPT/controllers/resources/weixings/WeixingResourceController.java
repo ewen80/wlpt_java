@@ -57,12 +57,10 @@ public class WeixingResourceController {
      * @apiNote 返回结果不分页
      */
     @GetMapping(value = "/all")
-    public List<WeixingResourceDTO> getResources(@RequestParam(name = "filter", value = "") String filter){
+    public List<WeixingResourceDTO> getResources(@RequestParam(name = "filter") String filter){
         List<WeixingResource> weixingResources = this.weixingResourceService.findAll(filter);
         List<WeixingResourceDTO> weixingResourceDTOS = new ArrayList<>();
-        weixingResources.forEach((weixingResource -> {
-            weixingResourceDTOS.add(weixingResourceDTOConvertor.toDTO(weixingResource));
-        }));
+        weixingResources.forEach((weixingResource -> weixingResourceDTOS.add(weixingResourceDTOConvertor.toDTO(weixingResource))));
         return weixingResourceDTOS;
     }
 
@@ -98,6 +96,7 @@ public class WeixingResourceController {
      * @param ids 资源id，多个id用逗号分隔
      */
     @DeleteMapping(value = "/{ids}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable(value = "ids") String ids) {
         List<String> idsList = Arrays.asList(ids.split(","));
         idsList.forEach( (id) -> {
@@ -132,7 +131,7 @@ public class WeixingResourceController {
                         .map(weixingResource -> {
                             weixingResource.setSign(signature);
                             weixingResourceService.save(weixingResource);
-                            return new ResponseEntity<WeixingResourceDTO>(weixingResourceDTOConvertor.toDTO(weixingResource, false), HttpStatus.OK);
+                            return new ResponseEntity<>(weixingResourceDTOConvertor.toDTO(weixingResource, false), HttpStatus.OK);
                         })
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

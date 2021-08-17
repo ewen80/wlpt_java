@@ -87,7 +87,8 @@ public class ResourceRangeController {
      * 删除资源范围
      * @param resourceRangeIds 资源范围id.多个资源范围id用,分隔
      */
-    @RequestMapping(value = "/{resourceRangeIds}", method=RequestMethod.DELETE, produces = "application/json")
+    @DeleteMapping(value = "/{resourceRangeIds}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("resourceRangeIds") String resourceRangeIds){
         String[] arrResourceRangeIds = resourceRangeIds.split(",");
         this.resourceRangeService.delete(arrResourceRangeIds);

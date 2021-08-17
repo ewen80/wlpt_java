@@ -157,7 +157,8 @@ public class UserController {
 	 * @param userIds 用户id(多个id用,分隔)
 	 * @apiNote 软删除
 	 */
-    @RequestMapping(value = "/{userIds}", method=RequestMethod.DELETE, produces = "application/json")
+    @DeleteMapping(value = "/{userIds}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("userIds") String userIds){
 		List<String> ids = Arrays.asList(userIds.split(","));
 		this.userService.delete(ids);

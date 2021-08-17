@@ -1,6 +1,7 @@
 package pw.ewen.WLPT.controllers.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.configs.biz.BizConfig;
@@ -56,7 +57,7 @@ public class PermissionController {
         List<ResourceRange> ranges = this.resourceRangeService.findAll(filter);
         if(ranges.size() > 0) {
             StringBuilder sb = new StringBuilder();
-            ranges.forEach( (range) -> { sb.append(range.getId()).append(',');});
+            ranges.forEach( (range) -> sb.append(range.getId()).append(','));
             return this.getByResourceRanges(sb.toString());
         }
         return new HashSet<>();
@@ -75,7 +76,7 @@ public class PermissionController {
             ResourceRangePermissionWrapper wrapper = permissionService.getByResourceRange(rr.getId());
             return wrapper.getPermissions();
         } else {
-            return new HashSet<Permission>();
+            return new HashSet<>();
         }
 
     }
@@ -144,8 +145,9 @@ public class PermissionController {
      * 删除权限
      * @param resourceRangeIds 需要删除权限的资源范围id。多个id用,分隔
      */
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{resourceRangeIds}")
+    @DeleteMapping(value = "/{resourceRangeIds}")
     @Transactional
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable(value = "resourceRangeIds") String resourceRangeIds) {
         String[] arrResourceRangeIds = resourceRangeIds.split(",");
         // 删除所有权限

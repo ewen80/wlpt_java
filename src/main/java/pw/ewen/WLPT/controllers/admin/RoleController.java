@@ -81,7 +81,7 @@ public class RoleController {
     @RequestMapping(value="/{roleId}", method=RequestMethod.GET, produces="application/json")
     public ResponseEntity<RoleDTO> getOneRole(@PathVariable("roleId") String roleId){
         return roleService.findOne(roleId)
-                .map((role) -> new ResponseEntity<RoleDTO>(RoleDTO.convertFromRole(role), HttpStatus.OK))
+                .map((role) -> new ResponseEntity<>(RoleDTO.convertFromRole(role), HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -91,7 +91,7 @@ public class RoleController {
      */
     @RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/check/{roleId}")
     public boolean checkRoleExist(@PathVariable("roleId") String roleId) {
-        return roleService.findOne(roleId) != null;
+        return roleService.findOne(roleId).isPresent();
     }
 
     /**
@@ -119,7 +119,8 @@ public class RoleController {
      * @param roleIds 角色id(多个id用,分隔)
      * @apiNote 软删除,如果角色下面没有实际用户，硬删除角色
      */
-    @RequestMapping(value = "/{roleIds}", method=RequestMethod.DELETE, produces = "application/json")
+    @DeleteMapping(value = "/{roleIds}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("roleIds") String roleIds){
         List<String> ids = Arrays.asList(roleIds.split(","));
         this.roleService.delete(ids);
@@ -137,9 +138,7 @@ public class RoleController {
         if( role.isPresent() ) {
             // 清空该角色原本的用户,被清空的用户角色归入anonymous组
             Set<User> users = role.get().getUsers();
-            users.forEach( (user -> {
-                user.setRole(anonymousRole.orElse(null));
-            }));
+            users.forEach( (user -> user.setRole(anonymousRole.orElse(null))));
             // 将指定用户加入该角色
             for (String userId : userIds ) {
                 Optional<User> user = this.userService.findOne(userId);

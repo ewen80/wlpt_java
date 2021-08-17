@@ -68,7 +68,7 @@ public class ResourceTypeController {
     @RequestMapping(value="/{className}", method=RequestMethod.GET, produces="application/json")
     public ResponseEntity<ResourceTypeDTO> getOne(@PathVariable("className") String className){
         return resourceTypeService.findOne(className)
-                .map((rt) -> new ResponseEntity<ResourceTypeDTO>(ResourceTypeDTO.convertFromResourceType(rt), HttpStatus.OK))
+                .map((rt) -> new ResponseEntity<>(ResourceTypeDTO.convertFromResourceType(rt), HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -86,7 +86,8 @@ public class ResourceTypeController {
      * 删除
      * @param resourceTypes 资源类型类名(多个类型用,分隔)
      */
-    @RequestMapping(value = "/{resourceTypes}", method=RequestMethod.DELETE, produces = "application/json")
+    @DeleteMapping(value = "/{resourceTypes}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("resourceTypes") String resourceTypes){
         String[] arrClassNames = resourceTypes.split(",");
         this.resourceTypeService.delete(arrClassNames);

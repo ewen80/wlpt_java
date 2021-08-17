@@ -70,9 +70,7 @@ public class MyResourceRoomController {
     public List<MyResourceRoomDTO> getRooms(@RequestParam("myResourceId") long myResourceId) {
         List<MyResourceRoom> rooms = this.myResourceRoomService.findByMyResourceId(myResourceId);
         List<MyResourceRoomDTO> roomDTOS = new ArrayList<>();
-        rooms.forEach( (room) -> {
-            roomDTOS.add(myResourceRoomDTOConvertor.toDTO(room));
-        });
+        rooms.forEach( (room) -> roomDTOS.add(myResourceRoomDTOConvertor.toDTO(room)));
         return roomDTOS;
     }
 
@@ -81,6 +79,7 @@ public class MyResourceRoomController {
      * @param roomIds 房间id,多个房间id用逗号分隔
      */
     @DeleteMapping("/{roomIds}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("roomIds") String roomIds) {
         List<Long> roomIdList = Arrays.stream(roomIds.split(",")).map(Long::parseLong).collect(Collectors.toList());
         List<MyResourceRoom> rooms = myResourceRoomService.findByIdIn(roomIdList);

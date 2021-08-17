@@ -59,12 +59,10 @@ public class MyResourceController {
      * @apiNote 结果不分页
      */
     @GetMapping(value = "/all")
-    public List<MyResourceDTO> getResources(@RequestParam(name = "filter", value = "") String filter){
+    public List<MyResourceDTO> getResources(@RequestParam(name = "filter") String filter){
         List<MyResource> myResources = this.myResourceService.findAll(filter);
         List<MyResourceDTO> myResourceDTOS = new ArrayList<>();
-        myResources.forEach((myResource -> {
-            myResourceDTOS.add(myResourceDTOConvertor.toDTO(myResource));
-        }));
+        myResources.forEach((myResource -> myResourceDTOS.add(myResourceDTOConvertor.toDTO(myResource))));
         return myResourceDTOS;
     }
 
@@ -100,6 +98,7 @@ public class MyResourceController {
      * @param ids 资源id,多个id用逗号分隔
      */
     @DeleteMapping(value = "/{ids}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable(value = "ids") String ids) {
         List<String> idsList = Arrays.asList(ids.split(","));
         idsList.forEach( (id) -> {
