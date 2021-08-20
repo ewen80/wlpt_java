@@ -52,7 +52,7 @@ public class PermissionController {
      * @param filter 过滤器
      * @apiNote 只限管理员执行
      */
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/wrappers")
+    @GetMapping(produces = "application/json", value = "/wrappers")
     public Set<ResourceRangePermissionWrapperDTO> getPermissionWrappers(@RequestParam(required = false, defaultValue = "") String filter) {
         List<ResourceRange> ranges = this.resourceRangeService.findAll(filter);
         if(ranges.size() > 0) {

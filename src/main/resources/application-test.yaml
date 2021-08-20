@@ -1,15 +1,18 @@
+logging:
+  level:
+    root: info
 
 spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: false
 
   datasource:
-    url: jdbc:mysql://aliyun.ewen.pw:3306/changdi?useSSL=false&characterEncoding=utf8
+    url: jdbc:mysql://127.0.0.1:3306/changdi?useSSL=false&characterEncoding=utf8
     username: wenliang
     password: wenliang
 
@@ -19,3 +22,4 @@ bizconfig:
     file_upload_root_path: /home/wenliang/Webs/frontends/wlpt_ng_alain/downloads/
 
 frontendUrls: http://aliyun.ewen.pw:9101  # 前端程序部署地址
+#frontendUrls: http://localhost:4200
