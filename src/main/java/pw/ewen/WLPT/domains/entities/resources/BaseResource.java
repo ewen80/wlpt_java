@@ -13,7 +13,7 @@ public abstract class BaseResource {
      * 资源唯一标志号
      */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     protected BaseResource() {}

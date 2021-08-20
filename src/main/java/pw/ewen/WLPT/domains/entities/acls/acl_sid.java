@@ -14,7 +14,7 @@ public class acl_sid implements Serializable {
     private static final long serialVersionUID = -5823503649328681538L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private long id;
 
@@ -29,6 +29,10 @@ public class acl_sid implements Serializable {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public boolean isPrincipal() {

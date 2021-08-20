@@ -1,9 +1,6 @@
 package pw.ewen.WLPT.domains.entities.acls;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -16,7 +13,7 @@ public class acl_class  implements Serializable {
     private static final long serialVersionUID = -1655443834331482632L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private long id;
 

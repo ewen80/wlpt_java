@@ -71,10 +71,10 @@ public class PermissionService {
                 // 如果acl中找不到对应权限
                 if(!isThisResourceRangeExist(resourceRange.get())) {
                     // 如果acl中找不到对应ResourceRange
-                    mutableAcl = aclService.createAcl(new ObjectIdentityImpl(resourceRange));
+                    mutableAcl = aclService.createAcl(new ObjectIdentityImpl(resourceRange.get()));
                 } else {
                     // acl中能找到对应ResourceRange
-                    mutableAcl = (MutableAcl) aclService.readAclById(new ObjectIdentityImpl(resourceRange));
+                    mutableAcl = (MutableAcl) aclService.readAclById(new ObjectIdentityImpl(resourceRange.get()));
                 }
                 mutableAcl.setOwner(sid);
                 mutableAcl.setEntriesInheriting(false);

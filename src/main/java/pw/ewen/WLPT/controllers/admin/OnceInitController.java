@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,10 +65,7 @@ public class OnceInitController {
 
         //添加ACL权限,对所有菜单有权限(READ WHITE)
         ResourceRangePermissionWrapper wrapper = permissionService.getByResourceRange(range.getId());
-//        if(wrapper == null || !wrapper.getPermissions().contains(BasePermission.WRITE, BasePermission.READ)) {
-//            permissionService.insertPermission(range.getId(), BasePermission.WRITE);
-//        }
-        HashSet<Permission> permissions = new HashSet<Permission>();
+        HashSet<Permission> permissions = new HashSet<>();
         permissions.add(BasePermission.READ);
         permissions.add(BasePermission.WRITE);
 
@@ -87,7 +85,7 @@ public class OnceInitController {
 
         //添加ACL权限,对所有菜单有权限(READ WHITE)
         ResourceRangePermissionWrapper wrapper = permissionService.getByResourceRange(range.getId());
-        HashSet<Permission> permissions = new HashSet<Permission>();
+        HashSet<Permission> permissions = new HashSet<>();
         permissions.add(BasePermission.READ);
         permissions.add(BasePermission.WRITE);
 
@@ -99,7 +97,7 @@ public class OnceInitController {
      * 对admin菜单进行授权
      * @apiNote 系统首次启动时需要运行，只有admin组可以操作
      */
-    @RequestMapping(value = "/admin/menuinit", method = RequestMethod.PUT, produces = "application/json" )
+    @PutMapping(value = "/admin/menuinit")
     @Transactional
     public List<MenuDTO> adminMenuInit() {
         Optional<Role> adminRole = this.roleService.findOne(bizConfig.getUser().getAdminRoleId());
