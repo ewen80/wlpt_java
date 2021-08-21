@@ -118,6 +118,7 @@ public class ApplicationInit implements ApplicationRunner {
             this.menuService.save(myResourceMenu);
         }
 
+        // TODO 将需要初始化的菜单做到配置文件，不用每次增加新菜单都写一段代码:q:
         builder.reset();
         List<Menu> weixingMenus = menuService.findAll(builder.build("name:卫星场地"));
         Menu weixingMenu;
