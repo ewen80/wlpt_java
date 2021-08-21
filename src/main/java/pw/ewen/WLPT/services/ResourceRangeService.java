@@ -1,5 +1,6 @@
 package pw.ewen.WLPT.services;
 
+import org.aspectj.lang.annotation.AfterReturning;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.expression.EvaluationContext;
@@ -113,12 +114,10 @@ public class ResourceRangeService {
         return matchedResourceRange;
     }
 
-//    @PreAuthorize("hasAuthority('" + BizConfig.adminRoleId + "')")
     public ResourceRange save(ResourceRange range){
         return this.resourceRangeRepository.save(range);
     }
 
-//    @PreAuthorize("hasAuthority('" + BizConfig.adminRoleId + "')")
     public void delete(String[] resourceRangeIds){
         for(String id : resourceRangeIds){
             this.resourceRangeRepository.deleteById(Long.parseLong(id));

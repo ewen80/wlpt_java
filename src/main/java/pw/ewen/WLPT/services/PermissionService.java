@@ -1,5 +1,7 @@
 package pw.ewen.WLPT.services;
 
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
@@ -7,7 +9,6 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 
@@ -19,6 +20,7 @@ import java.util.*;
  * 权限操作服务类
  */
 @Service
+@Aspect
 public class PermissionService {
 
     private final MutableAclService aclService;
@@ -100,10 +102,9 @@ public class PermissionService {
 
     /**
      * 删除权限规则
-     * @return 如果删除一条ACE则返回true，如果没有找到对应ACE，即没有实际删除数据返回false
      */
     @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
-    public boolean deletePermission(long resourceRangeId, Permission  permission) {
+    public void deletePermission(long resourceRangeId, Permission  permission) {
         Assert.notNull(permission, "权限不能为空");
 
         MutableAcl mutableAcl;
@@ -112,7 +113,7 @@ public class PermissionService {
             Sid sid = new GrantedAuthoritySid(resourceRange.get().getRole().getId());
             if(isThisPermissionExist(resourceRange.get(), sid, permission)){
                 //存在规则
-                ObjectIdentityImpl oi = new ObjectIdentityImpl(resourceRange);
+                ObjectIdentityImpl oi = new ObjectIdentityImpl(resourceRange.get());
                 mutableAcl = (MutableAcl)aclService.readAclById(oi, Collections.singletonList(sid));
                 List<AccessControlEntry> aces = mutableAcl.getEntries();
                 try{
@@ -123,13 +124,9 @@ public class PermissionService {
                     if(aces.size() == 1) {
                         aclService.deleteAcl(oi, false);
                     }
-                    return true;
                 }catch(RuntimeException e){
                     //没有找到规则
-                    return false;
                 }
-            }else{
-                return false;
             }
         } else {
             throw new EntityNotFoundException();
@@ -138,7 +135,7 @@ public class PermissionService {
     }
 
     /**
-     * 删除ResourceRange和Role的所有权限
+     * 删除ResourceRange的所有权限
      */
     @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
     public void deleteResourceRangeAllPermissions(long resourceRangeId) {
@@ -151,6 +148,23 @@ public class PermissionService {
         }
     }
 
+    /**
+     * 删除指定资源范围的所有权限
+     * @param resourceRangeIds 资源范围id组成的数组
+     */
+    @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
+//    @AfterReturning("execution(* pw.ewen.WLPT.services.ResourceRangeService.delete(String[])) && args(resourceRangeIds)") // 删除资源范围时也会删除acl中对应的数据
+    public void deleteResourceRangesAllPermissions(String[] resourceRangeIds) {
+        for(String resourceRangeId : resourceRangeIds) {
+            this.deleteResourceRangeAllPermissions(Long.parseLong(resourceRangeId));
+        }
+    }
+
+    /**
+     * 读取指定角色和资源的权限
+     * @param roleId 角色id
+     * @param resource 资源对象
+     */
     public ResourceRangePermissionWrapper getByRoleAndResource(String roleId, Object resource) {
         ResourceRange resourceRange = resourceRangeService.findByResourceAndRole(resource, roleId);
         return this.getByResourceRange(resourceRange.getId());

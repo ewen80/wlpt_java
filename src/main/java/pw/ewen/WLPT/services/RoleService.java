@@ -40,7 +40,6 @@ public class RoleService {
 
     /**
      * 返回所有角色(不分页）
-     * @return
      */
     public List<Role> findAll() {
         // 默认过滤软删除角色
@@ -69,7 +68,6 @@ public class RoleService {
     /**
      * 保存
      * @param role 角色
-     * @return
      */
     public Role save(Role role) {
         return this.roleRepository.save(role);
@@ -86,24 +84,23 @@ public class RoleService {
     }
 
     /**
-     * 通过角色id删除角色，如如果没有用户则硬删除，如果有软删除用户则软删除，如果角色下有用户和权限配置则抛出异常
+     * 通过角色id软删除角色，
      * @param roleId    角色id
-     * @throws DeleteRoleException 如果角色下有有效用户或者有权限配置则抛出异常
      */
-    public void delete(String roleId) throws DeleteRoleException {
-        Optional<Role> role = this.roleRepository.findById(roleId);
-        if(role.isPresent()) {
-            if(role.get().getAllUsers().size() == 0) {
-                // 如果角色下面没有用户，则硬删除角色
-                this.roleRepository.deleteById((roleId));
-            } else if (role.get().getUsers().size() == 0 && role.get().getResourceRanges().size() == 0) {
-                // 如果角色下没有有效用户且没有权限配置，则软删除角色
-                this.roleRepository.softdelete(Collections.singletonList(roleId));
-            } else {
-                throw new DeleteRoleException("删除角色失败，该角色可能还有用户或者权限配置。");
-            }
-        }
-
+    public void delete(String roleId) {
+//        Optional<Role> role = this.roleRepository.findById(roleId);
+//        if(role.isPresent()) {
+//            if(role.get().getAllUsers().size() == 0) {
+//                // 如果角色下面没有用户，则硬删除角色
+//                this.roleRepository.deleteById((roleId));
+//            } else if (role.get().getUsers().size() == 0 && role.get().getResourceRanges().size() == 0) {
+//                // 如果角色下没有有效用户且没有权限配置，则软删除角色
+//                this.roleRepository.softdelete(Collections.singletonList(roleId));
+//            } else {
+//                throw new DeleteRoleException("删除角色失败，该角色可能还有用户或者权限配置。");
+//            }
+//        }
+        this.roleRepository.softdelete(Collections.singletonList(roleId));
     }
 
 }

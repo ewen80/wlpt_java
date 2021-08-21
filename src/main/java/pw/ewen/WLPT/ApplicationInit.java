@@ -42,7 +42,7 @@ public class ApplicationInit implements ApplicationRunner {
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         initUserAndRole();
         initialMenu();
     }
@@ -82,17 +82,21 @@ public class ApplicationInit implements ApplicationRunner {
     private void initialMenu() {
         SearchSpecificationsBuilder<Menu> builder = new SearchSpecificationsBuilder<>();
 
+        // 添加业务功能菜单
+
         List<Menu> bizMenus = menuService.findAll(builder.build("name:业务区"));
-        Menu bizMenu = null;
+        Menu bizMenu;
         if(bizMenus.size() == 0) {
             bizMenu = new Menu();
             bizMenu.setName("业务区");
-            this.menuService.save(bizMenu);
+            bizMenu = this.menuService.save(bizMenu);
+        } else {
+            bizMenu = bizMenus.get(0);
         }
 
         builder.reset();
         List<Menu> homeMenus = menuService.findAll(builder.build("name:首页"));
-        Menu homeMenu = null;
+        Menu homeMenu;
         if(homeMenus.size() == 0) {
             homeMenu = new Menu();
             homeMenu.setName("首页");
@@ -102,18 +106,44 @@ public class ApplicationInit implements ApplicationRunner {
             this.menuService.save(homeMenu);
         }
 
+
+        builder.reset();
+        List<Menu> myResourceMenus = menuService.findAll(builder.build("name:我的资源"));
+        Menu myResourceMenu;
+        if(myResourceMenus.size() == 0) {
+            myResourceMenu = new Menu();
+            myResourceMenu.setName("我的资源");
+            myResourceMenu.setPath("/resources/myresources");
+            myResourceMenu.setParent(bizMenu);
+            this.menuService.save(myResourceMenu);
+        }
+
+        builder.reset();
+        List<Menu> weixingMenus = menuService.findAll(builder.build("name:卫星场地"));
+        Menu weixingMenu;
+        if(weixingMenus.size() == 0) {
+            weixingMenu = new Menu();
+            weixingMenu.setName("卫星场地");
+            weixingMenu.setPath("/resources/weixings");
+            weixingMenu.setParent(bizMenu);
+            this.menuService.save(weixingMenu);
+        }
+
+        // 添加后台管理菜单
         builder.reset();
         List<Menu> adminMenus = menuService.findAll(builder.build("name:后台管理"));
-        Menu adminMenu = null;
+        Menu adminMenu;
         if(adminMenus.size() == 0) {
             adminMenu = new Menu();
             adminMenu.setName("后台管理");
             this.menuService.save(adminMenu);
+        } else {
+            adminMenu = adminMenus.get(0);
         }
 
         builder.reset();
         List<Menu> usersAdminMenus = menuService.findAll(builder.build("name:用户管理"));
-        Menu usersAdminMenu = null;
+        Menu usersAdminMenu;
         if(usersAdminMenus.size() == 0) {
             usersAdminMenu = new Menu();
             usersAdminMenu.setName("用户管理");
@@ -125,7 +155,7 @@ public class ApplicationInit implements ApplicationRunner {
 
         builder.reset();
         List<Menu> rolesAdminMenus = menuService.findAll(builder.build("name:角色管理"));
-        Menu rolesAdminMenu = null;
+        Menu rolesAdminMenu;
         if(rolesAdminMenus.size() == 0) {
             rolesAdminMenu = new Menu();
             rolesAdminMenu.setName("角色管理");
@@ -137,7 +167,7 @@ public class ApplicationInit implements ApplicationRunner {
 
         builder.reset();
         List<Menu> resourcesAdminMenus = menuService.findAll(builder.build("name:资源管理"));
-        Menu resourcesAdminMenu = null;
+        Menu resourcesAdminMenu;
         if(resourcesAdminMenus.size() == 0) {
             resourcesAdminMenu = new Menu();
             resourcesAdminMenu.setName("资源管理");
@@ -149,7 +179,7 @@ public class ApplicationInit implements ApplicationRunner {
 
         builder.reset();
         List<Menu> menusAdminMenus = menuService.findAll(builder.build("name:菜单管理"));
-        Menu menusAdminMenu = null;
+        Menu menusAdminMenu;
         if(menusAdminMenus.size() == 0) {
             menusAdminMenu = new Menu();
             menusAdminMenu.setName("菜单管理");
