@@ -72,24 +72,46 @@ public class OnceInitController {
         permissionService.insertPermissions(range.getId(), permissions);
     }
 
-    // 对MyResource配置权限
-    private void authorizeMyResource(Role role) {
-        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.myresource.MyResource", "MyResource", "我的资源");
-        this.resourceTypeService.save(menuResourceType);
+//    // 对MyResource配置权限
+//    private void authorizeMyResource(Role role) {
+//        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.myresource.MyResource", "MyResource", "我的资源");
+//        this.resourceTypeService.save(menuResourceType);
+//
+//        ResourceRange range = this.resourceRangeService.findByResourceTypeAndRole(menuResourceType.getClassName(), role.getId());
+//        if(range == null) {
+//            range = new ResourceRange("", role, menuResourceType);
+//            this.resourceRangeService.save(range);
+//        }
+//
+//        //添加ACL权限,对所有菜单有权限(READ WHITE)
+//        ResourceRangePermissionWrapper wrapper = permissionService.getByResourceRange(range.getId());
+//        HashSet<Permission> permissions = new HashSet<>();
+//        permissions.add(BasePermission.READ);
+//        permissions.add(BasePermission.WRITE);
+//
+//        permissionService.insertPermissions(range.getId(), permissions);
+//    }
 
-        ResourceRange range = this.resourceRangeService.findByResourceTypeAndRole(menuResourceType.getClassName(), role.getId());
-        if(range == null) {
-            range = new ResourceRange("", role, menuResourceType);
-            this.resourceRangeService.save(range);
+    private void authorizeResources(Role role) {
+        List<BizConfig.Resource> resources = bizConfig.getResources();
+        for(BizConfig.Resource resource: resources) {
+            ResourceType resourceType = new ResourceType(resource.getType(), resource.getTypeName(), resource.getDescription());
+            this.resourceTypeService.save(resourceType);
+
+            ResourceRange range = this.resourceRangeService.findByResourceTypeAndRole(resourceType.getClassName(), role.getId());
+            if(range == null) {
+                range = new ResourceRange("", role, resourceType);
+                this.resourceRangeService.save(range);
+            }
+
+            //添加ACL权限,对所有菜单有权限(READ WHITE)
+            ResourceRangePermissionWrapper wrapper = permissionService.getByResourceRange(range.getId());
+            HashSet<Permission> permissions = new HashSet<>();
+            permissions.add(BasePermission.READ);
+            permissions.add(BasePermission.WRITE);
+
+            permissionService.insertPermissions(range.getId(), permissions);
         }
-
-        //添加ACL权限,对所有菜单有权限(READ WHITE)
-        ResourceRangePermissionWrapper wrapper = permissionService.getByResourceRange(range.getId());
-        HashSet<Permission> permissions = new HashSet<>();
-        permissions.add(BasePermission.READ);
-        permissions.add(BasePermission.WRITE);
-
-        permissionService.insertPermissions(range.getId(), permissions);
     }
 
 
@@ -103,7 +125,7 @@ public class OnceInitController {
         Optional<Role> adminRole = this.roleService.findOne(bizConfig.getUser().getAdminRoleId());
         if(adminRole.isPresent()) {
             this.authorizeMenu(adminRole.get());
-            this.authorizeMyResource(adminRole.get());
+            this.authorizeResources(adminRole.get());
             return this.menuService.findPermissionMenuTree(adminRole.get()).stream().map(MenuDTO::convertFromMenu).collect(Collectors.toList());
         } else {
             return new ArrayList<>();

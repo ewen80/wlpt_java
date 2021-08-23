@@ -118,16 +118,29 @@ public class ApplicationInit implements ApplicationRunner {
             this.menuService.save(myResourceMenu);
         }
 
-        // TODO 将需要初始化的菜单做到配置文件，不用每次增加新菜单都写一段代码:q:
-        builder.reset();
-        List<Menu> weixingMenus = menuService.findAll(builder.build("name:卫星场地"));
-        Menu weixingMenu;
-        if(weixingMenus.size() == 0) {
-            weixingMenu = new Menu();
-            weixingMenu.setName("卫星场地");
-            weixingMenu.setPath("/resources/weixings");
-            weixingMenu.setParent(bizMenu);
-            this.menuService.save(weixingMenu);
+//        builder.reset();
+//        List<Menu> weixingMenus = menuService.findAll(builder.build("name:卫星场地"));
+//        Menu weixingMenu;
+//        if(weixingMenus.size() == 0) {
+//            weixingMenu = new Menu();
+//            weixingMenu.setName("卫星场地");
+//            weixingMenu.setPath("/resources/weixings");
+//            weixingMenu.setParent(bizMenu);
+//            this.menuService.save(weixingMenu);
+//        }
+
+        List<BizConfig.Resource> resources = bizConfig.getResources();
+        for(BizConfig.Resource resource: resources) {
+            builder.reset();
+            List<Menu> menus = menuService.findAll(builder.build("name:" + resource.getName()));
+            Menu menu;
+            if(menus.size() == 0) {
+                menu = new Menu();
+                menu.setName(resource.getName());
+                menu.setPath(resource.getPath());
+                menu.setParent(bizMenu);
+                this.menuService.save(menu);
+            }
         }
 
         // 添加后台管理菜单

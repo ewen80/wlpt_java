@@ -22,12 +22,6 @@ spring:
       maxFileSize: -1
       maxRequestSize: -1
 
-#security:
-#  basic:
-#    enabled: false
-
-
-
   #业务自定义配置
 bizconfig:
   user:
@@ -52,3 +46,16 @@ bizconfig:
   #   权限
   permission:
     all_permissions: ChangdiPermission.READ,ChangdiPermission.WRITE,ChangdiPermission.FINISH  #系统支持的权限
+
+  # 资源类型
+  resources:
+      - name: 我的资源
+        path: /resources/myresources
+        type: pw.ewen.WLPT.domains.entities.resources.myresource.MyResource
+        typeName: MyResource
+        description: 我的资源
+      - name: 卫星场地
+        path: /resources/weixings
+        type: pw.ewen.WLPT.domains.entities.resources.weixing.WeixingResource
+        typeName: WeixingResource
+        description: 卫星场地

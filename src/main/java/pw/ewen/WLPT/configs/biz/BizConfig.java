@@ -3,10 +3,14 @@ package pw.ewen.WLPT.configs.biz;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Component;
+import pw.ewen.WLPT.domains.entities.ResourceType;
+import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.security.acl.ChangdiPermission;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * created by wenliang on 2021-03-22
@@ -177,6 +181,56 @@ public class BizConfig {
     }
     private SerialNumber serialNumber;
 
+    public static class Resource {
+        // 资源
+        private String name;
+        private String path;
+        private String type;
+        private String typeName;
+        private String description;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public void setPath(String path) {
+            this.path = path;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getTypeName() {
+            return typeName;
+        }
+
+        public void setTypeName(String typeName) {
+            this.typeName = typeName;
+        }
+    }
+    private List<Resource> resources;
+
     public User getUser() {
         return user;
     }
@@ -207,5 +261,13 @@ public class BizConfig {
 
     public void setSerialNumber(SerialNumber serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+    public List<Resource> getResources() {
+        return resources;
+    }
+
+    public void setResources(List<Resource> resources) {
+        this.resources = resources;
     }
 }
