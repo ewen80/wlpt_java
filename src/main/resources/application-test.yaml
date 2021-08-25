@@ -1,3 +1,10 @@
+server:
+  port: 9001
+  ssl:
+    key-store: classpath:/cert/6175226_aliyun.ewen.pw.jks
+    key-store-password: fXo5r985
+    key-store-type: JKS
+
 logging:
   level:
     root: info
