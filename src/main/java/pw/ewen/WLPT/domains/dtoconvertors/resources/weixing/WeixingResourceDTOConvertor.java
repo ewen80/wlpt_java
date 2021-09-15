@@ -2,24 +2,22 @@ package pw.ewen.WLPT.domains.dtoconvertors.resources.weixing;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pw.ewen.WLPT.domains.DTOs.SignatureDTO;
 import pw.ewen.WLPT.domains.DTOs.permissions.PermissionDTO;
+import pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.ResourceCheckInDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.weixing.WeixingResourceDTO;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
+import pw.ewen.WLPT.domains.dtoconvertors.FieldAuditDTOConvertor;
 import pw.ewen.WLPT.domains.dtoconvertors.PermissionDTOConvertor;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.ResourceCheckInDTOConvertor;
-import pw.ewen.WLPT.domains.dtoconvertors.resources.SignatureDTOConvertor;
+import pw.ewen.WLPT.domains.entities.resources.FieldAudit;
 import pw.ewen.WLPT.domains.entities.resources.ResourceCheckIn;
-import pw.ewen.WLPT.domains.entities.resources.Signature;
 import pw.ewen.WLPT.domains.entities.resources.weixing.WeixingResource;
 import pw.ewen.WLPT.security.UserContext;
-import pw.ewen.WLPT.services.AttachmentService;
 import pw.ewen.WLPT.services.PermissionService;
 import pw.ewen.WLPT.services.resources.weixing.WeixingResourceService;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,18 +30,19 @@ public class WeixingResourceDTOConvertor {
     private final PermissionService permissionService;
     private final PermissionDTOConvertor permissionDTOConvertor;
     private final ResourceCheckInDTOConvertor resourceCheckInDTOConvertor;
-    private final SignatureDTOConvertor signatureDTOConvertor;
+//    private final SignatureDTOConvertor signatureDTOConvertor;
+    private final FieldAuditDTOConvertor fieldAuditDTOConvertor;
     private final UserContext userContext;
 
-    private final DateTimeFormatter hcrqFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//    private final DateTimeFormatter hcrqFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
     public WeixingResourceDTOConvertor(PermissionService permissionService,
                                        PermissionDTOConvertor permissionDTOConvertor,
                                        ResourceCheckInDTOConvertor resourceCheckInDTOConvertor,
-                                       SignatureDTOConvertor signatureDTOConvertor, UserContext userContext) {
+                                       FieldAuditDTOConvertor fieldAuditDTOConvertor, UserContext userContext) {
         this.permissionService = permissionService;
-        this.signatureDTOConvertor = signatureDTOConvertor;
+        this.fieldAuditDTOConvertor = fieldAuditDTOConvertor;
         this.userContext = userContext;
         this.permissionDTOConvertor = permissionDTOConvertor;
         this.resourceCheckInDTOConvertor = resourceCheckInDTOConvertor;
@@ -56,7 +55,6 @@ public class WeixingResourceDTOConvertor {
     public WeixingResourceDTO toDTO(WeixingResource weixingResource, boolean fetchLazy) {
         WeixingResourceDTO dto = new WeixingResourceDTO();
         dto.setId(weixingResource.getId());
-        // 将resource信息转为dto信息
         dto.setAzdz(weixingResource.getAzdz());
         dto.setSqdw(weixingResource.getSqdw());
         dto.setBgdh(weixingResource.getBgdh());
@@ -64,7 +62,7 @@ public class WeixingResourceDTOConvertor {
         dto.setFzr(weixingResource.getFzr());
         dto.setFzrsj(weixingResource.getFzrsj());
 
-        dto.setHcrq(this.hcrqFormatter.format(weixingResource.getHcrq()));
+//        dto.setHcrq(this.hcrqFormatter.format(weixingResource.getHcrq()));
         dto.setQxId(weixingResource.getQxId());
         dto.setJfwz(weixingResource.getJfwz());
         dto.setJnssjmy(weixingResource.getJnssjmy());
@@ -84,15 +82,23 @@ public class WeixingResourceDTOConvertor {
         dto.setXhtzfs(weixingResource.getXhtzfs());
 
         if(!fetchLazy) {
-            // 添加签名信息
-            Signature sign = weixingResource.getSign();
-            if(sign != null) {
-                SignatureDTO signatureDTO = signatureDTOConvertor.toDTO(sign);
-                dto.setSign(signatureDTO);
-            }
+//            // 添加签名信息
+//            Signature sign = weixingResource.getSign();
+//            if(sign != null) {
+//                SignatureDTO signatureDTO = signatureDTOConvertor.toDTO(sign);
+//                dto.setSign(signatureDTO);
+//            }
+//
+//            // 添加附件信息
+//            dto.setAttachments(weixingResource.getAttachments());
 
-            // 添加附件信息
-            dto.setAttachments(weixingResource.getAttachments());
+            // 添加场地核查信息
+            List<FieldAudit> fieldAudits = weixingResource.getFieldAudits();
+            List<FieldAuditDTO> fieldAuditDTOS = new ArrayList<>();
+            for (FieldAudit fieldAudit : fieldAudits) {
+                fieldAuditDTOS.add(this.fieldAuditDTOConvertor.toDTO(fieldAudit));
+            }
+            dto.setFieldAudits(fieldAuditDTOS);
 
             // 添加资源登记信息
             ResourceCheckIn resourceCheckIn = weixingResource.getResourceCheckIn();
@@ -112,7 +118,7 @@ public class WeixingResourceDTOConvertor {
         return dto;
     }
 
-    public WeixingResource toWeixingResource(WeixingResourceDTO dto, WeixingResourceService weixingResourceService, AttachmentService attachmentService) {
+    public WeixingResource toWeixingResource(WeixingResourceDTO dto, WeixingResourceService weixingResourceService) {
         WeixingResource weixingResource = new WeixingResource();
 
         weixingResource.setId(dto.getId());
@@ -122,7 +128,7 @@ public class WeixingResourceDTOConvertor {
         weixingResource.setBh(dto.getBh());
         weixingResource.setFzr(dto.getFzr());
         weixingResource.setFzrsj(dto.getFzrsj());
-        weixingResource.setHcrq(LocalDate.parse(dto.getHcrq(), hcrqFormatter));
+//        weixingResource.setHcrq(LocalDate.parse(dto.getHcrq(), hcrqFormatter));
         weixingResource.setQxId(dto.getQxId());
         weixingResource.setJfwz(dto.getJfwz());
         weixingResource.setJnssjmy(dto.getJnssjmy());
@@ -141,14 +147,23 @@ public class WeixingResourceDTOConvertor {
         weixingResource.setZds(dto.getZds());
         weixingResource.setXhtzfs(dto.getXhtzfs());
 
-        // 添加签名信息
-        SignatureDTO signatureDTO = dto.getSign();
-        if(signatureDTO != null) {
-            Signature sign = signatureDTOConvertor.toSignature(signatureDTO);
-            weixingResource.setSign(sign);
+//        // 添加签名信息
+//        SignatureDTO signatureDTO = dto.getSign();
+//        if(signatureDTO != null) {
+//            Signature sign = signatureDTOConvertor.toSignature(signatureDTO);
+//            weixingResource.setSign(sign);
+//        }
+//        // 添加附件信息
+//        weixingResource.setAttachments(dto.getAttachments());
+
+        // 添加现场审核信息
+        List<FieldAuditDTO> fieldAuditDTOS = dto.getFieldAudits();
+        List<FieldAudit> fieldAudits = new ArrayList<>();
+        for (FieldAuditDTO fieldAuditDTO : fieldAuditDTOS) {
+            fieldAudits.add(this.fieldAuditDTOConvertor.toFieldAudit(fieldAuditDTO));
         }
-        // 添加附件信息
-        weixingResource.setAttachments(dto.getAttachments());
+        weixingResource.setFieldAudits(fieldAudits);
+
         // 添加登记信息
         ResourceCheckInDTO resourceCheckInDTO = dto.getResourceCheckIn();
         if(resourceCheckInDTO != null) {

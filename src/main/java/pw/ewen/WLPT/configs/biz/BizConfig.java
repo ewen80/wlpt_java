@@ -1,16 +1,11 @@
 package pw.ewen.WLPT.configs.biz;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Component;
-import pw.ewen.WLPT.domains.entities.ResourceType;
-import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.security.acl.ChangdiPermission;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * created by wenliang on 2021-03-22
@@ -20,7 +15,6 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "bizconfig")
 public class BizConfig {
 
-    // 用户信息配置
     public static class User {
         // 管理员角色id
         private   String adminRoleId;
@@ -231,6 +225,9 @@ public class BizConfig {
     }
     private List<Resource> resources;
 
+    private String LocalDateTimeFormat;
+    private String LocalDateFormat;
+
     public User getUser() {
         return user;
     }
@@ -269,5 +266,21 @@ public class BizConfig {
 
     public void setResources(List<Resource> resources) {
         this.resources = resources;
+    }
+
+    public String getLocalDateTimeFormat() {
+        return LocalDateTimeFormat;
+    }
+
+    public void setLocalDateTimeFormat(String localDateTimeFormat) {
+        LocalDateTimeFormat = localDateTimeFormat;
+    }
+
+    public String getLocalDateFormat() {
+        return LocalDateFormat;
+    }
+
+    public void setLocalDateFormat(String localDateFormat) {
+        LocalDateFormat = localDateFormat;
     }
 }

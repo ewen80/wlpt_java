@@ -181,135 +181,169 @@ api[6].list.push({
     desc: '客户端刷新服务器认证接口',
 });
 api.push({
-    alias: 'MenuController',
+    alias: 'FieldAuditContoller',
     order: '8',
-    link: '菜单',
-    desc: '菜单',
+    link: '现场审核信息',
+    desc: '现场审核信息',
     list: []
 })
 api[7].list.push({
     order: '1',
-    desc: '返回顶级菜单',
+    desc: '',
 });
 api[7].list.push({
     order: '2',
-    desc: '返回有权限的菜单树',
+    desc: '保存现场审核意见',
 });
 api[7].list.push({
     order: '3',
+    desc: '删除现场审核意见',
+});
+api.push({
+    alias: 'MenuController',
+    order: '9',
+    link: '菜单',
+    desc: '菜单',
+    list: []
+})
+api[8].list.push({
+    order: '1',
+    desc: '返回顶级菜单',
+});
+api[8].list.push({
+    order: '2',
+    desc: '返回有权限的菜单树',
+});
+api[8].list.push({
+    order: '3',
     desc: '保存菜单',
 });
-api[7].list.push({
+api[8].list.push({
     order: '4',
     desc: '删除菜单',
 });
 api.push({
     alias: 'MyResourceController',
-    order: '9',
+    order: '10',
     link: '我的资源',
     desc: '我的资源',
     list: []
 })
-api[8].list.push({
+api[9].list.push({
     order: '1',
     desc: '获取资源',
 });
-api[8].list.push({
+api[9].list.push({
     order: '2',
     desc: '获取资源',
 });
-api[8].list.push({
+api[9].list.push({
     order: '3',
     desc: '获取单个资源',
 });
-api[8].list.push({
+api[9].list.push({
     order: '4',
     desc: '删除资源',
 });
-api[8].list.push({
+api[9].list.push({
     order: '5',
     desc: '保存资源',
 });
-api[8].list.push({
+api[9].list.push({
     order: '6',
     desc: '保存签名信息',
 });
-api[8].list.push({
+api[9].list.push({
     order: '7',
     desc: '办结资源',
 });
 api.push({
     alias: 'MyResourceRoomController',
-    order: '10',
+    order: '11',
     link: '我的资源-房间明细',
     desc: '我的资源-房间明细',
     list: []
 })
-api[9].list.push({
+api[10].list.push({
     order: '1',
     desc: '保存',
 });
-api[9].list.push({
+api[10].list.push({
     order: '2',
     desc: '获取一个房间明细',
 });
-api[9].list.push({
+api[10].list.push({
     order: '3',
     desc: '获取我的资源对应的房间',
 });
-api[9].list.push({
+api[10].list.push({
     order: '4',
     desc: '删除房间',
 });
 api.push({
     alias: 'WeixingResourceController',
-    order: '11',
-    link: '卫星现场核查',
-    desc: '卫星现场核查',
+    order: '12',
+    link: '卫星场地',
+    desc: '卫星场地',
     list: []
 })
-api[10].list.push({
+api[11].list.push({
     order: '1',
-    desc: '获取卫星场地核查信息',
+    desc: '获取卫星场地信息',
 });
-api[10].list.push({
+api[11].list.push({
     order: '2',
     desc: '获取资源',
 });
-api[10].list.push({
+api[11].list.push({
     order: '3',
-    desc: '获取单个卫星场地核查信息',
+    desc: '获取单个卫星场地信息',
 });
-api[10].list.push({
+api[11].list.push({
     order: '4',
-    desc: '删除卫星场地核查信息',
+    desc: '删除卫星场地信息',
 });
-api[10].list.push({
+api[11].list.push({
     order: '5',
     desc: '保存',
 });
-api[10].list.push({
-    order: '6',
-    desc: '保存签名信息',
+api.push({
+    alias: 'WeixingResourceFieldAuditController',
+    order: '13',
+    link: '卫星场地-现场审核信息',
+    desc: '卫星场地-现场审核信息',
+    list: []
+})
+api[12].list.push({
+    order: '1',
+    desc: '保存卫星场地审核信息',
+});
+api[12].list.push({
+    order: '2',
+    desc: '根据卫星场地id获取现场审核意见',
+});
+api[12].list.push({
+    order: '3',
+    desc: '删除卫星场地现场审核意见',
 });
 api.push({
     alias: 'FileController',
-    order: '12',
+    order: '14',
     link: '文件上传，删除等操作',
     desc: '文件上传，删除等操作',
     list: []
 })
-api[11].list.push({
+api[13].list.push({
     order: '1',
     desc: '上传文件按照年月分文件夹存储',
 });
-api[11].list.push({
+api[13].list.push({
     order: '2',
     desc: '删除文件',
 });
 api.push({
     alias: 'dict',
-    order: '13',
+    order: '15',
     link: 'dict_list',
     desc: '数据字典',
     list: []

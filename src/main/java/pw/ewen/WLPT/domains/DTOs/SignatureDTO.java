@@ -10,10 +10,26 @@ import java.time.LocalDateTime;
  */
 public class SignatureDTO {
 
+    /**
+     * id
+     */
     private long id;
+    /**
+     * 图片数据
+     * */
     private String signBase64;
+    /**
+     * 姓名
+     */
     private String name;
+    /**
+     * 创建日期
+     */
     private String createdAt;
+    /**
+     * 签名图片后缀名
+     * @apiNote 后缀名前不要加.
+     */
     private String imageExtention;
 
     public long getId() {

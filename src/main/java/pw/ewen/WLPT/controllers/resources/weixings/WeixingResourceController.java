@@ -25,22 +25,18 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 卫星现场核查
+ * 卫星场地
  */
 @RestController
-@RequestMapping(value = "resources/weixings")
+@RequestMapping(value = "/resources/weixings")
 public class WeixingResourceController {
 
     private final WeixingResourceService weixingResourceService;
-    private final AttachmentService attachmentService;
     private final WeixingResourceDTOConvertor weixingResourceDTOConvertor;
-    private final SignatureDTOConvertor signatureDTOConvertor;
 
-    public WeixingResourceController(WeixingResourceService weixingResourceService, AttachmentService attachmentService, WeixingResourceDTOConvertor weixingResourceDTOConvertor, SignatureDTOConvertor signatureDTOConvertor) {
+    public WeixingResourceController(WeixingResourceService weixingResourceService, WeixingResourceDTOConvertor weixingResourceDTOConvertor) {
         this.weixingResourceService = weixingResourceService;
-        this.attachmentService = attachmentService;
         this.weixingResourceDTOConvertor = weixingResourceDTOConvertor;
-        this.signatureDTOConvertor = signatureDTOConvertor;
     }
 
 //    //将实体对象转为DTO对象的内部辅助类
@@ -52,7 +48,7 @@ public class WeixingResourceController {
 //    }
 
     /**
-     * 获取卫星场地核查信息
+     * 获取卫星场地信息
      * @param filter 过滤器
      * @apiNote 返回结果不分页
      */
@@ -80,9 +76,9 @@ public class WeixingResourceController {
     }
 
     /**
-     * 获取单个卫星场地核查信息
+     * 获取单个卫星场地信息
      * @param id 资源id
-     * @apiNote  卫星场地核查信息
+     * @apiNote  卫星场地信息
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<WeixingResourceDTO> getOne(@PathVariable(value = "id") long id) {
@@ -92,7 +88,7 @@ public class WeixingResourceController {
     }
 
     /**
-     * 删除卫星场地核查信息
+     * 删除卫星场地信息
      * @param ids 资源id，多个id用逗号分隔
      */
     @DeleteMapping(value = "/{ids}")
@@ -109,30 +105,30 @@ public class WeixingResourceController {
 
     /**
      * 保存
-     * @param weixingResourceDTO 卫星场地核查信息
-     * @apiNote 返回卫星场地核查信息
+     * @param weixingResourceDTO 卫星场地信息
+     * @apiNote 返回卫星场地信息
      */
     @PostMapping()
     public WeixingResourceDTO save(@RequestBody WeixingResourceDTO weixingResourceDTO) {
-        WeixingResource weixingResource = weixingResourceDTOConvertor.toWeixingResource(weixingResourceDTO, weixingResourceService, attachmentService);
+        WeixingResource weixingResource = weixingResourceDTOConvertor.toWeixingResource(weixingResourceDTO, weixingResourceService);
         weixingResourceService.save(weixingResource);
         return weixingResourceDTOConvertor.toDTO(weixingResource);
     }
 
-    /**
-     * 保存签名信息
-     * @param signatureDTO 签名信息
-     * @apiNote 签名图片后缀名不要加点号,保存 jpg 或者 png字样.base64字段只保存图片信息,不要添加data:image等前缀字符.
-     */
-    @PostMapping(value = "/signature/{id}")
-    public ResponseEntity<WeixingResourceDTO> saveSignature(@PathVariable(value = "id") long id, @RequestBody SignatureDTO signatureDTO) {
-        Signature signature = signatureDTOConvertor.toSignature(signatureDTO);
-        return weixingResourceService.findOne(id)
-                        .map(weixingResource -> {
-                            weixingResource.setSign(signature);
-                            weixingResourceService.save(weixingResource);
-                            return new ResponseEntity<>(weixingResourceDTOConvertor.toDTO(weixingResource, false), HttpStatus.OK);
-                        })
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
+//    /**
+//     * 保存签名信息
+//     * @param signatureDTO 签名信息
+//     * @apiNote 签名图片后缀名不要加点号,保存 jpg 或者 png字样.base64字段只保存图片信息,不要添加data:image等前缀字符.
+//     */
+//    @PostMapping(value = "/signature/{id}")
+//    public ResponseEntity<WeixingResourceDTO> saveSignature(@PathVariable(value = "id") long id, @RequestBody SignatureDTO signatureDTO) {
+//        Signature signature = signatureDTOConvertor.toSignature(signatureDTO);
+//        return weixingResourceService.findOne(id)
+//                        .map(weixingResource -> {
+//                            weixingResource.setSign(signature);
+//                            weixingResourceService.save(weixingResource);
+//                            return new ResponseEntity<>(weixingResourceDTOConvertor.toDTO(weixingResource, false), HttpStatus.OK);
+//                        })
+//                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+//    }
 }

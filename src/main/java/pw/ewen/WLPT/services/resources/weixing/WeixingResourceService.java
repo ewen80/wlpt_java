@@ -1,14 +1,11 @@
 package pw.ewen.WLPT.services.resources.weixing;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pw.ewen.WLPT.configs.biz.BizConfig;
-import pw.ewen.WLPT.controllers.utils.MyPage;
 import pw.ewen.WLPT.domains.entities.resources.ResourceCheckIn;
 import pw.ewen.WLPT.domains.entities.resources.weixing.WeixingResource;
 import pw.ewen.WLPT.repositories.resources.weixing.WeixingResourceRepository;
@@ -70,11 +67,6 @@ public class WeixingResourceService {
         this.weixingResourceRepository.save(weixingResource);
         return weixingResource;
     }
-
-//    public void delete(long id) {
-//        WeixingResource weixingResource = this.findOne(id);
-//        this.delete(weixingResource);
-//    }
 
     @PreAuthorize("hasPermission(#weixingResource, 'write')")
     public void delete(WeixingResource weixingResource) {

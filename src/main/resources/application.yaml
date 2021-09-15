@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: test
+    active: dev
 
 
   jpa:
@@ -59,3 +59,7 @@ bizconfig:
         type: pw.ewen.WLPT.domains.entities.resources.weixing.WeixingResource
         typeName: WeixingResource
         description: 卫星场地
+
+  # 系统使用的日期时间格式
+  LocalDateTimeFormat: yyyy-MM-dd HH:mm:ss
+  LocalDateFormat: yyyy-MM-dd

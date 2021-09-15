@@ -1,10 +1,8 @@
 package pw.ewen.WLPT.domains.DTOs.resources.weixing;
 
-import pw.ewen.WLPT.domains.DTOs.SignatureDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.BaseResourceDTO;
-import pw.ewen.WLPT.domains.entities.Attachment;
+import pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +11,10 @@ import java.util.List;
  */
 public class WeixingResourceDTO extends BaseResourceDTO {
 
-    /**
-     * 附件列表
-     */
-    private List<Attachment> attachments = new ArrayList<>();
+//    /**
+//     * 附件列表
+//     */
+//    private List<Attachment> attachments = new ArrayList<>();
 
     /**
      * 编号
@@ -106,15 +104,17 @@ public class WeixingResourceDTO extends BaseResourceDTO {
      * 终端数
      */
     private int zds;
-    /**
-     * 核查日期
-     */
-    private String hcrq;
+//    /**
+//     * 核查日期
+//     */
+//    private String hcrq;
 
-    /**
-     * 签名信息
-     */
-    private SignatureDTO sign;
+    private List<FieldAuditDTO> fieldAudits = new ArrayList<>();
+
+//    /**
+//     * 签名信息
+//     */
+//    private SignatureDTO sign;
 
     public String getBh() {
         return bh;
@@ -292,27 +292,36 @@ public class WeixingResourceDTO extends BaseResourceDTO {
         this.zds = zds;
     }
 
-    public String getHcrq() {
-        return hcrq;
+//    public String getHcrq() {
+//        return hcrq;
+//    }
+//
+//    public void setHcrq(String hcrq) {
+//        this.hcrq = hcrq;
+//    }
+
+//    public List<Attachment> getAttachments() {
+//        return attachments;
+//    }
+//
+//    public void setAttachments(List<Attachment> attachments) {
+//        this.attachments = attachments;
+//    }
+//
+//    public SignatureDTO getSign() {
+//        return sign;
+//    }
+//
+//    public void setSign(SignatureDTO sign) {
+//        this.sign = sign;
+//    }
+
+
+    public List<FieldAuditDTO> getFieldAudits() {
+        return fieldAudits;
     }
 
-    public void setHcrq(String hcrq) {
-        this.hcrq = hcrq;
-    }
-
-    public List<Attachment> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(List<Attachment> attachments) {
-        this.attachments = attachments;
-    }
-
-    public SignatureDTO getSign() {
-        return sign;
-    }
-
-    public void setSign(SignatureDTO sign) {
-        this.sign = sign;
+    public void setFieldAudits(List<FieldAuditDTO> fieldAudits) {
+        this.fieldAudits = fieldAudits;
     }
 }

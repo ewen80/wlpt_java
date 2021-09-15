@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * @apiNote 范例
  */
 @RestController
-@RequestMapping(value = "/resources/myresource/room")
+@RequestMapping(value = "/resources/myresources/rooms")
 public class MyResourceRoomController {
     private final MyResourceRoomService myResourceRoomService;
     private final FileService fileService;

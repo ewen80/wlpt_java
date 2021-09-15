@@ -2,10 +2,9 @@ package pw.ewen.WLPT.domains.dtoconvertors.resources;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.domains.DTOs.SignatureDTO;
-import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.domains.entities.resources.Signature;
-import pw.ewen.WLPT.services.UserService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,8 +15,14 @@ import java.util.Base64;
  */
 @Component
 public class SignatureDTOConvertor {
+    private final BizConfig bizConfig;
+    private final DateTimeFormatter formatter;
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    @Autowired
+    public SignatureDTOConvertor(BizConfig bizConfig) {
+        this.bizConfig = bizConfig;
+        formatter = DateTimeFormatter.ofPattern(bizConfig.getLocalDateTimeFormat());
+    }
 
     public SignatureDTO toDTO(Signature sign) {
         SignatureDTO dto = new SignatureDTO();
