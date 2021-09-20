@@ -1,6 +1,6 @@
 package pw.ewen.WLPT.domains.entities.resources;
 
-import pw.ewen.WLPT.domains.entities.Attachment;
+import pw.ewen.WLPT.domains.entities.AttachmentBag;
 import pw.ewen.WLPT.domains.entities.User;
 
 import javax.persistence.*;
@@ -38,7 +38,7 @@ public class FieldAudit implements Serializable {
      * 附件列表
      */
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Attachment> attachments = new ArrayList<>();
+    private List<AttachmentBag> attachmentBags = new ArrayList<>();
     /**
      * 签名信息
      */
@@ -82,12 +82,12 @@ public class FieldAudit implements Serializable {
         this.user = user;
     }
 
-    public List<Attachment> getAttachments() {
-        return attachments;
+    public List<AttachmentBag> getAttachmentBags() {
+        return attachmentBags;
     }
 
-    public void setAttachments(List<Attachment> attachments) {
-        this.attachments = attachments;
+    public void setAttachmentBags(List<AttachmentBag> attachments) {
+        this.attachmentBags = attachmentBags;
     }
 
     public Signature getSignature() {

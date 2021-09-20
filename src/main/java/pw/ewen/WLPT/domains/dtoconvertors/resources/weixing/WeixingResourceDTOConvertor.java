@@ -7,7 +7,7 @@ import pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.ResourceCheckInDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.weixing.WeixingResourceDTO;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
-import pw.ewen.WLPT.domains.dtoconvertors.FieldAuditDTOConvertor;
+import pw.ewen.WLPT.domains.dtoconvertors.resources.FieldAuditDTOConvertor;
 import pw.ewen.WLPT.domains.dtoconvertors.PermissionDTOConvertor;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.ResourceCheckInDTOConvertor;
 import pw.ewen.WLPT.domains.entities.resources.FieldAudit;

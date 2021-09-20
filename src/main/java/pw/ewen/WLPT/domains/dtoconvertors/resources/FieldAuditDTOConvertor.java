@@ -1,10 +1,9 @@
-package pw.ewen.WLPT.domains.dtoconvertors;
+package pw.ewen.WLPT.domains.dtoconvertors.resources;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO;
-import pw.ewen.WLPT.domains.dtoconvertors.resources.SignatureDTOConvertor;
 import pw.ewen.WLPT.domains.entities.resources.FieldAudit;
 import pw.ewen.WLPT.repositories.UserRepository;
 
@@ -41,7 +40,7 @@ public class FieldAuditDTOConvertor {
         if(fieldAudit.getSignature() != null) {
             dto.setSignature(signatureDTOConvertor.toDTO(fieldAudit.getSignature()));
         }
-        dto.setAttachments(fieldAudit.getAttachments());
+        dto.setAttachmentBags(fieldAudit.getAttachmentBags());
         dto.setAuditDepartment(fieldAudit.getAuditDepartment());
 
         return dto;
@@ -59,7 +58,7 @@ public class FieldAuditDTOConvertor {
             fieldAudit.setSignature(signatureDTOConvertor.toSignature(dto.getSignature()));
         }
         
-        fieldAudit.setAttachments(dto.getAttachments());
+        fieldAudit.setAttachmentBags(dto.getAttachmentBags());
 
         return fieldAudit;
     }

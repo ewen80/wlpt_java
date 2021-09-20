@@ -1,7 +1,7 @@
 package pw.ewen.WLPT.domains.DTOs.resources;
 
 import pw.ewen.WLPT.domains.DTOs.SignatureDTO;
-import pw.ewen.WLPT.domains.entities.Attachment;
+import pw.ewen.WLPT.domains.entities.AttachmentBag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class FieldAuditDTO {
     /**
      * 附件列表
      */
-    private List<Attachment> attachments = new ArrayList<>();
+    private List<AttachmentBag> attachmentBags = new ArrayList<>();
     /**
      * 签名信息
      */
@@ -74,12 +74,12 @@ public class FieldAuditDTO {
         this.auditUserId = auditUserId;
     }
 
-    public List<Attachment> getAttachments() {
-        return attachments;
+    public List<AttachmentBag> getAttachmentBags() {
+        return attachmentBags;
     }
 
-    public void setAttachments(List<Attachment> attachments) {
-        this.attachments = attachments;
+    public void setAttachmentBags(List<AttachmentBag> attachmentBags) {
+        this.attachmentBags = attachmentBags;
     }
 
     public SignatureDTO getSignature() {

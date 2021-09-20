@@ -1,5 +1,6 @@
 Starting Gradle Daemon...
-Gradle Daemon started in 3 s 404 ms
+
+Gradle Daemon started in 3 s 404 ms
 > Task :compileJava
 > Task :processResources UP-TO-DATE
 > Task :classes
@@ -3155,7 +3156,7 @@ Hibernate:
     where
         attachment0_.field_audit_id=?
 2021-09-15 12:57:00.209  WARN 3188 --- [nio-8080-exec-9] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Illegal unquoted character ((CTRL-CHAR, code 13)): has to be escaped using backslash to be included in string value; nested exception is com.fasterxml.jackson.databind.JsonMappingException: Illegal unquoted character ((CTRL-CHAR, code 13)): has to be escaped using backslash to be included in string value
- at [Source: (PushbackInputStream); line: 13, column: 104] (through reference chain: pw.ewen.WLPT.controllers.resources.weixings.WeixingResourceFieldAuditController$SaveParam["fieldAudit"]->pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO["signature"]->pw.ewen.WLPT.domains.DTOs.SignatureDTO["signBase64"])]
+ at [Source: (PushbackInputStream); line: 13, column: 104] (through reference chain: pw.ewen.WLPT.controllers.resources.weixings.WeixingResourceFieldAuditController$SaveFieldAuditParam["fieldAudit"]->pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO["signature"]->pw.ewen.WLPT.domains.DTOs.SignatureDTO["signBase64"])]
 Hibernate: 
     select
         weixingres0_.id as id1_20_0_,

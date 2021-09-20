@@ -28,4 +28,17 @@ public class FieldAuditService {
     public void delete(long id) {
         this.fieldAuditRepository.deleteById(id);
     }
+
+    /**
+     * 删除该场地审核意见下的附件包
+     * @param auditId 审核意见Id
+     * @param attachmentBagId 附件包id
+     */
+    public void deleteAttachmentBag(long auditId, long attachmentBagId) {
+        this.fieldAuditRepository.findById(auditId)
+                .ifPresent(fieldAudit -> {
+                    fieldAudit.getAttachmentBags().removeIf(attachmentBag -> attachmentBag.getId() == attachmentBagId);
+                    this.fieldAuditRepository.save(fieldAudit);
+                });
+    }
 }
