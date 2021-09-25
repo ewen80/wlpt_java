@@ -39,13 +39,6 @@ public class WeixingResourceController {
         this.weixingResourceDTOConvertor = weixingResourceDTOConvertor;
     }
 
-//    //将实体对象转为DTO对象的内部辅助类
-//    class dtoConvertor implements Converter<WeixingResource, WeixingResourceDTO> {
-//        @Override
-//        public WeixingResourceDTO convert(WeixingResource weixingResource) {
-//            return  weixingResourceDTOConvertor.toDTO(weixingResource);
-//        }
-//    }
 
     /**
      * 获取卫星场地信息
@@ -114,21 +107,4 @@ public class WeixingResourceController {
         weixingResourceService.save(weixingResource);
         return weixingResourceDTOConvertor.toDTO(weixingResource);
     }
-
-//    /**
-//     * 保存签名信息
-//     * @param signatureDTO 签名信息
-//     * @apiNote 签名图片后缀名不要加点号,保存 jpg 或者 png字样.base64字段只保存图片信息,不要添加data:image等前缀字符.
-//     */
-//    @PostMapping(value = "/signature/{id}")
-//    public ResponseEntity<WeixingResourceDTO> saveSignature(@PathVariable(value = "id") long id, @RequestBody SignatureDTO signatureDTO) {
-//        Signature signature = signatureDTOConvertor.toSignature(signatureDTO);
-//        return weixingResourceService.findOne(id)
-//                        .map(weixingResource -> {
-//                            weixingResource.setSign(signature);
-//                            weixingResourceService.save(weixingResource);
-//                            return new ResponseEntity<>(weixingResourceDTOConvertor.toDTO(weixingResource, false), HttpStatus.OK);
-//                        })
-//                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-//    }
 }

@@ -11,11 +11,6 @@ import java.util.List;
  */
 public class WeixingResourceDTO extends BaseResourceDTO {
 
-//    /**
-//     * 附件列表
-//     */
-//    private List<Attachment> attachments = new ArrayList<>();
-
     /**
      * 编号
      */
@@ -104,17 +99,18 @@ public class WeixingResourceDTO extends BaseResourceDTO {
      * 终端数
      */
     private int zds;
-//    /**
-//     * 核查日期
-//     */
-//    private String hcrq;
+    /**
+     * 卫星名称
+     */
+    private String wxmc;
+    /**
+     * 收视单位类型
+     */
+    private String ssdwlx;
+
 
     private List<FieldAuditDTO> fieldAudits = new ArrayList<>();
 
-//    /**
-//     * 签名信息
-//     */
-//    private SignatureDTO sign;
 
     public String getBh() {
         return bh;
@@ -292,36 +288,27 @@ public class WeixingResourceDTO extends BaseResourceDTO {
         this.zds = zds;
     }
 
-//    public String getHcrq() {
-//        return hcrq;
-//    }
-//
-//    public void setHcrq(String hcrq) {
-//        this.hcrq = hcrq;
-//    }
-
-//    public List<Attachment> getAttachments() {
-//        return attachments;
-//    }
-//
-//    public void setAttachments(List<Attachment> attachments) {
-//        this.attachments = attachments;
-//    }
-//
-//    public SignatureDTO getSign() {
-//        return sign;
-//    }
-//
-//    public void setSign(SignatureDTO sign) {
-//        this.sign = sign;
-//    }
-
-
     public List<FieldAuditDTO> getFieldAudits() {
         return fieldAudits;
     }
 
     public void setFieldAudits(List<FieldAuditDTO> fieldAudits) {
         this.fieldAudits = fieldAudits;
+    }
+
+    public String getWxmc() {
+        return wxmc;
+    }
+
+    public void setWxmc(String wxmc) {
+        this.wxmc = wxmc;
+    }
+
+    public String getSsdwlx() {
+        return ssdwlx;
+    }
+
+    public void setSsdwlx(String ssdwlx) {
+        this.ssdwlx = ssdwlx;
     }
 }

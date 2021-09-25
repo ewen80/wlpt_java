@@ -2,14 +2,14 @@ package pw.ewen.WLPT.domains.entities.resources.weixing;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import pw.ewen.WLPT.domains.entities.Attachment;
 import pw.ewen.WLPT.domains.entities.resources.BaseResource;
 import pw.ewen.WLPT.domains.entities.resources.FieldAudit;
-import pw.ewen.WLPT.domains.entities.resources.Signature;
 
-import javax.persistence.*;
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +23,7 @@ import java.util.List;
 public class WeixingResource extends BaseResource implements Serializable {
     private static final long serialVersionUID = -5924003097388262942L;
 
-//    /**
-//     * 附件列表
-//     */
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Attachment> attachments = new ArrayList<>();
+
 
     /**
      * 编号
@@ -80,22 +76,27 @@ public class WeixingResource extends BaseResource implements Serializable {
     private int txsl;
     /**
      * 天线类型
-     * 正馈：zk ， 偏馈：pk
+     * 正馈 ，偏馈
      */
     private String txlx;
     /**
      * 境内收视节目源
-     * 有线电视联网: yxdslw, 开路信号: klxh, IPTV: iptv, 其他: other
+     * 有线电视联网, 开路信号, IPTV, 其他
      */
     private String jnssjmy;
     /**
      * 卫星传输方式
-     * 同网传输: twcs, 分网传输: fwcs
+     * 同网传输, 分网传输
      */
     private String wxcsfs;
     /**
+     * 卫星名称
+     * 亚太六号，中星6B
+     */
+    private String wxmc;
+    /**
      * 信号调制方式
-     * 数字: sz, 模拟： mn
+     * 数字, 模拟
      */
     private String xhtzfs;
     /**
@@ -111,6 +112,11 @@ public class WeixingResource extends BaseResource implements Serializable {
      */
     private String wxssazxkzh;
     /**
+     * 收视单位类型
+     * 酒店、机构、公寓、境内
+     */
+    private String ssdwlx;
+    /**
      * 楼盘名
      */
     private String lpm;
@@ -122,21 +128,11 @@ public class WeixingResource extends BaseResource implements Serializable {
      * 终端数
      */
     private int zds;
-//    /**
-//     * 核查日期
-//     */
-//    private LocalDate hcrq;
     /**
      * 场地核查信息
      */
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FieldAudit> fieldAudits = new ArrayList<>();
-//    /**
-//     * 签名信息
-//     */
-//    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    @JoinColumn
-//    private Signature sign;
 
     public String getBh() {
         return bh;
@@ -306,14 +302,6 @@ public class WeixingResource extends BaseResource implements Serializable {
         this.zds = zds;
     }
 
-//    public LocalDate getHcrq() {
-//        return hcrq;
-//    }
-//
-//    public void setHcrq(LocalDate hcrq) {
-//        this.hcrq = hcrq;
-//    }
-
     public String getXhtzfs() {
         return xhtzfs;
     }
@@ -330,19 +318,19 @@ public class WeixingResource extends BaseResource implements Serializable {
         this.fieldAudits = fieldAudits;
     }
 
-    //    public List<Attachment> getAttachments() {
-//        return attachments;
-//    }
-//
-//    public void setAttachments(List<Attachment> attachments) {
-//        this.attachments = attachments;
-//    }
-//
-//    public Signature getSign() {
-//        return sign;
-//    }
-//
-//    public void setSign(Signature sign) {
-//        this.sign = sign;
-//    }
+    public String getWxmc() {
+        return wxmc;
+    }
+
+    public void setWxmc(String wxmc) {
+        this.wxmc = wxmc;
+    }
+
+    public String getSsdwlx() {
+        return ssdwlx;
+    }
+
+    public void setSsdwlx(String ssdwlx) {
+        this.ssdwlx = ssdwlx;
+    }
 }

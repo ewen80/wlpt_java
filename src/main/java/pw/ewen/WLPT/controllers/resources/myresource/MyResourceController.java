@@ -45,14 +45,6 @@ public class MyResourceController {
         this.signatureDTOConvertor = signatureDTOConvertor;
     }
 
-//    //将实体对象转为DTO对象的内部辅助类
-//    class dtoConvertor implements Converter<MyResource, MyResourceDTO> {
-//        @Override
-//        public MyResourceDTO convert(MyResource myResource) {
-//            return  myResourceDTOConvertor.toDTO(myResource);
-//        }
-//    }
-
     /**
      * 获取资源
      * @param filter 过滤器
@@ -145,5 +137,13 @@ public class MyResourceController {
     @PutMapping(value = "/finish/{id}")
     public void finish(@PathVariable(value = "id") long id) {
         myResourceService.findOne(id).ifPresent(myResourceService::finish);
+    }
+
+    /**
+     * 打印
+     */
+    @GetMapping(value = "/print")
+    public void print() {
+
     }
 }
