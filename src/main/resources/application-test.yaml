@@ -23,9 +23,12 @@ spring:
     username: wenliang
     password: wenliang
 
-  #   文件上传路径
+
 bizconfig:
   file:
+    # 文件上传路径
     file_upload_root_path: /home/wenliang/Webs/frontends/wlpt_ng_alain/downloads/
+    # 卫星场地审核单模板
+    weixing_field_audit_template: ./FieldAuditPrintTemplates/weixing.pdf
 
 frontendUrls: https://aliyun.ewen.pw:9101  # 前端程序部署地址

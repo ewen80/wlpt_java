@@ -6,6 +6,7 @@ import pw.ewen.WLPT.security.acl.ChangdiPermission;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * created by wenliang on 2021-03-22
@@ -101,6 +102,8 @@ public class BizConfig {
     public static class File {
         // 文件上传路径
         private   String fileUploadRootPath;
+        // 卫星场地审核意见表模板文件路径
+        private String weixingFieldAuditTemplate;
 
         public String getFileUploadRootPath() {
             return fileUploadRootPath;
@@ -108,6 +111,14 @@ public class BizConfig {
 
         public void setFileUploadRootPath(String fileUploadRootPath) {
             this.fileUploadRootPath = fileUploadRootPath;
+        }
+
+        public String getWeixingFieldAuditTemplate() {
+            return weixingFieldAuditTemplate;
+        }
+
+        public void setWeixingFieldAuditTemplate(String weixingFieldAuditTemplate) {
+            this.weixingFieldAuditTemplate = weixingFieldAuditTemplate;
         }
     }
     private File file;
@@ -225,8 +236,9 @@ public class BizConfig {
     }
     private List<Resource> resources;
 
-    private String LocalDateTimeFormat;
-    private String LocalDateFormat;
+    private String localDateTimeFormat;
+    private String localDateFormat;
+    private Map<String,String> regionMap;
 
     public User getUser() {
         return user;
@@ -269,18 +281,26 @@ public class BizConfig {
     }
 
     public String getLocalDateTimeFormat() {
-        return LocalDateTimeFormat;
+        return localDateTimeFormat;
     }
 
     public void setLocalDateTimeFormat(String localDateTimeFormat) {
-        LocalDateTimeFormat = localDateTimeFormat;
+        this.localDateTimeFormat = localDateTimeFormat;
     }
 
     public String getLocalDateFormat() {
-        return LocalDateFormat;
+        return localDateFormat;
     }
 
     public void setLocalDateFormat(String localDateFormat) {
-        LocalDateFormat = localDateFormat;
+        this.localDateFormat = localDateFormat;
+    }
+
+    public Map<String, String> getRegionMap() {
+        return regionMap;
+    }
+
+    public void setRegionMap(Map<String, String> regionMap) {
+        this.regionMap = regionMap;
     }
 }

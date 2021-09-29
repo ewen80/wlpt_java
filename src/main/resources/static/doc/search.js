@@ -280,6 +280,10 @@ api[10].list.push({
     order: '7',
     desc: '办结资源',
 });
+api[10].list.push({
+    order: '8',
+    desc: '打印',
+});
 api.push({
     alias: 'MyResourceRoomController',
     order: '12',
@@ -329,6 +333,10 @@ api[12].list.push({
 api[12].list.push({
     order: '5',
     desc: '保存',
+});
+api[12].list.push({
+    order: '6',
+    desc: '获取场地审核意见表pdf',
 });
 api.push({
     alias: 'WeixingResourceFieldAuditController',

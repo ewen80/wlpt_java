@@ -17,8 +17,5 @@ class FileServiceTest {
     @Autowired
     FileService fileService;
 
-    @Test
-    void getPdf() throws IOException {
-        fileService.getPdf();
-    }
+
 }

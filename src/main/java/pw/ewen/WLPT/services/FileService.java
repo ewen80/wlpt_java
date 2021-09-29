@@ -5,6 +5,11 @@ import com.itextpdf.forms.fields.PdfFormField;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.pdf.*;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Image;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +17,9 @@ import pw.ewen.WLPT.configs.biz.BizConfig;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
 
@@ -76,27 +83,50 @@ public class FileService {
         }
     }
 
-    public void getPdf() throws IOException {
-        String src = "d:\\1.pdf";
-        String dest = "d:\\2.pdf";
-
-        File file = new File(dest);
-        //Initialize PDF document
-        PdfDocument pdfDoc = new PdfDocument(new PdfReader(src), new PdfWriter(dest));
-
+    /**
+     * 生成pdf
+     * @param templateFile 模板文件
+     * @param fieldTextValueMap 表单文本值
+     * @param fieldImageMap 表单图片值，图片使用base64保存
+     * @param output pdf文件输出流
+     */
+    public void getPdf(String templateFile, Map<String, String> fieldTextValueMap, Map<String, byte[]> fieldImageMap, OutputStream output) throws IOException {
+        PdfDocument pdfDoc = new PdfDocument(new PdfReader(templateFile), new PdfWriter(output));
+        Document doc = new Document(pdfDoc);
         PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, true);
         Map<String, PdfFormField> fields = form.getFormFields();
-        fields.get("name").setValue("闻亮");
-        fields.get("age").setValue("40");
-        fields.get("audit").setValue("许家印表示，要想业主所想、急业主所急，只有全力复工复产、恢复销售、恢复经营，才能保障业主权益，才能确保财富投资者的顺利兑付，才能逐步解决上下游合作伙伴的商票兑付，才能陆续不断归还金融机构的借款。全集团要提高认识、统一思想，把一切精力都投入到复工复产保交楼上。\n" +
-                "\n" +
-                "许家印说，要坚决落实好恒大财富投资者的兑付工作，这是全集团上下必须共同面对的头等大事。要以对投资者高度负责的态度，按照已经公布的三种方案全力做好兑付工作，尤其是在实物兑付方案上还要继续细化、深化。\n" +
-                "\n" +
-                "许家印说，集团各级领导必须坚守岗位、履行好职责，齐心协力、排除万难、共渡难关，全力以赴抓好复工复产、千方百计保交楼。\n" +
-                "\n" +
-                "此前，9月21日中秋节当天，许家印写给恒大全体员工的一封“家书”被曝光。在信中，许家印深情感谢员工的辛苦付出，向员工家属致敬，并坚信恒大一定能尽快走出至暗时刻，加快推进全面复工复产，实现“保交楼”目标，向购房者、投资者、合作伙伴和金融机构交出一份敢担当、负责任的答卷。");
-        fields.get("name").setReadOnly(true);
+        // 替换文本字段
+        fieldTextValueMap.forEach((key,value)-> {
+            if(value != null) {
+                fields.get(key).setValue(value);
+            }
+            fields.get(key).setReadOnly(true);
+        });
+        // 替换图片字段
+        fieldImageMap.forEach((key,value)->{
+            String base64 = Base64.getEncoder().encodeToString(value);
+            PdfArray position = fields.get(key).getWidgets().get(0).getRectangle();
+            PdfPage page = fields.get(key).getWidgets().get(0).getPage();
+            int pageNumber = pdfDoc.getPageNumber(page);
 
+            ImageData imgData = ImageDataFactory.create(value);
+            Image img = new Image(imgData).scaleAbsolute(100,100).setFixedPosition(pageNumber, position.toRectangle().getLeft(), position.toRectangle().getBottom());
+            doc.add(img);
+
+        });
         pdfDoc.close();
     }
+
+    public void getPdf(String templateFile, Map<String,String> fieldTextValueMap, OutputStream output) throws IOException {
+        PdfDocument pdfDoc = new PdfDocument(new PdfReader(templateFile), new PdfWriter(output));
+        PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, true);
+        Map<String, PdfFormField> fields = form.getFormFields();
+        // 替换文本字段
+        fieldTextValueMap.forEach((key,value)-> {
+            fields.get(key).setValue(value);
+            fields.get(key).setReadOnly(true);
+        });
+        pdfDoc.close();
+    }
+
 }

@@ -1,25 +1,20 @@
 package pw.ewen.WLPT.controllers.resources.weixings;
 
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pw.ewen.WLPT.controllers.resources.myresource.MyResourceController;
 import pw.ewen.WLPT.controllers.utils.MyPage;
 import pw.ewen.WLPT.controllers.utils.PageInfo;
-import pw.ewen.WLPT.domains.DTOs.SignatureDTO;
-import pw.ewen.WLPT.domains.DTOs.resources.myresource.MyResourceDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.weixing.WeixingResourceDTO;
-import pw.ewen.WLPT.domains.dtoconvertors.resources.SignatureDTOConvertor;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.weixing.WeixingResourceDTOConvertor;
-import pw.ewen.WLPT.domains.entities.resources.Signature;
-import pw.ewen.WLPT.domains.entities.resources.myresource.MyResource;
 import pw.ewen.WLPT.domains.entities.resources.weixing.WeixingResource;
-import pw.ewen.WLPT.services.AttachmentService;
 import pw.ewen.WLPT.services.resources.weixing.WeixingResourceService;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -106,5 +101,18 @@ public class WeixingResourceController {
         WeixingResource weixingResource = weixingResourceDTOConvertor.toWeixingResource(weixingResourceDTO, weixingResourceService);
         weixingResourceService.save(weixingResource);
         return weixingResourceDTOConvertor.toDTO(weixingResource);
+    }
+
+    /**
+     * 获取场地审核意见表pdf
+     * @param weixingResourceId 卫星场地id
+     */
+    @GetMapping(value = "/fieldauditpdfs/{weixingResourceId}/{fieldAuditId}")
+    public ResponseEntity<byte[]> printFieldAuditPdf(@PathVariable long weixingResourceId, @PathVariable long fieldAuditId){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        this.weixingResourceService.getFieldAuditPdf(weixingResourceId, fieldAuditId, output);
+        return new ResponseEntity<>(output.toByteArray(), headers, HttpStatus.OK);
     }
 }
