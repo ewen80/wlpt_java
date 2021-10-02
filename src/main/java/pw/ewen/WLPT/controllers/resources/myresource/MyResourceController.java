@@ -103,32 +103,49 @@ public class MyResourceController {
     }
 
     /**
-     * 保存资源
+     * 修改资源
      * @param myResourceDTO 资源DTO
      */
-    @PostMapping()
-    public MyResourceDTO save(@RequestBody MyResourceDTO myResourceDTO) {
-        MyResource myResource = myResourceDTOConvertor.toMyResource(myResourceDTO, myResourceService, attachmentService);
-        myResourceService.save(myResource);
-        return myResourceDTOConvertor.toDTO(myResource, false);
+    @PutMapping()
+    public void update(@RequestBody MyResourceDTO myResourceDTO) {
+        if(myResourceDTO.getId() > 0) {
+            MyResource myResource = myResourceDTOConvertor.toMyResource(myResourceDTO, myResourceService, attachmentService);
+            myResourceService.update(myResource);
+        }
     }
 
     /**
-     * 保存签名信息
-     * @param signatureDTO 签名信息
-     * @apiNote 签名图片后缀名不要加点号,保存 jpg 或者 png字样.base64字段只保存图片信息,不要添加data:image等前缀字符.
+     * 新增资源
+     * @param myResourceDTO 资源DTO
      */
-    @PostMapping(value = "/signature/{id}")
-    public ResponseEntity<MyResourceDTO> saveSignature(@PathVariable(value = "id") long id, @RequestBody  SignatureDTO signatureDTO) {
-        Signature signature = signatureDTOConvertor.toSignature(signatureDTO);
-        return  myResourceService.findOne(id)
-                        .map(myResource -> {
-                            myResource.setSign(signature);
-                            myResourceService.save(myResource);
-                            return new ResponseEntity<>(myResourceDTOConvertor.toDTO(myResource, false), HttpStatus.OK);
-                        })
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @PostMapping()
+    public ResponseEntity<MyResourceDTO> add(@RequestBody MyResourceDTO myResourceDTO) {
+        if(myResourceDTO.getId() == 0) {
+            MyResource myResource = myResourceDTOConvertor.toMyResource(myResourceDTO, myResourceService, attachmentService);
+            myResourceService.add(myResource);
+            return new ResponseEntity<>(myResourceDTOConvertor.toDTO(myResource, false), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+        }
     }
+
+//    /**
+//     * 保存签名信息
+//     * @param id 资源Id
+//     * @param signatureDTO 签名信息
+//     * @apiNote 签名图片后缀名不要加点号,保存 jpg 或者 png字样.base64字段只保存图片信息,不要添加data:image等前缀字符.
+//     */
+//    @PostMapping(value = "/signature/{id}")
+//    public ResponseEntity<MyResourceDTO> saveSignature(@PathVariable(value = "id") long id, @RequestBody  SignatureDTO signatureDTO) {
+//        Signature signature = signatureDTOConvertor.toSignature(signatureDTO);
+//        return  myResourceService.findOne(id)
+//                        .map(myResource -> {
+//                            myResource.setSign(signature);
+//                            myResourceService.update(myResource);
+//                            return new ResponseEntity<>(myResourceDTOConvertor.toDTO(myResource, false), HttpStatus.OK);
+//                        })
+//                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+//    }
 
     /**
      * 办结资源
@@ -137,13 +154,5 @@ public class MyResourceController {
     @PutMapping(value = "/finish/{id}")
     public void finish(@PathVariable(value = "id") long id) {
         myResourceService.findOne(id).ifPresent(myResourceService::finish);
-    }
-
-    /**
-     * 打印
-     */
-    @GetMapping(value = "/print")
-    public void print() {
-
     }
 }

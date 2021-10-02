@@ -148,6 +148,12 @@ public class BizConfig {
                         case "ChangdiPermission.WRITE":
                             permissions.add(ChangdiPermission.WRITE);
                             break;
+                        case "ChangdiPermission.CREATE":
+                            permissions.add(ChangdiPermission.CREATE);
+                            break;
+                        case "ChangdiPermission.DELETE":
+                            permissions.add(ChangdiPermission.DELETE);
+                            break;
                         case "ChangdiPermission.FINISH":
                             permissions.add(ChangdiPermission.FINISH);
                             break;

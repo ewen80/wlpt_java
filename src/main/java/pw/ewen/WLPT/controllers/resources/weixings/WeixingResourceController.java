@@ -97,10 +97,24 @@ public class WeixingResourceController {
      * @apiNote 返回卫星场地信息
      */
     @PostMapping()
-    public WeixingResourceDTO save(@RequestBody WeixingResourceDTO weixingResourceDTO) {
-        WeixingResource weixingResource = weixingResourceDTOConvertor.toWeixingResource(weixingResourceDTO, weixingResourceService);
-        weixingResourceService.save(weixingResource);
-        return weixingResourceDTOConvertor.toDTO(weixingResource);
+    public ResponseEntity<WeixingResourceDTO> add(@RequestBody WeixingResourceDTO weixingResourceDTO) {
+        if(weixingResourceDTO.getId() == 0) {
+            WeixingResource weixingResource = weixingResourceDTOConvertor.toWeixingResource(weixingResourceDTO, weixingResourceService);
+            weixingResourceService.add(weixingResource);
+            WeixingResourceDTO dto = weixingResourceDTOConvertor.toDTO(weixingResource);
+            return new ResponseEntity<>(dto, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+        }
+
+    }
+
+    @PutMapping()
+    public void update(@RequestBody WeixingResourceDTO weixingResourceDTO) {
+        if(weixingResourceDTO.getId() > 0) {
+            WeixingResource weixingResource = weixingResourceDTOConvertor.toWeixingResource(weixingResourceDTO, weixingResourceService);
+            weixingResourceService.update(weixingResource);
+        }
     }
 
     /**

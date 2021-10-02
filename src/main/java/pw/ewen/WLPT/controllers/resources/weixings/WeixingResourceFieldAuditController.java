@@ -67,7 +67,7 @@ public class WeixingResourceFieldAuditController {
                     } else {
                         weixingResource.getFieldAudits().add(fieldAudit);
                     }
-                    weixingResourceService.save(weixingResource);
+                    weixingResourceService.update(weixingResource);
 
                     return new ResponseEntity<>(fieldAuditDTOConvertor.toDTO(fieldAudit), HttpStatus.OK);
                 })
@@ -110,7 +110,7 @@ public class WeixingResourceFieldAuditController {
                 for(String id : idArr){
                     fieldAudits.removeIf(fieldAudit -> Long.parseLong(id) == fieldAudit.getId());
                 }
-                weixingResourceService.save(weixingResource);
+                weixingResourceService.update(weixingResource);
             });
         }catch (Exception ignored){}
     }

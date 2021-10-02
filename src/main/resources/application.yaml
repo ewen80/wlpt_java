@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: test
 
 
   jpa:
@@ -45,7 +45,7 @@ bizconfig:
 
   #   权限
   permission:
-    all_permissions: ChangdiPermission.READ,ChangdiPermission.WRITE,ChangdiPermission.FINISH  #系统支持的权限
+    all_permissions: ChangdiPermission.READ,ChangdiPermission.WRITE,ChangdiPermission.CREATE,ChangdiPermission.DELETE,ChangdiPermission.FINISH  #系统支持的权限
 
   # 资源类型
   resources:

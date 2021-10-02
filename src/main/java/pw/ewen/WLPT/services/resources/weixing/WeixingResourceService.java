@@ -60,23 +60,32 @@ public class WeixingResourceService {
         return this.weixingResourceRepository.findById(id);
     }
 
-    @PreAuthorize("hasPermission(#weixingResource, 'write')")
-    public WeixingResource save(WeixingResource weixingResource) {
-        boolean isAdd = weixingResource.getId() == 0;
-        // 判断是否是新增，如果是新增生成一条新的ResourceCheckIn记录
-        if(isAdd) {
+    @PreAuthorize("hasPermission(#weixingResource, 'create')")
+    public WeixingResource add(WeixingResource weixingResource) {
+        // 新增生成一条新的ResourceCheckIn记录
+        if(weixingResource.getId() == 0) {
             // 生成编号
             String serialNumber = serialNumberService.generate(bizConfig.getSerialNumber().getWeixingName(), bizConfig.getSerialNumber().getWeixingBasis());
             weixingResource.setBh(serialNumber);
 
             ResourceCheckIn resourceCheckIn = new ResourceCheckIn(LocalDateTime.now(), userContext.getCurrentUser());
             weixingResource.setResourceCheckIn(resourceCheckIn);
+
+            this.weixingResourceRepository.save(weixingResource);
+            return weixingResource;
+        } else {
+            return null;
         }
-        this.weixingResourceRepository.save(weixingResource);
-        return weixingResource;
     }
 
     @PreAuthorize("hasPermission(#weixingResource, 'write')")
+    public void update(WeixingResource weixingResource) {
+        if(weixingResource.getId() > 0) {
+            this.weixingResourceRepository.save(weixingResource);
+        }
+    }
+
+    @PreAuthorize("hasPermission(#weixingResource, 'delete')")
     public void delete(WeixingResource weixingResource) {
         this.weixingResourceRepository.deleteById(weixingResource.getId());
     }

@@ -1,28 +1,16 @@
 package pw.ewen.WLPT.services.resources.myresource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PagedListHolder;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import pw.ewen.WLPT.controllers.utils.MyPage;
-import pw.ewen.WLPT.domains.DTOs.resources.myresource.MyResourceDTO;
-import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.domains.entities.resources.ResourceCheckIn;
 import pw.ewen.WLPT.domains.entities.resources.ResourceFinish;
 import pw.ewen.WLPT.domains.entities.resources.myresource.MyResource;
-import pw.ewen.WLPT.repositories.resources.ResourceCheckInRepository;
 import pw.ewen.WLPT.repositories.resources.myresource.MyResourceRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 import pw.ewen.WLPT.security.UserContext;
-import pw.ewen.WLPT.services.resources.ResourceCheckInService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -60,30 +48,32 @@ public class MyResourceService {
         return this.myResourceRepository.findById(id);
     }
 
-    @PreAuthorize("hasPermission(#myResource, 'write')")
-    public MyResource save(MyResource myResource) {
-        boolean isAdd = myResource.getId() == 0;
-
-        if(isAdd) {
+    @PreAuthorize("hasPermission(#myResource, 'create')")
+    public MyResource add(MyResource myResource) {
+        if(myResource.getId() == 0) {
             // 生成一条新的ResourceCheckIn记录
             ResourceCheckIn resourceCheckIn = new ResourceCheckIn(LocalDateTime.now(), userContext.getCurrentUser());
             myResource.setResourceCheckIn(resourceCheckIn);
+
+            this.myResourceRepository.save(myResource);
+            return myResource;
+        } else {
+            return null;
         }
-        this.myResourceRepository.save(myResource);
-        return myResource;
+    }
+
+    @PreAuthorize("hasPermission(#myResource, 'write')")
+    public void update(MyResource myResource) {
+        if(myResource.getId() > 0) {
+            this.myResourceRepository.save(myResource);
+        }
     }
 
     // 为了做权限控制单独将单个删除做成一个方法
-    @PreAuthorize("hasPermission(#myResource, 'write')")
+    @PreAuthorize("hasPermission(#myResource, 'delete')")
     public void delete(MyResource myResource) {
         this.myResourceRepository.deleteById(myResource.getId());
     }
-
-//    public void delete(long id) {
-//        MyResource myResource = this.findOne(id);
-//        this.delete(myResource);
-//    }
-
 
     @PreAuthorize("hasPermission(#myResource, 'finish')")
     public void finish(MyResource myResource) {
