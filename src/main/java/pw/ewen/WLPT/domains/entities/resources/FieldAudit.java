@@ -49,6 +49,12 @@ public class FieldAudit implements Serializable {
      * 审核单位名称
      */
     private String auditDepartment;
+    /**
+     * GPS打卡信息
+     */
+    @OneToOne
+    @JoinColumn
+    private GPS gps;
 
     public long getId() {
         return id;
@@ -86,7 +92,7 @@ public class FieldAudit implements Serializable {
         return attachmentBags;
     }
 
-    public void setAttachmentBags(List<AttachmentBag> attachments) {
+    public void setAttachmentBags(List<AttachmentBag> attachmentBags) {
         this.attachmentBags = attachmentBags;
     }
 
@@ -104,5 +110,13 @@ public class FieldAudit implements Serializable {
 
     public void setAuditDepartment(String auditDepartment) {
         this.auditDepartment = auditDepartment;
+    }
+
+    public GPS getGps() {
+        return gps;
+    }
+
+    public void setGps(GPS gps) {
+        this.gps = gps;
     }
 }

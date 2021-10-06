@@ -42,6 +42,7 @@ public class FieldAuditDTOConvertor {
         }
         dto.setAttachmentBags(fieldAudit.getAttachmentBags());
         dto.setAuditDepartment(fieldAudit.getAuditDepartment());
+        dto.setGps(fieldAudit.getGps());
 
         return dto;
     }
@@ -59,6 +60,7 @@ public class FieldAuditDTOConvertor {
         }
         
         fieldAudit.setAttachmentBags(dto.getAttachmentBags());
+        fieldAudit.setGps(dto.getGps());
 
         return fieldAudit;
     }

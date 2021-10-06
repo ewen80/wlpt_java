@@ -270,19 +270,15 @@ api[10].list.push({
 });
 api[10].list.push({
     order: '5',
-    desc: '保存资源',
+    desc: '修改资源',
 });
 api[10].list.push({
     order: '6',
-    desc: '保存签名信息',
+    desc: '新增资源',
 });
 api[10].list.push({
     order: '7',
     desc: '办结资源',
-});
-api[10].list.push({
-    order: '8',
-    desc: '打印',
 });
 api.push({
     alias: 'MyResourceRoomController',
@@ -336,6 +332,10 @@ api[12].list.push({
 });
 api[12].list.push({
     order: '6',
+    desc: '',
+});
+api[12].list.push({
+    order: '7',
     desc: '获取场地审核意见表pdf',
 });
 api.push({

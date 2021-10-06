@@ -2,6 +2,7 @@ package pw.ewen.WLPT.domains.DTOs.resources;
 
 import pw.ewen.WLPT.domains.DTOs.SignatureDTO;
 import pw.ewen.WLPT.domains.entities.AttachmentBag;
+import pw.ewen.WLPT.domains.entities.resources.GPS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,10 @@ public class FieldAuditDTO {
      * 签名信息
      */
     private SignatureDTO signature;
+    /**
+     * GPS打卡信息
+     */
+    private GPS gps;
 
     public long getId() {
         return id;
@@ -96,6 +101,14 @@ public class FieldAuditDTO {
 
     public void setAuditDepartment(String auditDepartment) {
         this.auditDepartment = auditDepartment;
+    }
+
+    public GPS getGps() {
+        return gps;
+    }
+
+    public void setGps(GPS gps) {
+        this.gps = gps;
     }
 
     @Override
