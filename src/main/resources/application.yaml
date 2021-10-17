@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: test
+    active: dev
 
 
   jpa:
@@ -41,13 +41,15 @@ bizconfig:
   #   序列号相关
   serial_number:
     weixing_name: weixing
-    weixing_basis: "[date:yyyy]{4}"
+    weixing_basis: "WX[date:yyyy]{4}"
+    yule_name: yule
+    yule_basis: "YL[date:yyyy]{4}"
 
   #   权限
   permission:
     all_permissions: ChangdiPermission.READ,ChangdiPermission.WRITE,ChangdiPermission.CREATE,ChangdiPermission.DELETE,ChangdiPermission.FINISH  #系统支持的权限
 
-  # 资源类型
+  # 资源类型(用于项目初始化用)
   resources:
       - name: 我的资源
         path: /resources/myresources
@@ -59,10 +61,16 @@ bizconfig:
         type: pw.ewen.WLPT.domains.entities.resources.weixing.WeixingResource
         typeName: WeixingResource
         description: 卫星场地
+      - name: 娱乐场地
+        path: /resources/yules
+        type: pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceBase
+        typeName: YuleResource
+        description: 娱乐场地
 
   # 系统使用的日期时间格式
   localDateTimeFormat: yyyy-MM-dd HH:mm:ss
   localDateFormat: yyyy-MM-dd
+  printDateFormat: yyyy年MM月dd日
   # 各区id对应Map
   regionMap:
    0: 市属

@@ -104,6 +104,8 @@ public class BizConfig {
         private   String fileUploadRootPath;
         // 卫星场地审核意见表模板文件路径
         private String weixingFieldAuditTemplate;
+        // 娱乐场地审核意见表模板文件路径
+        private String yuleFieldAuditTemplate;
 
         public String getFileUploadRootPath() {
             return fileUploadRootPath;
@@ -119,6 +121,14 @@ public class BizConfig {
 
         public void setWeixingFieldAuditTemplate(String weixingFieldAuditTemplate) {
             this.weixingFieldAuditTemplate = weixingFieldAuditTemplate;
+        }
+
+        public String getYuleFieldAuditTemplate() {
+            return yuleFieldAuditTemplate;
+        }
+
+        public void setYuleFieldAuditTemplate(String yuleFieldAuditTemplate) {
+            this.yuleFieldAuditTemplate = yuleFieldAuditTemplate;
         }
     }
     private File file;
@@ -170,9 +180,13 @@ public class BizConfig {
     public static class SerialNumber {
         //序列号相关
         //  卫星场地核查序列号名
-        private   String weixingName;
+        private String weixingName;
         //  卫星场地核查序列号依据 [date：YYYY] 按照日期的四位年份
-        private   String weixingBasis;
+        private String weixingBasis;
+        //  娱乐场地核查序列号名
+        private String yuleName;
+        //  娱乐场地核查序列号根据
+        private String yuleBasis;
 
         public String getWeixingName() {
             return weixingName;
@@ -188,6 +202,22 @@ public class BizConfig {
 
         public void setWeixingBasis(String weixingBasis) {
             this.weixingBasis = weixingBasis;
+        }
+
+        public String getYuleName() {
+            return yuleName;
+        }
+
+        public void setYuleName(String yuleName) {
+            this.yuleName = yuleName;
+        }
+
+        public String getYuleBasis() {
+            return yuleBasis;
+        }
+
+        public void setYuleBasis(String yuleBasis) {
+            this.yuleBasis = yuleBasis;
         }
     }
     private SerialNumber serialNumber;
@@ -244,6 +274,7 @@ public class BizConfig {
 
     private String localDateTimeFormat;
     private String localDateFormat;
+    private String printDateFormat;
     private Map<String,String> regionMap;
 
     public User getUser() {
@@ -308,5 +339,13 @@ public class BizConfig {
 
     public void setRegionMap(Map<String, String> regionMap) {
         this.regionMap = regionMap;
+    }
+
+    public String getPrintDateFormat() {
+        return printDateFormat;
+    }
+
+    public void setPrintDateFormat(String printDateFormat) {
+        this.printDateFormat = printDateFormat;
     }
 }

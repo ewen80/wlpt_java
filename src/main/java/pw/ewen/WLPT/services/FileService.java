@@ -2,26 +2,32 @@ package pw.ewen.WLPT.services;
 
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.forms.fields.PdfFormField;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.util.Units;
+import org.apache.poi.xwpf.usermodel.*;
+import org.apache.xmlbeans.XmlException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pw.ewen.WLPT.configs.biz.BizConfig;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * created by wenliang on 2021-05-21
@@ -81,6 +87,147 @@ public class FileService {
         } else {
             return false;
         }
+    }
+
+    /**
+     * 生成word文件。模板文件中占位符采用 ${XXX},xx,xx,xx 格式。逗号后的都是内容的选项，文字后面跟着的是  字体,大小；图像表示 宽度,高度,旋转角度
+     * @param templateFile  模板文件路径
+     * @param fieldTextValueMap 字符替换Map
+     * @param fieldImageMap 图片替换Map
+     * @param rowMap    行数据体替换Map
+     * @param output    输出流
+     */
+    public void getWord(String templateFile, Map<String, String> fieldTextValueMap, Map<String, byte[]> fieldImageMap, Map<String, String[][]> rowMap, OutputStream output) throws IOException, XmlException, InvalidFormatException {
+        //读取word源文件
+        FileInputStream fileInputStream = new FileInputStream(templateFile);
+        XWPFDocument document = new XWPFDocument(fileInputStream);
+        // 获取表格
+        XWPFTable table = document.getTables().get(0);
+        // 读取表格第一行第一列的字体作为样板字体
+        String fontFamily = table.getRow(0).getCell(0).getParagraphs().get(0).getRuns().get(0).getFontFamily();
+        Double fontSize = table.getRow(0).getCell(0).getParagraphs().get(0).getRuns().get(0).getFontSizeAsDouble();
+
+        for(int rowIndex=table.getRows().size()-1; rowIndex>=0; rowIndex--) {
+            XWPFTableRow row = table.getRow(rowIndex);
+            for(int cellIndex=0; cellIndex<row.getTableCells().size(); cellIndex++) {
+                XWPFTableCell cell = row.getCell(cellIndex);
+
+                for (XWPFParagraph p : cell.getParagraphs()) {
+                    // 遍历模板字段Map
+                    for(String key : fieldTextValueMap.keySet()) {
+                        if(p.getText().contains("${"+key+"}")) {
+                            String oldContent = p.getText();
+                            // 删除段落所有runs
+                            int runSize = p.getRuns().size();
+                            for(int i = 0; i < runSize; i++) {
+                                p.removeRun(0);
+                            }
+                            XWPFRun run = p.insertNewRun(0);
+                            run.setText(oldContent.replace("${"+key+"}", fieldTextValueMap.get(key)));
+                            run.setFontFamily(fontFamily);
+                            run.setFontSize(fontSize);
+                            break;
+                        }
+                    }
+                    // 遍历图片字段Map
+                    for(String key : fieldImageMap.keySet()) {
+                        if(p.getText().contains("${"+key+"}")) {
+                            String content = p.getText();
+                            String[] arrContent = content.split(",");
+                            int width = Integer.parseInt(arrContent[1]);
+                            int height = Integer.parseInt(arrContent[2]);
+                            int rotation = Integer.parseInt(arrContent[3]);
+
+                            // 删除段落所有run
+                            int runSize = p.getRuns().size();
+                            for(int i = 0; i < runSize; i++) {
+                                p.removeRun(0);
+                            }
+
+                            // 实现图片的翻转
+                            InputStream imageStream = new ByteArrayInputStream(fieldImageMap.get(key));
+                            BufferedImage image = ImageIO.read(imageStream);
+                            final double rads = Math.toRadians(rotation);
+                            final double sin = Math.abs(Math.sin(rads));
+                            final double cos = Math.abs(Math.cos(rads));
+                            final int w = (int) Math.floor(image.getWidth() * cos + image.getHeight() * sin);
+                            final int h = (int) Math.floor(image.getHeight() * cos + image.getWidth() * sin);
+                            final BufferedImage rotatedImage = new BufferedImage(w, h, image.getType());
+                            final AffineTransform at = new AffineTransform();
+                            at.translate(w / 2, h / 2);
+                            at.rotate(rads,0, 0);
+                            at.translate(-image.getWidth() / 2, -image.getHeight() / 2);
+                            final AffineTransformOp rotateOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+                            rotateOp.filter(image,rotatedImage);
+
+                            ByteArrayOutputStream os = new ByteArrayOutputStream();
+                            ImageIO.write(rotatedImage, "png", os);
+
+                            InputStream is = new ByteArrayInputStream(os.toByteArray());
+                            p.insertNewRun(0).addPicture(is, XWPFDocument.PICTURE_TYPE_PNG, "signature.png", Units.toEMU(width), Units.toEMU(height));
+
+                            break;
+                        }
+                    }
+
+                    // 插入数据行,如果不是首列，退出列查询
+                    if(cellIndex > 0) {
+                        break;
+                    }
+                    for(Map.Entry<String, String[][]> entry : rowMap.entrySet()) {
+                        if(p.getText().contains("${"+entry.getKey()+"}")) {
+                            // 找到要插入的行位置
+                            int insRowIndex = rowIndex;
+                            for(int i=0; i<entry.getValue().length; i++) {
+                                // 写入新行的每个列
+                                table.addRow(row, insRowIndex++);
+                                XWPFTableRow newRow = table.getRow(insRowIndex);
+                                for(int j=0; j<entry.getValue()[i].length; j++) {
+                                    // 删除单位格所有段落文字
+                                    int paragraphSize = newRow.getCell(j).getParagraphs().size();
+                                    for(int ii=0; ii<paragraphSize; ii++){
+                                        newRow.getCell(j).removeParagraph(0);
+                                    }
+                                    XWPFRun run = newRow.getCell(j).addParagraph().insertNewRun(0);
+                                    run.setFontSize(fontSize);
+                                    run.setFontFamily(fontFamily);
+                                    run.setText(entry.getValue()[i][j]);
+                                }
+                            }
+                            // 删除模板行
+                            table.removeRow(rowIndex);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        // 检查模板是否还有${}文本未替换，如果还有，则文本全部清空，行标记该行删除
+        for(XWPFTableRow row : table.getRows()) {
+            for(XWPFTableCell cell : row.getTableCells()) {
+                for(XWPFParagraph p : cell.getParagraphs()) {
+                    // 删除文本占位标记
+                    if(Pattern.matches("\\S*\\$\\{\\w+\\}\\S*", p.getText())) {
+                        int runSize = p.getRuns().size();
+                        String oldContent = p.getText();
+                        for(int i=0; i<runSize; i++) {
+                            p.removeRun(0);
+                        }
+                        Pattern pattern = Pattern.compile("\\$\\{\\w+\\}");
+                        Matcher matcher = pattern.matcher(oldContent);
+
+                        String newContent = matcher.replaceAll("");
+                        XWPFRun run = p.insertNewRun(0);
+                        run.setText(newContent);
+                        run.setFontFamily(fontFamily);
+                        run.setFontSize(fontSize);
+                    }
+                }
+            }
+        }
+
+        fileInputStream.close();
+        document.write(output);
     }
 
     /**

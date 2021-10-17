@@ -2,7 +2,7 @@ package pw.ewen.WLPT.domains.DTOs.resources;
 
 import pw.ewen.WLPT.domains.dtoconvertors.resources.MenuDTOConvertor;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
-import pw.ewen.WLPT.services.resources.MenuService;
+import pw.ewen.WLPT.services.MenuService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,9 @@ import java.util.List;
 /**
  * Created by wen on 17-5-7.
  */
-public class MenuDTO extends BaseResourceDTO {
+public class MenuDTO {
+
+    private long id;
 
     /**
      * 菜单名
@@ -99,5 +101,13 @@ public class MenuDTO extends BaseResourceDTO {
 
     public void setChildren(List<MenuDTO> children) {
         this.children = children;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

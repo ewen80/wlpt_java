@@ -92,14 +92,14 @@ public class WeixingResourceController {
     }
 
     /**
-     * 保存
+     * 新增卫星场地
      * @param weixingResourceDTO 卫星场地信息
      * @apiNote 返回卫星场地信息
      */
     @PostMapping()
     public ResponseEntity<WeixingResourceDTO> add(@RequestBody WeixingResourceDTO weixingResourceDTO) {
         if(weixingResourceDTO.getId() == 0) {
-            WeixingResource weixingResource = weixingResourceDTOConvertor.toWeixingResource(weixingResourceDTO, weixingResourceService);
+            WeixingResource weixingResource = weixingResourceDTOConvertor.toWeixingResource(weixingResourceDTO);
             weixingResourceService.add(weixingResource);
             WeixingResourceDTO dto = weixingResourceDTOConvertor.toDTO(weixingResource);
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
@@ -109,10 +109,14 @@ public class WeixingResourceController {
 
     }
 
+    /**
+     * 修改卫星场地
+     * @param weixingResourceDTO 卫星场地信息
+     */
     @PutMapping()
     public void update(@RequestBody WeixingResourceDTO weixingResourceDTO) {
         if(weixingResourceDTO.getId() > 0) {
-            WeixingResource weixingResource = weixingResourceDTOConvertor.toWeixingResource(weixingResourceDTO, weixingResourceService);
+            WeixingResource weixingResource = weixingResourceDTOConvertor.toWeixingResource(weixingResourceDTO);
             weixingResourceService.update(weixingResource);
         }
     }
@@ -121,12 +125,12 @@ public class WeixingResourceController {
      * 获取场地审核意见表pdf
      * @param weixingResourceId 卫星场地id
      */
-    @GetMapping(value = "/fieldauditpdfs/{weixingResourceId}/{fieldAuditId}")
-    public ResponseEntity<byte[]> printFieldAuditPdf(@PathVariable long weixingResourceId, @PathVariable long fieldAuditId){
+    @GetMapping(value = "/print/{weixingResourceId}/{fieldAuditId}")
+    public ResponseEntity<byte[]> print(@PathVariable long weixingResourceId, @PathVariable long fieldAuditId){
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
+//        headers.setContentType(MediaType.APPLICATION_PDF);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        this.weixingResourceService.getFieldAuditPdf(weixingResourceId, fieldAuditId, output);
+        this.weixingResourceService.getFieldAuditWord(weixingResourceId, fieldAuditId, output);
         return new ResponseEntity<>(output.toByteArray(), headers, HttpStatus.OK);
     }
 }

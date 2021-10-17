@@ -55,7 +55,6 @@ public class MyResourceDTOConvertor {
     /**
      * 转换DTO，所有关联信息全部加载
      * @param myResource 资源实体
-     * @return
      */
     public MyResourceDTO toDTO(MyResource myResource) {
         return this.toDTO(myResource, true);
@@ -65,7 +64,6 @@ public class MyResourceDTOConvertor {
      * 转换到DTO
      * @param myResource 资源实体
      * @param fetchLazy 是否是懒加载，懒加载将不加载房间，附件，登记，权限等信息，仅转换本身基本字段
-     * @return
      */
     public MyResourceDTO toDTO(MyResource myResource, boolean fetchLazy) {
         MyResourceDTO dto = new MyResourceDTO();
@@ -84,9 +82,7 @@ public class MyResourceDTOConvertor {
             // 添加房间
             List<MyResourceRoom> rooms = myResource.getRooms();
             List<MyResourceRoomDTO> roomDTOS = new ArrayList<>();
-            rooms.forEach( (room -> {
-                roomDTOS.add(myResourceRoomDTOConvertor.toDTO(room));
-            }));
+            rooms.forEach( (room -> roomDTOS.add(myResourceRoomDTOConvertor.toDTO(room))));
             dto.setRooms(roomDTOS);
 
             // 添加附件
@@ -108,7 +104,7 @@ public class MyResourceDTOConvertor {
         return dto;
     }
 
-    public MyResource toMyResource(MyResourceDTO dto, MyResourceService myResourceService, AttachmentService attachmentService) {
+    public MyResource toMyResource(MyResourceDTO dto) {
         MyResource myResource = new MyResource();
         myResource.setId(dto.getId());
         myResource.setChangdiName(dto.getChangdiName());

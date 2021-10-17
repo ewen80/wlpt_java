@@ -31,18 +31,13 @@ import java.util.Optional;
 @RequestMapping(value = "/resources/myresources")
 public class MyResourceController {
     private final MyResourceService myResourceService;
-    private final AttachmentService attachmentService;
     private final MyResourceDTOConvertor myResourceDTOConvertor;
-    private final SignatureDTOConvertor signatureDTOConvertor;
 
     @Autowired
     public MyResourceController(MyResourceService myResourceService,
-                                AttachmentService attachmentService,
-                                MyResourceDTOConvertor myResourceDTOConvertor, SignatureDTOConvertor signatureDTOConvertor){
+                                MyResourceDTOConvertor myResourceDTOConvertor){
         this.myResourceService = myResourceService;
-        this.attachmentService = attachmentService;
         this.myResourceDTOConvertor = myResourceDTOConvertor;
-        this.signatureDTOConvertor = signatureDTOConvertor;
     }
 
     /**
@@ -109,7 +104,7 @@ public class MyResourceController {
     @PutMapping()
     public void update(@RequestBody MyResourceDTO myResourceDTO) {
         if(myResourceDTO.getId() > 0) {
-            MyResource myResource = myResourceDTOConvertor.toMyResource(myResourceDTO, myResourceService, attachmentService);
+            MyResource myResource = myResourceDTOConvertor.toMyResource(myResourceDTO);
             myResourceService.update(myResource);
         }
     }
@@ -121,7 +116,7 @@ public class MyResourceController {
     @PostMapping()
     public ResponseEntity<MyResourceDTO> add(@RequestBody MyResourceDTO myResourceDTO) {
         if(myResourceDTO.getId() == 0) {
-            MyResource myResource = myResourceDTOConvertor.toMyResource(myResourceDTO, myResourceService, attachmentService);
+            MyResource myResource = myResourceDTOConvertor.toMyResource(myResourceDTO);
             myResourceService.add(myResource);
             return new ResponseEntity<>(myResourceDTOConvertor.toDTO(myResource, false), HttpStatus.CREATED);
         } else {

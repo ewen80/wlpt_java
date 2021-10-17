@@ -1,10 +1,9 @@
 package pw.ewen.WLPT.domains.dtoconvertors.resources;
 
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import pw.ewen.WLPT.domains.DTOs.resources.MenuDTO;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
-import pw.ewen.WLPT.services.resources.MenuService;
+import pw.ewen.WLPT.services.MenuService;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,18 +22,11 @@ public class MenuDTOConvertor {
         menu.setIconClass(menuDTO.getIconClass());
         menu.setPath(menuDTO.getPath());
 
-        Optional<Menu> parent = null;
+        Optional<Menu> parent;
         if(menuDTO.getParentId() != 0 ) {
             parent = menuService.findOne(menuDTO.getParentId());
-            if(parent.isPresent()) {
-                menu.setParent(parent.get());
-            }
+            parent.ifPresent(menu::setParent);
         }
-
-//        List<Menu> children = menuService.findChildren(menuDTO.getId());
-//        if(children != null) {
-//            menu.setChildren(children);
-//        }
         return menu;
     }
 

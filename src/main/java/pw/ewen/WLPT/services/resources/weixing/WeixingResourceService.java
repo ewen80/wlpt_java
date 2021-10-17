@@ -1,5 +1,7 @@
 package pw.ewen.WLPT.services.resources.weixing;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.xmlbeans.XmlException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
@@ -8,6 +10,8 @@ import org.springframework.stereotype.Service;
 import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.domains.entities.resources.ResourceCheckIn;
 import pw.ewen.WLPT.domains.entities.resources.weixing.WeixingResource;
+import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceGwRoom;
+import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceGwWc;
 import pw.ewen.WLPT.repositories.resources.weixing.WeixingResourceRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 import pw.ewen.WLPT.security.UserContext;
@@ -92,7 +96,7 @@ public class WeixingResourceService {
 
     /**
      * 获取现场审核意见表-pdf格式
-     * @param weixingResourceId    卫星id
+     * @param weixingResourceId 卫星id
      * @param fieldAuditId 场地审核id
      * @param output 输出流
      */
@@ -131,11 +135,11 @@ public class WeixingResourceService {
                     .filter(audit-> audit.getId() == fieldAuditId)
                     .findFirst()
                     .ifPresent(audit->{
-                        textFieldMap.put("fieldAuditContent", audit.getContent());
-                        textFieldMap.put("hcr", audit.getUser().getName());
-                        textFieldMap.put("hcdw", audit.getAuditDepartment());
+                        textFieldMap.put("auditContent", audit.getContent());
+                        textFieldMap.put("auditer", audit.getUser().getName());
+                        textFieldMap.put("auditDepartment", audit.getAuditDepartment());
                         DateTimeFormatter formatter =  DateTimeFormatter.ofPattern(bizConfig.getLocalDateFormat());
-                        textFieldMap.put("hcrq", audit.getAuditDate().format(formatter));
+                        textFieldMap.put("auditDate", audit.getAuditDate().format(formatter));
                         if(audit.getSignature() != null && audit.getSignature().getBytes() != null) {
                             imageFieldMap.put("signature", audit.getSignature().getBytes());
                         }
@@ -146,6 +150,63 @@ public class WeixingResourceService {
             try {
                 this.fileService.getPdf(template, textFieldMap, imageFieldMap, output);
             } catch (IOException ignored) {
+
+            }
+
+        });
+    }
+
+    // 生成word
+    public void getFieldAuditWord(long resourceId, long fieldAuditId, OutputStream output) {
+        this.findOne(resourceId).ifPresent(weixing -> {
+            Map<String, String> textFieldMap = new HashMap<>();
+            Map<String, byte[]> imageFieldMap = new HashMap<>();
+
+            textFieldMap.put("bh", weixing.getBh());
+            textFieldMap.put("sqdw", weixing.getSqdw());
+            String qxName = bizConfig.getRegionMap().get(weixing.getQxId());
+            textFieldMap.put("qxname", qxName);
+            textFieldMap.put("sqlx", weixing.getSqlx());
+            textFieldMap.put("azdz", weixing.getAzdz());
+            textFieldMap.put("bgdh", weixing.getBgdh());
+            textFieldMap.put("yzbm", weixing.getYb());
+            textFieldMap.put("fzr", weixing.getFzr());
+            textFieldMap.put("fzrsj", weixing.getFzrsj());
+            textFieldMap.put("jfwz", weixing.getJfwz());
+            textFieldMap.put("txwz", weixing.getTxwz());
+            textFieldMap.put("txsl", String.valueOf(weixing.getTxsl()));
+            textFieldMap.put("txlx", weixing.getTxlx());
+            textFieldMap.put("jnssjmy", weixing.getJnssjmy());
+            textFieldMap.put("wxcsfs", weixing.getWxcsfs());
+            textFieldMap.put("wxmc", weixing.getWxmc());
+            textFieldMap.put("ssnr", weixing.getSsnr());
+            textFieldMap.put("sjazdwmc", weixing.getSjazdwmc());
+            textFieldMap.put("wxssazxkzh", weixing.getWxssazxkzh());
+            textFieldMap.put("ssdwlx", weixing.getSsdwlx());
+            textFieldMap.put("lpm", weixing.getLpm());
+            textFieldMap.put("lc", weixing.getLc());
+            textFieldMap.put("zds", String.valueOf(weixing.getZds()));
+
+            weixing.getFieldAudits()
+                    .stream()
+                    .filter(audit -> audit.getId() == fieldAuditId)
+                    .findFirst()
+                    .ifPresent(audit -> {
+                        textFieldMap.put("auditContent", audit.getContent());
+                        textFieldMap.put("auditer", audit.getUser().getName());
+                        textFieldMap.put("auditDepartment", audit.getAuditDepartment());
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(bizConfig.getPrintDateFormat());
+                        textFieldMap.put("auditDate", audit.getAuditDate().format(formatter));
+                        if (audit.getSignature() != null && audit.getSignature().getBytes() != null) {
+                            imageFieldMap.put("signature", audit.getSignature().getBytes());
+                        }
+
+                    });
+            String template = bizConfig.getFile().getWeixingFieldAuditTemplate();
+
+            try {
+                this.fileService.getWord(template, textFieldMap, imageFieldMap, new HashMap<>(), output);
+            } catch (IOException | XmlException | InvalidFormatException ignored) {
 
             }
 

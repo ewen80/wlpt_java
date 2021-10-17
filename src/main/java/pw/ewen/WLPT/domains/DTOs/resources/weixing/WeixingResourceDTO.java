@@ -109,7 +109,7 @@ public class WeixingResourceDTO extends BaseResourceDTO {
     private String ssdwlx;
 
 
-    private List<FieldAuditDTO> fieldAudits = new ArrayList<>();
+//    private List<FieldAuditDTO> fieldAudits = new ArrayList<>();
 
 
     public String getBh() {
@@ -288,13 +288,13 @@ public class WeixingResourceDTO extends BaseResourceDTO {
         this.zds = zds;
     }
 
-    public List<FieldAuditDTO> getFieldAudits() {
-        return fieldAudits;
-    }
-
-    public void setFieldAudits(List<FieldAuditDTO> fieldAudits) {
-        this.fieldAudits = fieldAudits;
-    }
+//    public List<FieldAuditDTO> getFieldAudits() {
+//        return fieldAudits;
+//    }
+//
+//    public void setFieldAudits(List<FieldAuditDTO> fieldAudits) {
+//        this.fieldAudits = fieldAudits;
+//    }
 
     public String getWxmc() {
         return wxmc;

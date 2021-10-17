@@ -10,9 +10,13 @@ import java.util.List;
  * 菜单资源类
  */
 @Entity
-public class Menu extends BaseResource implements Serializable {
+public class Menu implements Serializable {
 
     private static final long serialVersionUID = 7179865199657578507L;
+
+    @Id
+    @GeneratedValue
+    private long id;
 
     /**
      * 菜单名
@@ -122,4 +126,11 @@ public class Menu extends BaseResource implements Serializable {
         this.parent = parent;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }

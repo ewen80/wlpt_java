@@ -106,7 +106,7 @@ public class WeixingResourceDTOConvertor {
         return dto;
     }
 
-    public WeixingResource toWeixingResource(WeixingResourceDTO dto, WeixingResourceService weixingResourceService) {
+    public WeixingResource toWeixingResource(WeixingResourceDTO dto) {
         WeixingResource weixingResource = new WeixingResource();
 
         weixingResource.setId(dto.getId());

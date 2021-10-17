@@ -243,6 +243,10 @@ api[9].list.push({
 });
 api[9].list.push({
     order: '4',
+    desc: '保存全部菜单',
+});
+api[9].list.push({
+    order: '5',
     desc: '删除菜单',
 });
 api.push({
@@ -328,11 +332,11 @@ api[12].list.push({
 });
 api[12].list.push({
     order: '5',
-    desc: '保存',
+    desc: '新增卫星场地',
 });
 api[12].list.push({
     order: '6',
-    desc: '',
+    desc: '修改卫星场地',
 });
 api[12].list.push({
     order: '7',
@@ -358,23 +362,115 @@ api[13].list.push({
     desc: '删除卫星场地现场审核意见',
 });
 api.push({
-    alias: 'FileController',
+    alias: 'YuleGwRoomController',
     order: '15',
-    link: '文件上传，删除等操作',
-    desc: '文件上传，删除等操作',
+    link: 'created_by_wenliang_on_2021/10/10',
+    desc: 'created by wenliang on 2021/10/10',
     list: []
 })
 api[14].list.push({
     order: '1',
-    desc: '上传文件按照年月分文件夹存储',
+    desc: '',
 });
 api[14].list.push({
+    order: '2',
+    desc: '',
+});
+api[14].list.push({
+    order: '3',
+    desc: '',
+});
+api[14].list.push({
+    order: '4',
+    desc: '',
+});
+api.push({
+    alias: 'YuleGwWcController',
+    order: '16',
+    link: 'created_by_wenliang_on_2021/10/12',
+    desc: 'created by wenliang on 2021/10/12',
+    list: []
+})
+api[15].list.push({
+    order: '1',
+    desc: '',
+});
+api[15].list.push({
+    order: '2',
+    desc: '',
+});
+api[15].list.push({
+    order: '3',
+    desc: '',
+});
+api[15].list.push({
+    order: '4',
+    desc: '',
+});
+api.push({
+    alias: 'YuleResourceBaseController',
+    order: '17',
+    link: '娱乐场所',
+    desc: '娱乐场所',
+    list: []
+})
+api[16].list.push({
+    order: '1',
+    desc: '获取娱乐场所分页数据',
+});
+api[16].list.push({
+    order: '2',
+    desc: '获取单个娱乐场地信息',
+});
+api[16].list.push({
+    order: '3',
+    desc: '新增娱乐场地',
+});
+api[16].list.push({
+    order: '4',
+    desc: '修改卫星场地',
+});
+api[16].list.push({
+    order: '5',
+    desc: '删除娱乐场地信息',
+});
+api.push({
+    alias: 'YuleResourceFieldAuditController',
+    order: '18',
+    link: '娱乐场地-现场审核信息',
+    desc: '娱乐场地-现场审核信息',
+    list: []
+})
+api[17].list.push({
+    order: '1',
+    desc: '保存场地审核信息',
+});
+api[17].list.push({
+    order: '2',
+    desc: '根据场地id获取现场审核意见',
+});
+api[17].list.push({
+    order: '3',
+    desc: '删除场地现场审核意见',
+});
+api.push({
+    alias: 'FileController',
+    order: '19',
+    link: '文件上传，删除等操作',
+    desc: '文件上传，删除等操作',
+    list: []
+})
+api[18].list.push({
+    order: '1',
+    desc: '上传文件按照年月分文件夹存储',
+});
+api[18].list.push({
     order: '2',
     desc: '删除文件',
 });
 api.push({
     alias: 'dict',
-    order: '16',
+    order: '20',
     link: 'dict_list',
     desc: '数据字典',
     list: []

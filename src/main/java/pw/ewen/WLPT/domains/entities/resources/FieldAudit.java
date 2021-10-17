@@ -52,7 +52,7 @@ public class FieldAudit implements Serializable {
     /**
      * GPS打卡信息
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn
     private GPS gps;
 

@@ -29,6 +29,8 @@ bizconfig:
     # 文件上传路径
     file_upload_root_path: /home/wenliang/Webs/frontends/wlpt_ng_alain/downloads/
     # 卫星场地审核单模板
-    weixing_field_audit_template: ./FieldAuditPrintTemplates/weixing.pdf
+    weixing_field_audit_template: ./FieldAuditPrintTemplates/weixing.docx
+    # 娱乐场地审核单模板
+    yule_field_audit_template: ./FieldAuditPrintTemplates/yule.docx
 
 frontendUrls: https://aliyun.ewen.pw:9101  # 前端程序部署地址

@@ -20,7 +20,7 @@ repositories {
 }
 
 group = 'WLPT'
-version = '2.3.12.7'
+version = '2.3.12.10'
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -54,7 +54,9 @@ dependencies {
             "org.hibernate:hibernate-java8",
             "mysql:mysql-connector-java",
             "com.fasterxml.jackson.datatype:jackson-datatype-jsr310",
-            "com.itextpdf:itext7-core:7.1.16"
+            "com.itextpdf:itext7-core:7.1.16",
+            "org.apache.poi:poi:5.0.0",
+            'org.apache.poi:poi-ooxml:5.0.0',
     )
     compile("org.hibernate:hibernate-ehcache"){
         exclude group: "net.sf.ehcache", module: "ehcache-core"

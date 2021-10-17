@@ -1,9 +1,10 @@
-package pw.ewen.WLPT.services.resources;
+package pw.ewen.WLPT.services;
 
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.IdentityUnavailableException;
@@ -107,6 +108,7 @@ public class MenuService {
         return user.map(this::findPermissionMenuTree).orElse(null);
     }
 
+    @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
     public Menu save(Menu  menu) {
         Menu parent = menu.getParent();
         Long parentId = parent == null ? null : parent.getId();
@@ -131,10 +133,12 @@ public class MenuService {
     /**
      * 批量保存
      */
-    public void batchSave(Set<Menu> menus) {
-        this.menuRepository.saveAll(menus);
+    @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
+    public List<Menu> batchSave(List<Menu> menus) {
+        return this.menuRepository.saveAll(menus);
     }
 
+    @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
     public void delete(long id) {
         this.menuRepository.deleteById(id);
     }
