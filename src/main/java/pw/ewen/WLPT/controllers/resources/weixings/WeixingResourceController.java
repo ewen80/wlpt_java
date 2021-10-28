@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.controllers.utils.MyPage;
@@ -12,12 +11,11 @@ import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.DTOs.resources.weixing.WeixingResourceDTO;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.weixing.WeixingResourceDTOConvertor;
 import pw.ewen.WLPT.domains.entities.resources.weixing.WeixingResource;
+import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.services.resources.weixing.WeixingResourceService;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * 卫星场地
@@ -28,10 +26,12 @@ public class WeixingResourceController {
 
     private final WeixingResourceService weixingResourceService;
     private final WeixingResourceDTOConvertor weixingResourceDTOConvertor;
+    private final UserContext userContext;
 
-    public WeixingResourceController(WeixingResourceService weixingResourceService, WeixingResourceDTOConvertor weixingResourceDTOConvertor) {
+    public WeixingResourceController(WeixingResourceService weixingResourceService, WeixingResourceDTOConvertor weixingResourceDTOConvertor, UserContext userContext) {
         this.weixingResourceService = weixingResourceService;
         this.weixingResourceDTOConvertor = weixingResourceDTOConvertor;
+        this.userContext = userContext;
     }
 
 
@@ -57,8 +57,10 @@ public class WeixingResourceController {
     public Page<WeixingResourceDTO> getResourcesWithPage(PageInfo pageInfo) {
         Page<WeixingResource> resourceResult;
         PageRequest pr = pageInfo.getPageRequest();
+        String userId = userContext.getCurrentUser().getId();
 
         List<WeixingResource> allResource = pageInfo.getFilter().isEmpty() ? this.weixingResourceService.findAll() : this.weixingResourceService.findAll(pageInfo.getFilter());
+        allResource.sort((w1, w2) -> Boolean.compare(w1.isReaded(userId), w2.isReaded(userId)));
         resourceResult = new MyPage<>(allResource, pr).getPage();
         return resourceResult.map(weixingResourceDTOConvertor::toDTO);
     }
@@ -132,5 +134,15 @@ public class WeixingResourceController {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         this.weixingResourceService.getFieldAuditWord(weixingResourceId, fieldAuditId, output);
         return new ResponseEntity<>(output.toByteArray(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * 设置已读
+     * @param resourceId 场地id
+     * @param userId    用户id
+     */
+    @PutMapping(value = "/read/{resourceId}/{userId}")
+    public void read(@PathVariable long resourceId, @PathVariable String userId) {
+        this.weixingResourceService.tagReaded(resourceId, userId);
     }
 }

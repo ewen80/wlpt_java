@@ -7,18 +7,19 @@ import pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.ResourceCheckInDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.weixing.WeixingResourceDTO;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
-import pw.ewen.WLPT.domains.dtoconvertors.resources.FieldAuditDTOConvertor;
 import pw.ewen.WLPT.domains.dtoconvertors.PermissionDTOConvertor;
+import pw.ewen.WLPT.domains.dtoconvertors.resources.FieldAuditDTOConvertor;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.ResourceCheckInDTOConvertor;
 import pw.ewen.WLPT.domains.entities.resources.FieldAudit;
 import pw.ewen.WLPT.domains.entities.resources.ResourceCheckIn;
+import pw.ewen.WLPT.domains.entities.resources.ResourceReadInfo;
 import pw.ewen.WLPT.domains.entities.resources.weixing.WeixingResource;
 import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.services.PermissionService;
-import pw.ewen.WLPT.services.resources.weixing.WeixingResourceService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -79,6 +80,11 @@ public class WeixingResourceDTOConvertor {
         dto.setWxmc(weixingResource.getWxmc());
         dto.setSsdwlx(weixingResource.getSsdwlx());
 
+        // 是否已读
+        List<ResourceReadInfo> readedInfos = weixingResource.getReadInfoList();
+        boolean haveReaded = readedInfos.stream().anyMatch(readInfo -> Objects.equals(readInfo.getUser().getId(), userContext.getCurrentUser().getId()));
+        dto.setReaded(haveReaded);
+
         if(!fetchLazy) {
             // 添加场地核查信息
             List<FieldAudit> fieldAudits = weixingResource.getFieldAudits();
@@ -95,11 +101,11 @@ public class WeixingResourceDTOConvertor {
                 dto.setResourceCheckIn(resourceCheckInDTO);
             }
 
-
             // 添加权限列表
             ResourceRangePermissionWrapper wrapper = permissionService.getByRoleAndResource(userContext.getCurrentUser().getRole().getId(), weixingResource);
             List<PermissionDTO> permissionDTOS = wrapper.getPermissions().stream().map(permissionDTOConvertor::toDTO).collect(Collectors.toList());
             dto.setPermissions(permissionDTOS);
+
         }
 
 

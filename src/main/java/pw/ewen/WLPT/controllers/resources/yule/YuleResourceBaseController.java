@@ -11,6 +11,7 @@ import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.DTOs.resources.yule.YuleResourceBaseDTO;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.yule.YuleResourceBaseDTOConvertor;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceBase;
+import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.services.resources.yule.YuleResourceBaseService;
 
 import java.io.ByteArrayOutputStream;
@@ -25,10 +26,12 @@ import java.util.List;
 public class YuleResourceBaseController {
     private final YuleResourceBaseService yuleResourceBaseService;
     private final YuleResourceBaseDTOConvertor yuleResourceBaseDTOConvertor;
+    private final UserContext userContext;
 
-    public YuleResourceBaseController(YuleResourceBaseService yuleResourceBaseService, YuleResourceBaseDTOConvertor yuleResourceBaseDTOConvertor) {
+    public YuleResourceBaseController(YuleResourceBaseService yuleResourceBaseService, YuleResourceBaseDTOConvertor yuleResourceBaseDTOConvertor, UserContext userContext) {
         this.yuleResourceBaseService = yuleResourceBaseService;
         this.yuleResourceBaseDTOConvertor = yuleResourceBaseDTOConvertor;
+        this.userContext = userContext;
     }
 
     /**
@@ -39,8 +42,10 @@ public class YuleResourceBaseController {
     public Page<YuleResourceBaseDTO> getResourcesWithPage(PageInfo pageInfo) {
         Page<YuleResourceBase> resourceResult;
         PageRequest pr = pageInfo.getPageRequest();
+        String userId = userContext.getCurrentUser().getId();
 
         List<YuleResourceBase> allResource = pageInfo.getFilter().isEmpty() ? this.yuleResourceBaseService.findAll() : this.yuleResourceBaseService.findAll(pageInfo.getFilter());
+        allResource.sort((y1,y2)->Boolean.compare(y1.isReaded(userId),y2.isReaded(userId)));
         resourceResult = new MyPage<>(allResource, pr).getPage();
         return resourceResult.map(yuleResourceBaseDTOConvertor::toDTO);
     }
@@ -115,5 +120,15 @@ public class YuleResourceBaseController {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         this.yuleResourceBaseService.getFieldAuditWord(resourceId, fieldAuditId, output);
         return new ResponseEntity<>(output.toByteArray(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * 设置已读
+     * @param resourceId 场地id
+     * @param userId    用户id
+     */
+    @PutMapping(value = "/read/{resourceId}/{userId}")
+    public void read(@PathVariable long resourceId, @PathVariable String userId) {
+        this.yuleResourceBaseService.tagReaded(resourceId, userId);
     }
 }

@@ -1,6 +1,8 @@
 package pw.ewen.WLPT.domains.entities.resources;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wen on 17-2-28.
@@ -21,6 +23,8 @@ public abstract class BaseResource {
     @OneToOne(cascade = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn
     private ResourceCheckIn resourceCheckIn;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<ResourceReadInfo> readInfoList = new ArrayList<>();
 
     public long getId(){
         return this.id;
@@ -33,6 +37,22 @@ public abstract class BaseResource {
 
     public void setResourceCheckIn(ResourceCheckIn resourceCheckIn) {
         this.resourceCheckIn = resourceCheckIn;
+    }
+
+    public List<ResourceReadInfo> getReadInfoList() {
+        return readInfoList;
+    }
+
+    public void setReadInfoList(List<ResourceReadInfo> readInfoList) {
+        this.readInfoList = readInfoList;
+    }
+
+    /**
+     * 用户对该资源是否已读
+     * @param userId    用户id
+     */
+    public boolean isReaded(String userId) {
+        return this.readInfoList.stream().anyMatch(readInfo->readInfo.getUser().getId().equals(userId));
     }
 
     @Override

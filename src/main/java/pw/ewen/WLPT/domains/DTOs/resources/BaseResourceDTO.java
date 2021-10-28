@@ -1,7 +1,6 @@
 package pw.ewen.WLPT.domains.DTOs.resources;
 
 import pw.ewen.WLPT.domains.DTOs.permissions.PermissionDTO;
-import pw.ewen.WLPT.domains.entities.resources.ResourceCheckIn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +22,14 @@ public abstract class BaseResourceDTO {
      * 资源的登记信息
      */
     private ResourceCheckInDTO resourceCheckIn;
-
     /**
      * 场地核查信息
      */
     private List<FieldAuditDTO> fieldAudits = new ArrayList<>();
+    /**
+     * 是否已读
+     */
+    private boolean readed = false;
 
     public long getId() {
         return id;
@@ -60,6 +62,14 @@ public abstract class BaseResourceDTO {
 
     public void setFieldAudits(List<FieldAuditDTO> fieldAudits) {
         this.fieldAudits = fieldAudits;
+    }
+
+    public boolean isReaded() {
+        return readed;
+    }
+
+    public void setReaded(boolean readed) {
+        this.readed = readed;
     }
 
     @Override

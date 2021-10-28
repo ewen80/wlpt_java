@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.domains.entities.resources.ResourceCheckIn;
+import pw.ewen.WLPT.domains.entities.resources.ResourceReadInfo;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceBase;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceGwRoom;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceGwWc;
@@ -16,6 +17,7 @@ import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder
 import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.services.FileService;
 import pw.ewen.WLPT.services.SerialNumberService;
+import pw.ewen.WLPT.services.UserService;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,13 +35,15 @@ public class YuleResourceBaseService {
     private final BizConfig bizConfig;
     private final UserContext userContext;
     private final FileService fileService;
+    private final UserService userService;
 
-    public YuleResourceBaseService(YuleResourceBaseRepository yuleResourceBaseRepository, SerialNumberService serialNumberService, BizConfig bizConfig, UserContext userContext, FileService fileService) {
+    public YuleResourceBaseService(YuleResourceBaseRepository yuleResourceBaseRepository, SerialNumberService serialNumberService, BizConfig bizConfig, UserContext userContext, FileService fileService, UserService userService) {
         this.yuleResourceBaseRepository = yuleResourceBaseRepository;
         this.serialNumberService = serialNumberService;
         this.bizConfig = bizConfig;
         this.userContext = userContext;
         this.fileService = fileService;
+        this.userService = userService;
     }
 
     @PostAuthorize("hasPermission(returnObject.get(), 'read')")
@@ -168,6 +172,21 @@ public class YuleResourceBaseService {
 
             }
 
+        });
+    }
+
+    /**
+     * 标记资源为已读
+     * @param resourceId    资源id
+     * @param userId    读取用户id
+     */
+    public void tagReaded(long resourceId, String userId) {
+        this.yuleResourceBaseRepository.findById(resourceId).ifPresent(yule -> {
+            ResourceReadInfo readInfo = new ResourceReadInfo();
+            readInfo.setReadAt(LocalDateTime.now());
+            userService.findOne(userId).ifPresent(readInfo::setUser);
+            yule.getReadInfoList().add(readInfo);
+            this.yuleResourceBaseRepository.save(yule);
         });
     }
 }

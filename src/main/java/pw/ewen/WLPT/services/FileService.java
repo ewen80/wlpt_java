@@ -1,12 +1,5 @@
 package pw.ewen.WLPT.services;
 
-import com.itextpdf.forms.PdfAcroForm;
-import com.itextpdf.forms.fields.PdfFormField;
-import com.itextpdf.io.image.ImageData;
-import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.kernel.pdf.*;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Image;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
@@ -17,16 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 import pw.ewen.WLPT.configs.biz.BizConfig;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.time.LocalDate;
-import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -107,12 +97,19 @@ public class FileService {
         String fontFamily = table.getRow(0).getCell(0).getParagraphs().get(0).getRuns().get(0).getFontFamily();
         Double fontSize = table.getRow(0).getCell(0).getParagraphs().get(0).getRuns().get(0).getFontSizeAsDouble();
 
-        for(int rowIndex=table.getRows().size()-1; rowIndex>=0; rowIndex--) {
+        // 是否跳出循环，直接下一行
+        boolean jumpNextRow = false;
+
+        for(int rowIndex=table.getRows().size()-1; rowIndex>=0 ; rowIndex--) {
             XWPFTableRow row = table.getRow(rowIndex);
             for(int cellIndex=0; cellIndex<row.getTableCells().size(); cellIndex++) {
+                if(jumpNextRow) {
+                    jumpNextRow = false;
+                    break;
+                }
                 XWPFTableCell cell = row.getCell(cellIndex);
-
                 for (XWPFParagraph p : cell.getParagraphs()) {
+                    if(jumpNextRow) break;
                     // 遍历模板字段Map
                     for(String key : fieldTextValueMap.keySet()) {
                         if(p.getText().contains("${"+key+"}")) {
@@ -194,8 +191,9 @@ public class FileService {
                                     run.setText(entry.getValue()[i][j]);
                                 }
                             }
-                            // 删除模板行
+                            // 删除模板行,直接跳转下一行处理
                             table.removeRow(rowIndex);
+                            jumpNextRow = true;
                             break;
                         }
                     }
@@ -213,12 +211,13 @@ public class FileService {
                         for(int i=0; i<runSize; i++) {
                             p.removeRun(0);
                         }
-                        Pattern pattern = Pattern.compile("\\$\\{\\w+\\}");
-                        Matcher matcher = pattern.matcher(oldContent);
-
-                        String newContent = matcher.replaceAll("");
+//                        Pattern pattern = Pattern.compile("\\$\\{\\w+\\}");
+//                        Matcher matcher = pattern.matcher(oldContent);
+//
+//                        String newContent = matcher.replaceAll("");
                         XWPFRun run = p.insertNewRun(0);
-                        run.setText(newContent);
+//                        run.setText(newContent);
+                        run.setText("");
                         run.setFontFamily(fontFamily);
                         run.setFontSize(fontSize);
                     }
@@ -230,50 +229,50 @@ public class FileService {
         document.write(output);
     }
 
-    /**
-     * 生成pdf
-     * @param templateFile 模板文件
-     * @param fieldTextValueMap 表单文本值
-     * @param fieldImageMap 表单图片值，图片使用base64保存
-     * @param output pdf文件输出流
-     */
-    public void getPdf(String templateFile, Map<String, String> fieldTextValueMap, Map<String, byte[]> fieldImageMap, OutputStream output) throws IOException {
-        PdfDocument pdfDoc = new PdfDocument(new PdfReader(templateFile), new PdfWriter(output));
-        Document doc = new Document(pdfDoc);
-        PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, true);
-        Map<String, PdfFormField> fields = form.getFormFields();
-        // 替换文本字段
-        fieldTextValueMap.forEach((key,value)-> {
-            if(value != null) {
-                fields.get(key).setValue(value);
-            }
-            fields.get(key).setReadOnly(true);
-        });
-        // 替换图片字段
-        fieldImageMap.forEach((key,value)->{
-            String base64 = Base64.getEncoder().encodeToString(value);
-            PdfArray position = fields.get(key).getWidgets().get(0).getRectangle();
-            PdfPage page = fields.get(key).getWidgets().get(0).getPage();
-            int pageNumber = pdfDoc.getPageNumber(page);
-
-            ImageData imgData = ImageDataFactory.create(value);
-            Image img = new Image(imgData).scaleAbsolute(100,100).setFixedPosition(pageNumber, position.toRectangle().getLeft(), position.toRectangle().getBottom());
-            doc.add(img);
-
-        });
-        pdfDoc.close();
-    }
-
-    public void getPdf(String templateFile, Map<String,String> fieldTextValueMap, OutputStream output) throws IOException {
-        PdfDocument pdfDoc = new PdfDocument(new PdfReader(templateFile), new PdfWriter(output));
-        PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, true);
-        Map<String, PdfFormField> fields = form.getFormFields();
-        // 替换文本字段
-        fieldTextValueMap.forEach((key,value)-> {
-            fields.get(key).setValue(value);
-            fields.get(key).setReadOnly(true);
-        });
-        pdfDoc.close();
-    }
+//    /**
+//     * 生成pdf
+//     * @param templateFile 模板文件
+//     * @param fieldTextValueMap 表单文本值
+//     * @param fieldImageMap 表单图片值，图片使用base64保存
+//     * @param output pdf文件输出流
+//     */
+//    public void getPdf(String templateFile, Map<String, String> fieldTextValueMap, Map<String, byte[]> fieldImageMap, OutputStream output) throws IOException {
+//        PdfDocument pdfDoc = new PdfDocument(new PdfReader(templateFile), new PdfWriter(output));
+//        Document doc = new Document(pdfDoc);
+//        PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, true);
+//        Map<String, PdfFormField> fields = form.getFormFields();
+//        // 替换文本字段
+//        fieldTextValueMap.forEach((key,value)-> {
+//            if(value != null) {
+//                fields.get(key).setValue(value);
+//            }
+//            fields.get(key).setReadOnly(true);
+//        });
+//        // 替换图片字段
+//        fieldImageMap.forEach((key,value)->{
+//            String base64 = Base64.getEncoder().encodeToString(value);
+//            PdfArray position = fields.get(key).getWidgets().get(0).getRectangle();
+//            PdfPage page = fields.get(key).getWidgets().get(0).getPage();
+//            int pageNumber = pdfDoc.getPageNumber(page);
+//
+//            ImageData imgData = ImageDataFactory.create(value);
+//            Image img = new Image(imgData).scaleAbsolute(100,100).setFixedPosition(pageNumber, position.toRectangle().getLeft(), position.toRectangle().getBottom());
+//            doc.add(img);
+//
+//        });
+//        pdfDoc.close();
+//    }
+//
+//    public void getPdf(String templateFile, Map<String,String> fieldTextValueMap, OutputStream output) throws IOException {
+//        PdfDocument pdfDoc = new PdfDocument(new PdfReader(templateFile), new PdfWriter(output));
+//        PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, true);
+//        Map<String, PdfFormField> fields = form.getFormFields();
+//        // 替换文本字段
+//        fieldTextValueMap.forEach((key,value)-> {
+//            fields.get(key).setValue(value);
+//            fields.get(key).setReadOnly(true);
+//        });
+//        pdfDoc.close();
+//    }
 
 }

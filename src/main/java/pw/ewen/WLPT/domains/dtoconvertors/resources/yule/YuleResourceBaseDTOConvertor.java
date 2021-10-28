@@ -13,6 +13,7 @@ import pw.ewen.WLPT.domains.dtoconvertors.resources.FieldAuditDTOConvertor;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.ResourceCheckInDTOConvertor;
 import pw.ewen.WLPT.domains.entities.resources.FieldAudit;
 import pw.ewen.WLPT.domains.entities.resources.ResourceCheckIn;
+import pw.ewen.WLPT.domains.entities.resources.ResourceReadInfo;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceBase;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceGwRoom;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceGwWc;
@@ -22,6 +23,7 @@ import pw.ewen.WLPT.services.resources.yule.YuleResourceYyBaseService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -109,6 +111,11 @@ public class YuleResourceBaseDTOConvertor {
         dto.setSymj(yule.getSymj());
         dto.setId(yule.getId());
         dto.setQxId(yule.getQxId());
+
+        // 是否已读
+        List<ResourceReadInfo> readedInfos = yule.getReadInfoList();
+        boolean haveReaded = readedInfos.stream().anyMatch(readInfo -> Objects.equals(readInfo.getUser().getId(), userContext.getCurrentUser().getId()));
+        dto.setReaded(haveReaded);
 
         if(!fetchLazy) {
             // 添加歌舞娱乐场所包房信息

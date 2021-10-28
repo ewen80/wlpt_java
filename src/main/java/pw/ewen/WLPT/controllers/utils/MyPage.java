@@ -23,12 +23,10 @@ public class MyPage<T>  {
         this.page = new PagedListHolder<>(content);
         this.pr = pr;
         Sort sort = pr.getSort();
-        if(sort != null) {
-            for(Sort.Order order : sort) {
-                MutableSortDefinition msd = new MutableSortDefinition(order.getProperty(), true, order.isAscending());
-                page.setSort(msd);
-                page.resort();
-            }
+        for(Sort.Order order : sort) {
+            MutableSortDefinition msd = new MutableSortDefinition(order.getProperty(), true, order.isAscending());
+            page.setSort(msd);
+            page.resort();
         }
 
         page.setPageSize(pr.getPageSize()); // number of items per page
