@@ -342,6 +342,10 @@ api[12].list.push({
     order: '7',
     desc: '获取场地审核意见表pdf',
 });
+api[12].list.push({
+    order: '8',
+    desc: '设置已读',
+});
 api.push({
     alias: 'WeixingResourceFieldAuditController',
     order: '14',
@@ -433,6 +437,14 @@ api[16].list.push({
 api[16].list.push({
     order: '5',
     desc: '删除娱乐场地信息',
+});
+api[16].list.push({
+    order: '6',
+    desc: '获取场地审核意见表pdf',
+});
+api[16].list.push({
+    order: '7',
+    desc: '设置已读',
 });
 api.push({
     alias: 'YuleResourceFieldAuditController',

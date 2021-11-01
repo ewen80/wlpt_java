@@ -20,7 +20,7 @@ repositories {
 }
 
 group = 'WLPT'
-version = '2.3.12.11'
+version = '2.3.12.12'
 
 apply plugin: 'java'
 apply plugin: 'idea'
