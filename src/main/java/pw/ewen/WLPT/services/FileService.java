@@ -84,10 +84,10 @@ public class FileService {
      * @param templateFile  模板文件路径
      * @param fieldTextValueMap 字符替换Map
      * @param fieldImageMap 图片替换Map
-     * @param rowMap    行数据体替换Map
+     * @param rowTextMap    行数据体替换Map
      * @param output    输出流
      */
-    public void getWord(String templateFile, Map<String, String> fieldTextValueMap, Map<String, byte[]> fieldImageMap, Map<String, String[][]> rowMap, OutputStream output) throws IOException, XmlException, InvalidFormatException {
+    public void getWord(String templateFile, Map<String, String> fieldTextValueMap, Map<String, byte[]> fieldImageMap, Map<String, String[][]> rowTextMap, Map<String, byte[][]> rowImageMap, OutputStream output) throws IOException, XmlException, InvalidFormatException {
         //读取word源文件
         FileInputStream fileInputStream = new FileInputStream(templateFile);
         XWPFDocument document = new XWPFDocument(fileInputStream);
@@ -142,25 +142,26 @@ public class FileService {
                             }
 
                             // 实现图片的翻转
-                            InputStream imageStream = new ByteArrayInputStream(fieldImageMap.get(key));
-                            BufferedImage image = ImageIO.read(imageStream);
-                            final double rads = Math.toRadians(rotation);
-                            final double sin = Math.abs(Math.sin(rads));
-                            final double cos = Math.abs(Math.cos(rads));
-                            final int w = (int) Math.floor(image.getWidth() * cos + image.getHeight() * sin);
-                            final int h = (int) Math.floor(image.getHeight() * cos + image.getWidth() * sin);
-                            final BufferedImage rotatedImage = new BufferedImage(w, h, image.getType());
-                            final AffineTransform at = new AffineTransform();
-                            at.translate(w / 2, h / 2);
-                            at.rotate(rads,0, 0);
-                            at.translate(-image.getWidth() / 2, -image.getHeight() / 2);
-                            final AffineTransformOp rotateOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
-                            rotateOp.filter(image,rotatedImage);
-
-                            ByteArrayOutputStream os = new ByteArrayOutputStream();
-                            ImageIO.write(rotatedImage, "png", os);
-
-                            InputStream is = new ByteArrayInputStream(os.toByteArray());
+//                            InputStream imageStream = new ByteArrayInputStream(fieldImageMap.get(key));
+//                            BufferedImage image = ImageIO.read(imageStream);
+//                            final double rads = Math.toRadians(rotation);
+//                            final double sin = Math.abs(Math.sin(rads));
+//                            final double cos = Math.abs(Math.cos(rads));
+//                            final int w = (int) Math.floor(image.getWidth() * cos + image.getHeight() * sin);
+//                            final int h = (int) Math.floor(image.getHeight() * cos + image.getWidth() * sin);
+//                            final BufferedImage rotatedImage = new BufferedImage(w, h, image.getType());
+//                            final AffineTransform at = new AffineTransform();
+//                            at.translate(w / 2, h / 2);
+//                            at.rotate(rads,0, 0);
+//                            at.translate(-image.getWidth() / 2, -image.getHeight() / 2);
+//                            final AffineTransformOp rotateOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+//                            rotateOp.filter(image,rotatedImage);
+//
+//                            ByteArrayOutputStream os = new ByteArrayOutputStream();
+//                            ImageIO.write(rotatedImage, "png", os);
+//
+//                            InputStream is = new ByteArrayInputStream(os.toByteArray());
+                            InputStream is = this.imageRotate(fieldImageMap.get(key), rotation);
                             p.insertNewRun(0).addPicture(is, XWPFDocument.PICTURE_TYPE_PNG, "signature.png", Units.toEMU(width), Units.toEMU(height));
 
                             break;
@@ -171,7 +172,8 @@ public class FileService {
                     if(cellIndex > 0) {
                         break;
                     }
-                    for(Map.Entry<String, String[][]> entry : rowMap.entrySet()) {
+                    // 插入文字行
+                    for(Map.Entry<String, String[][]> entry : rowTextMap.entrySet()) {
                         if(p.getText().contains("${"+entry.getKey()+"}")) {
                             // 找到要插入的行位置
                             int insRowIndex = rowIndex;
@@ -190,6 +192,39 @@ public class FileService {
                                     run.setFontFamily(fontFamily);
                                     run.setText(entry.getValue()[i][j]);
                                 }
+                            }
+                            // 删除模板行,直接跳转下一行处理
+                            table.removeRow(rowIndex);
+                            jumpNextRow = true;
+                            break;
+                        }
+                    }
+                    // 如果已经执行插入文字行则跳过图片行插入检查
+                    if(jumpNextRow) break;
+                    // 插入图片行
+                    for(Map.Entry<String, byte[][]> entry : rowImageMap.entrySet()) {
+                        if(p.getText().contains("${"+entry.getKey()+"}")) {
+                            String content = p.getText();
+                            String[] arrContent = content.split(",");
+                            int width = Integer.parseInt(arrContent[1]);
+                            int height = Integer.parseInt(arrContent[2]);
+                            int rotation = Integer.parseInt(arrContent[3]);
+
+                            // 找到要插入的行位置
+                            int insRowIndex = rowIndex;
+                            for(int i=0; i<entry.getValue().length; i++) {
+                                // 写入新行的每个列
+                                table.addRow(row, insRowIndex++);
+                                XWPFTableRow newRow = table.getRow(insRowIndex);
+                                // 删除单位格所有段落文字
+                                int paragraphSize = newRow.getCell(0).getParagraphs().size();
+                                for(int ii=0; ii<paragraphSize; ii++){
+                                    newRow.getCell(0).removeParagraph(0);
+                                }
+
+                                InputStream is = this.imageRotate(entry.getValue()[i], rotation);
+                                XWPFRun run = newRow.getCell(0).addParagraph().insertNewRun(0);
+                                run.addPicture(is, XWPFDocument.PICTURE_TYPE_PNG, "signature.png", Units.toEMU(width), Units.toEMU(height));
                             }
                             // 删除模板行,直接跳转下一行处理
                             table.removeRow(rowIndex);
@@ -227,6 +262,33 @@ public class FileService {
 
         fileInputStream.close();
         document.write(output);
+    }
+
+    /**
+     * 旋转图片
+     * @param imageBytes 图片字节数组
+     * @param rotation 旋转角度
+     */
+    private InputStream imageRotate(byte[] imageBytes, int rotation) throws IOException {
+        InputStream imageStream = new ByteArrayInputStream(imageBytes);
+        BufferedImage image = ImageIO.read(imageStream);
+        final double rads = Math.toRadians(rotation);
+        final double sin = Math.abs(Math.sin(rads));
+        final double cos = Math.abs(Math.cos(rads));
+        final int w = (int) Math.floor(image.getWidth() * cos + image.getHeight() * sin);
+        final int h = (int) Math.floor(image.getHeight() * cos + image.getWidth() * sin);
+        final BufferedImage rotatedImage = new BufferedImage(w, h, image.getType());
+        final AffineTransform at = new AffineTransform();
+        at.translate(w / 2, h / 2);
+        at.rotate(rads,0, 0);
+        at.translate(-image.getWidth() / 2, -image.getHeight() / 2);
+        final AffineTransformOp rotateOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+        rotateOp.filter(image,rotatedImage);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ImageIO.write(rotatedImage, "png", os);
+
+        return  new ByteArrayInputStream(os.toByteArray());
     }
 
 //    /**

@@ -44,7 +44,12 @@ public class FieldAudit implements Serializable {
      */
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn
-    private Signature signature;
+    private Signature fzrSignature;
+    /**
+     * 场地负责人签名信息
+     */
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Signature> auditorSignatures;
     /**
      * 审核单位名称
      */
@@ -96,12 +101,12 @@ public class FieldAudit implements Serializable {
         this.attachmentBags = attachmentBags;
     }
 
-    public Signature getSignature() {
-        return signature;
+    public Signature getFzrSignature() {
+        return fzrSignature;
     }
 
-    public void setSignature(Signature signature) {
-        this.signature = signature;
+    public void setFzrSignature(Signature fzrSignature) {
+        this.fzrSignature = fzrSignature;
     }
 
     public String getAuditDepartment() {
@@ -118,5 +123,13 @@ public class FieldAudit implements Serializable {
 
     public void setGps(GPS gps) {
         this.gps = gps;
+    }
+
+    public List<Signature> getAuditorSignatures() {
+        return auditorSignatures;
+    }
+
+    public void setAuditorSignatures(List<Signature> auditorSignatures) {
+        this.auditorSignatures = auditorSignatures;
     }
 }

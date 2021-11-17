@@ -28,6 +28,10 @@ public class YuleResourceYyBase {
      * 单件奖品价值是否超过500元
      */
     private boolean jiangpinValue;
+    /**
+     * 申请材料是否一致
+     */
+    private boolean materialSame;
 
     @OneToOne
     @JoinColumn
@@ -79,5 +83,13 @@ public class YuleResourceYyBase {
 
     public void setYuleResourceBase(YuleResourceBase yuleResourceBase) {
         this.yuleResourceBase = yuleResourceBase;
+    }
+
+    public boolean isMaterialSame() {
+        return materialSame;
+    }
+
+    public void setMaterialSame(boolean materialSame) {
+        this.materialSame = materialSame;
     }
 }

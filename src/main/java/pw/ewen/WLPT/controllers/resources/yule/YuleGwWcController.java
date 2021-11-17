@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * created by wenliang on 2021/10/12
+ * 娱乐场所-舞池
  */
 @RestController
 @RequestMapping(value = "/resources/yules/wcs")
@@ -29,12 +29,20 @@ public class YuleGwWcController {
         this.yuleResourceBaseService = yuleResourceBaseService;
     }
 
+    /**
+     * 保存
+     * @param wcDTO 舞池信息
+     */
     @PutMapping
     public YuleResourceGwWcDTO save(@RequestBody YuleResourceGwWcDTO wcDTO) {
         YuleResourceGwWc wc = yuleResourceGwWcDTOConvertor.toWc(wcDTO);
         return yuleResourceGwWcDTOConvertor.toDTO(this.yuleResourceGwWcService.save(wc));
     }
 
+    /**
+     * 获取舞池信息
+     * @param resourceId 场所id
+     */
     @GetMapping(value = "/byResourceId/{resourceId}")
     public List<YuleResourceGwWcDTO> getByResourceId(@PathVariable long resourceId) {
         List<YuleResourceGwWcDTO> wcDTOs = new ArrayList<>();
@@ -46,6 +54,10 @@ public class YuleGwWcController {
         return wcDTOs;
     }
 
+    /**
+     * 获取一个舞池信息
+     * @param id 舞池id
+     */
     @GetMapping(value = "/{id}")
     public ResponseEntity<YuleResourceGwWcDTO> getOne(@PathVariable long id){
         return this.yuleResourceGwWcService.findOne(id).map(wc -> {
@@ -54,6 +66,10 @@ public class YuleGwWcController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * 删除舞池信息
+     * @param ids 舞池ids,多个id用,分割
+     */
     @DeleteMapping(value = "/{ids}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable(value = "ids") String ids) {

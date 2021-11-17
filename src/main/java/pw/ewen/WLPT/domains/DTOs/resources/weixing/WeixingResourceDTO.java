@@ -1,10 +1,6 @@
 package pw.ewen.WLPT.domains.DTOs.resources.weixing;
 
 import pw.ewen.WLPT.domains.DTOs.resources.BaseResourceDTO;
-import pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * created by wenliang on 2021-07-21
@@ -39,6 +35,10 @@ public class WeixingResourceDTO extends BaseResourceDTO {
      * 邮政编码
      */
     private String yzbm;
+    /**
+     * 联系地址
+     */
+    private String lxdz;
     /**
      * 负责人
      */
@@ -310,5 +310,13 @@ public class WeixingResourceDTO extends BaseResourceDTO {
 
     public void setSsdwlx(String ssdwlx) {
         this.ssdwlx = ssdwlx;
+    }
+
+    public String getLxdz() {
+        return lxdz;
+    }
+
+    public void setLxdz(String lxdz) {
+        this.lxdz = lxdz;
     }
 }

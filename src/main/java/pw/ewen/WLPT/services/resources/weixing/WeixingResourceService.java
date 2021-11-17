@@ -178,6 +178,7 @@ public class WeixingResourceService {
         this.findOne(resourceId).ifPresent(weixing -> {
             Map<String, String> textFieldMap = new HashMap<>();
             Map<String, byte[]> imageFieldMap = new HashMap<>();
+            Map<String, byte[][]> rowImageMap = new HashMap<>();
 
             textFieldMap.put("bh", weixing.getBh());
             textFieldMap.put("sqdw", weixing.getSqdw());
@@ -214,15 +215,15 @@ public class WeixingResourceService {
                         textFieldMap.put("auditDepartment", audit.getAuditDepartment());
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(bizConfig.getPrintDateFormat());
                         textFieldMap.put("auditDate", audit.getAuditDate().format(formatter));
-                        if (audit.getSignature() != null && audit.getSignature().getBytes() != null) {
-                            imageFieldMap.put("signature", audit.getSignature().getBytes());
+                        if (audit.getFzrSignature() != null && audit.getFzrSignature().getBytes() != null) {
+                            imageFieldMap.put("signature", audit.getFzrSignature().getBytes());
                         }
 
                     });
             String template = bizConfig.getFile().getWeixingFieldAuditTemplate();
 
             try {
-                this.fileService.getWord(template, textFieldMap, imageFieldMap, new HashMap<>(), output);
+                this.fileService.getWord(template, textFieldMap, imageFieldMap, new HashMap<>(), rowImageMap, output);
             } catch (IOException | XmlException | InvalidFormatException ignored) {
 
             }

@@ -43,6 +43,10 @@ public class YuleResourceGwRoom implements Serializable {
      * 点唱歌曲1000首以上
      */
     private boolean oneThousandSongs;
+    /**
+     * 是否安装长明灯
+     */
+    private boolean everlight;
 
     @ManyToOne
     @JoinColumn
@@ -118,5 +122,13 @@ public class YuleResourceGwRoom implements Serializable {
 
     public void setYuleResourceBase(YuleResourceBase yuleResourceBase) {
         this.yuleResourceBase = yuleResourceBase;
+    }
+
+    public boolean isEverlight() {
+        return everlight;
+    }
+
+    public void setEverlight(boolean everlight) {
+        this.everlight = everlight;
     }
 }

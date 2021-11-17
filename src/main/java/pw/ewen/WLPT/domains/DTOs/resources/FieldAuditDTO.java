@@ -41,7 +41,11 @@ public class FieldAuditDTO {
     /**
      * 签名信息
      */
-    private SignatureDTO signature;
+    private SignatureDTO fzrSignature;
+    /**
+     * 场地审核人签名
+     */
+    private List<SignatureDTO> auditorSignatures;
     /**
      * GPS打卡信息
      */
@@ -87,12 +91,12 @@ public class FieldAuditDTO {
         this.attachmentBags = attachmentBags;
     }
 
-    public SignatureDTO getSignature() {
-        return signature;
+    public SignatureDTO getFzrSignature() {
+        return fzrSignature;
     }
 
-    public void setSignature(SignatureDTO signature) {
-        this.signature = signature;
+    public void setFzrSignature(SignatureDTO fzrSignature) {
+        this.fzrSignature = fzrSignature;
     }
 
     public String getAuditDepartment() {
@@ -109,6 +113,14 @@ public class FieldAuditDTO {
 
     public void setGps(GPS gps) {
         this.gps = gps;
+    }
+
+    public List<SignatureDTO> getAuditorSignatures() {
+        return auditorSignatures;
+    }
+
+    public void setAuditorSignatures(List<SignatureDTO> auditorSignatures) {
+        this.auditorSignatures = auditorSignatures;
     }
 
     @Override

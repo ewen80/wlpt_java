@@ -23,6 +23,7 @@ public class YuleResourceYyDTOConvertor {
         yy.setTuibi(dto.isTuibi());
         yy.setJiangpinValue(dto.isJiangpinValue());
         yy.setJiangpinCatalogSame(dto.isJiangpinCatalogSame());
+        yy.setMaterialSame(dto.isMaterialSame());
         yuleService.findOne(dto.getYuleResourceBaseId()).ifPresent(yy::setYuleResourceBase);
         return yy;
     }
@@ -34,6 +35,7 @@ public class YuleResourceYyDTOConvertor {
         dto.setFenqu(yy.isFenqu());
         dto.setTuibi(yy.isTuibi());
         dto.setJiangpinValue(yy.isJiangpinValue());
+        dto.setMaterialSame(yy.isMaterialSame());
         dto.setJiangpinCatalogSame(yy.isJiangpinCatalogSame());
         return dto;
     }

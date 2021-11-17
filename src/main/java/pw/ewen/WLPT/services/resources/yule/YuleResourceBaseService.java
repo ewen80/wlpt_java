@@ -106,7 +106,8 @@ public class YuleResourceBaseService {
         this.findOne(resourceId).ifPresent(yule -> {
             Map<String, String> textFieldMap = new HashMap<>();
             Map<String, byte[]> imageFieldMap = new HashMap<>();
-            Map<String, String[][]> rowMap = new HashMap<>();
+            Map<String, String[][]> rowTextMap = new HashMap<>();
+            Map<String, byte[][]> rowImageMap = new HashMap<>();
 
             textFieldMap.put("bh", yule.getBh());
             textFieldMap.put("dwmc", yule.getDwmc());
@@ -134,9 +135,16 @@ public class YuleResourceBaseService {
                                         DateTimeFormatter formatter =  DateTimeFormatter.ofPattern(bizConfig.getPrintDateFormat());
                                         textFieldMap.put("auditDate", audit.getAuditDate().format(formatter));
 
-                                        if(audit.getSignature() != null && audit.getSignature().getBytes() != null) {
-                                            imageFieldMap.put("signature", audit.getSignature().getBytes());
+                                        if(audit.getFzrSignature() != null && audit.getFzrSignature().getBytes() != null) {
+                                            imageFieldMap.put("signature", audit.getFzrSignature().getBytes());
                                         }
+
+                                        // 核查人签名
+                                        byte[][] auditorSignatures = new byte[audit.getAuditorSignatures().size()][1];
+                                        for(int i=0; i<audit.getAuditorSignatures().size(); i++) {
+                                            auditorSignatures[i] = audit.getAuditorSignatures().get(i).getBytes();
+                                        }
+                                        rowImageMap.put("auditorSignatures", auditorSignatures);
                                     });
             // 填充包房Map
             String[][] rooms = new String[yule.getRooms().size()][7];
@@ -150,7 +158,7 @@ public class YuleResourceBaseService {
                 rooms[i][5] = room.isInnerLock() ? "是" : "否";
                 rooms[i][6] = room.isWindow() ? "是" : "否";
             }
-            rowMap.put("row1", rooms);
+            rowTextMap.put("row1", rooms);
 
             // 填充舞池Map
             String[][] wcs = new String[yule.getWcs().size()][5];
@@ -162,12 +170,12 @@ public class YuleResourceBaseService {
                 wcs[i][3] = wc.isDlwc() ? "是" : "否";
                 wcs[i][4] = wc.isYwjf() ? "是" : "否";
             }
-            rowMap.put("row2", wcs);
+            rowTextMap.put("row2", wcs);
 
             String template = bizConfig.getFile().getYuleFieldAuditTemplate();
 
             try {
-                this.fileService.getWord(template, textFieldMap, imageFieldMap, rowMap, output);
+                this.fileService.getWord(template, textFieldMap, imageFieldMap, rowTextMap, rowImageMap, output);
             } catch (IOException | XmlException | InvalidFormatException ignored) {
 
             }

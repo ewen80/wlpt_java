@@ -34,6 +34,10 @@ public class YuleResourceGwRoomDTO {
      * 点唱歌曲1000首以上
      */
     private boolean oneThousandSongs;
+    /**
+     * 是否安装长明灯
+     */
+    private boolean everlight;
 
     private long yuleResourceBaseId;
 
@@ -107,5 +111,13 @@ public class YuleResourceGwRoomDTO {
 
     public void setYuleResourceBaseId(long yuleResourceBaseId) {
         this.yuleResourceBaseId = yuleResourceBaseId;
+    }
+
+    public boolean isEverlight() {
+        return everlight;
+    }
+
+    public void setEverlight(boolean everlight) {
+        this.everlight = everlight;
     }
 }

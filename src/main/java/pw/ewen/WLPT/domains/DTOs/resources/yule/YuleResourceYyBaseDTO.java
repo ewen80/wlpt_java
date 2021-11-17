@@ -22,6 +22,10 @@ public class YuleResourceYyBaseDTO {
      * 单件奖品价值是否超过500元
      */
     private boolean jiangpinValue;
+    /**
+     * 与申请材料是否一致
+     */
+    private boolean materialSame;
 
     private long yuleResourceBaseId;
 
@@ -71,5 +75,13 @@ public class YuleResourceYyBaseDTO {
 
     public void setYuleResourceBaseId(long yuleResourceBaseId) {
         this.yuleResourceBaseId = yuleResourceBaseId;
+    }
+
+    public boolean isMaterialSame() {
+        return materialSame;
+    }
+
+    public void setMaterialSame(boolean materialSame) {
+        this.materialSame = materialSame;
     }
 }

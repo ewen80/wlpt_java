@@ -26,6 +26,7 @@ public class YuleResourceGwRoomDTOConvertor {
         room.setName(dto.getName());
         room.setHdrs(dto.getHdrs());
         room.setOneThousandSongs(dto.isOneThousandSongs());
+        room.setEverlight(dto.isEverlight());
         yuleResourceBaseService.findOne(dto.getYuleResourceBaseId()).ifPresent(room::setYuleResourceBase);
         return room;
     }
@@ -41,6 +42,7 @@ public class YuleResourceGwRoomDTOConvertor {
         dto.setHdrs(room.getHdrs());
         dto.setOneThousandSongs(room.isOneThousandSongs());
         dto.setYuleResourceBaseId(room.getYuleResourceBase().getId());
+        dto.setEverlight(room.isEverlight());
         return dto;
     }
 }

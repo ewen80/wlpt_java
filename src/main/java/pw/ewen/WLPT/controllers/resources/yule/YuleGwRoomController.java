@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * created by wenliang on 2021/10/10
+ * 娱乐场所-歌舞包房
  */
 @RestController
 @RequestMapping(value = "/resources/yules/rooms")
@@ -29,12 +29,20 @@ public class YuleGwRoomController {
         this.yuleResourceGwRoomDTOConvertor = yuleResourceGwRoomDTOConvertor;
     }
 
+    /**
+     * 保存
+     * @param roomDTO   包房信息
+     */
     @PutMapping
     public YuleResourceGwRoomDTO save(@RequestBody YuleResourceGwRoomDTO roomDTO) {
         YuleResourceGwRoom room = yuleResourceGwRoomDTOConvertor.toRoom(roomDTO);
         return yuleResourceGwRoomDTOConvertor.toDTO(this.yuleResourceGwRoomService.save(room));
     }
 
+    /**
+     * 获取包房信息
+     * @param resourceId    娱乐场所id
+     */
     @GetMapping(value = "/byResourceId/{resourceId}")
     public List<YuleResourceGwRoomDTO> getByResourceId(@PathVariable long resourceId) {
         List<YuleResourceGwRoomDTO> roomDTOs = new ArrayList<>();
@@ -46,6 +54,10 @@ public class YuleGwRoomController {
         return roomDTOs;
     }
 
+    /**
+     * 获取一个包房信息
+     * @param id    包房id
+     */
     @GetMapping(value = "/{id}")
     public ResponseEntity<YuleResourceGwRoomDTO> getOne(@PathVariable long id){
         return this.yuleResourceGwRoomService.findOne(id).map(room -> {
@@ -54,6 +66,10 @@ public class YuleGwRoomController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * 删除包房
+     * @param ids   包房ids，多个id用,分割
+     */
     @DeleteMapping(value = "/{ids}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable(value = "ids") String ids) {

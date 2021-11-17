@@ -23,8 +23,6 @@ import java.util.List;
 public class WeixingResource extends BaseResource implements Serializable {
     private static final long serialVersionUID = -5924003097388262942L;
 
-
-
     /**
      * 编号
      */
@@ -54,6 +52,10 @@ public class WeixingResource extends BaseResource implements Serializable {
      * 邮政编码
      */
     private String yb;
+    /**
+     * 联系地址
+     */
+    private String lxdz;
     /**
      * 负责人
      */
@@ -332,5 +334,13 @@ public class WeixingResource extends BaseResource implements Serializable {
 
     public void setSsdwlx(String ssdwlx) {
         this.ssdwlx = ssdwlx;
+    }
+
+    public String getLxdz() {
+        return lxdz;
+    }
+
+    public void setLxdz(String lxdz) {
+        this.lxdz = lxdz;
     }
 }

@@ -79,6 +79,7 @@ public class WeixingResourceDTOConvertor {
         dto.setXhtzfs(weixingResource.getXhtzfs());
         dto.setWxmc(weixingResource.getWxmc());
         dto.setSsdwlx(weixingResource.getSsdwlx());
+        dto.setLxdz(weixingResource.getLxdz());
 
         // 是否已读
         List<ResourceReadInfo> readedInfos = weixingResource.getReadInfoList();
@@ -141,6 +142,7 @@ public class WeixingResourceDTOConvertor {
         weixingResource.setXhtzfs(dto.getXhtzfs());
         weixingResource.setWxmc(dto.getWxmc());
         weixingResource.setSsdwlx(dto.getSsdwlx());
+        weixingResource.setLxdz(dto.getLxdz());
 
         // 添加现场审核信息
         List<FieldAuditDTO> fieldAuditDTOS = dto.getFieldAudits();
