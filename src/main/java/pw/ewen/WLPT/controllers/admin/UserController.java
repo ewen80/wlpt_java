@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.entities.User;
-import pw.ewen.WLPT.exceptions.domain.FindUserException;
 import pw.ewen.WLPT.services.RoleService;
 import pw.ewen.WLPT.services.UserService;
 
@@ -139,7 +138,7 @@ public class UserController {
 	 */
     @RequestMapping(method = RequestMethod.PUT, value = "/{userId}")
     public void setPassword(@PathVariable("userId") String userId, @RequestBody String passwordMD5) {
-		this.userService.setpassword(userId, passwordMD5);
+		this.userService.setPassword(userId, passwordMD5);
 	}
 
 	/**

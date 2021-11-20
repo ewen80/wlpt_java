@@ -58,8 +58,8 @@ public class ApplicationInit implements ApplicationRunner {
         User adminUser = adminUserOpt.orElseGet(() -> {
             //新建用户admin
             User user = new User(bizConfig.getUser().getAdminUserId(), bizConfig.getUser().getAdminUserName(), adminRole);
-            String passwordMD5 = DigestUtils.md5DigestAsHex("admin".getBytes()).toUpperCase();
-            user.setPassword(passwordEncoder.encode(passwordMD5));  // 默认密码admin
+            String passwordMD5 = DigestUtils.md5DigestAsHex(bizConfig.getUser().getAdminDefaultPassword().getBytes()).toUpperCase();
+            user.setPassword(passwordEncoder.encode(passwordMD5));
             return userRepository.save(user);
         });
 
@@ -68,8 +68,8 @@ public class ApplicationInit implements ApplicationRunner {
         User guestUser = guestUserOpt.orElseGet(() -> {
             // 新建用户guest
             User user = new User(bizConfig.getUser().getGuestUserId(), bizConfig.getUser().getGuestUserName(), anonymousRole);
-            String passwordMD5 = DigestUtils.md5DigestAsHex("guest".getBytes()).toUpperCase();
-            user.setPassword(passwordEncoder.encode(passwordMD5));  // 默认密码guest
+            String passwordMD5 = DigestUtils.md5DigestAsHex(bizConfig.getUser().getGuestDefaultPassword().getBytes()).toUpperCase();
+            user.setPassword(passwordEncoder.encode(passwordMD5));
             return userRepository.save(user);
         });
     }

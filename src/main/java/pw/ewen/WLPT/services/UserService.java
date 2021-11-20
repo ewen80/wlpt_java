@@ -7,6 +7,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
+import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.exceptions.domain.FindUserException;
 import pw.ewen.WLPT.repositories.UserRepository;
@@ -24,11 +26,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BizConfig bizConfig;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, BizConfig bizConfig) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.bizConfig = bizConfig;
     }
 
     public Page<User> findAll(String filter, PageRequest pr) {
@@ -75,6 +79,13 @@ public class UserService {
     }
 
     public User save(User user){
+        Optional<User> dbUser = this.findOne(user.getId());
+        if(dbUser.isPresent()) {
+            user.setPassword(dbUser.get().getPassword());
+        } else {
+            String passwordMD5 = DigestUtils.md5DigestAsHex(bizConfig.getUser().getNewUserDefaultPassword().getBytes()).toUpperCase();
+            user.setPassword(passwordEncoder.encode(passwordMD5));
+        }
         return this.userRepository.save(user);
     }
 
@@ -82,9 +93,9 @@ public class UserService {
      * 修改密码
      * @param userId 用户id
      * @param passwordMD5 md5编码后的用户密码
-     * @throws FindUserException
+     * @throws FindUserException 找不到指定的用户
      */
-    public void setpassword(String userId, String passwordMD5) throws  FindUserException {
+    public void setPassword(String userId, String passwordMD5) throws  FindUserException {
         Optional<User> user = this.userRepository.findById(userId);
         if (user.isPresent()) {
             user.get().setPassword(passwordEncoder.encode(passwordMD5));

@@ -28,10 +28,15 @@ public class BizConfig {
         // 管理员用户id
         private   String adminUserId;
         private   String adminUserName;
+        private   String adminDefaultPassword;
 
         // 游客用户id
         private   String guestUserId;
         private   String guestUserName;
+        private String guestDefaultPassword;
+
+        // 新用户默认密码
+        private String newUserDefaultPassword;
 
         public String getAdminRoleId() {
             return adminRoleId;
@@ -95,6 +100,30 @@ public class BizConfig {
 
         public void setGuestUserName(String guestUserName) {
             this.guestUserName = guestUserName;
+        }
+
+        public String getNewUserDefaultPassword() {
+            return newUserDefaultPassword;
+        }
+
+        public void setNewUserDefaultPassword(String newUserDefaultPassword) {
+            this.newUserDefaultPassword = newUserDefaultPassword;
+        }
+
+        public String getAdminDefaultPassword() {
+            return adminDefaultPassword;
+        }
+
+        public void setAdminDefaultPassword(String adminDefaultPassword) {
+            this.adminDefaultPassword = adminDefaultPassword;
+        }
+
+        public String getGuestDefaultPassword() {
+            return guestDefaultPassword;
+        }
+
+        public void setGuestDefaultPassword(String guestDefaultPassword) {
+            this.guestDefaultPassword = guestDefaultPassword;
         }
     }
     private User user;

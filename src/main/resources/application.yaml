@@ -34,9 +34,13 @@ bizconfig:
   #   管理员用户id
     admin_user_id: admin
     admin_user_name: admin
+    admin_default_password: admin
   #   游客用户id
     guest_user_id: guest
     guest_user_name: guest
+    guest_default_password: guest
+  # 新用户默认密码
+    new_user_default_password: 123456
 
   #   序列号相关
   serial_number:
