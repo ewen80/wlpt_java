@@ -1,6 +1,6 @@
 package pw.ewen.WLPT.domains.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -13,6 +13,8 @@ import java.util.Set;
  * 系统角色
  */
 @Entity
+@Cacheable
+@org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Role implements Serializable {
 
 	private static final long serialVersionUID = 1888955493407366629L;
@@ -27,12 +29,21 @@ public class Role implements Serializable {
 
 	private boolean deleted = false;
 
-	@OneToMany(mappedBy="role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//	@OneToMany(mappedBy="role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//	@Where(clause="deleted=false")
+//	private Set<User> users = new HashSet<>();
+
+	@ManyToMany
+	@JoinTable(
+			name = "role_user",
+			joinColumns = @JoinColumn(name = "role_id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id")
+	)
 	@Where(clause="deleted=false")
 	private Set<User> users = new HashSet<>();
 
-	@OneToMany(mappedBy = "role")
-	private Set<User> allUsers = new HashSet<>();
+//	@ManyToMany(mappedBy = "roles")
+//	private Set<User> allUsers = new HashSet<>();
 
 
 	@OneToMany(mappedBy = "role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -91,12 +102,12 @@ public class Role implements Serializable {
 
 
 
-	/**
-	 * @return 获取所有用户包含被软删除的用户
-	 */
-	public Set<User> getAllUsers() {
-		return this.allUsers;
-	}
+//	/**
+//	 * @return 获取所有用户包含被软删除的用户
+//	 */
+//	public Set<User> getAllUsers() {
+//		return this.allUsers;
+//	}
 
 	@Override
 	public String toString() {

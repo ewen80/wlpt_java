@@ -45,7 +45,7 @@ public class FieldAuditDTO {
     /**
      * 场地审核人签名
      */
-    private List<SignatureDTO> auditorSignatures;
+    private List<SignatureDTO> auditorSignatures = new ArrayList<>();
     /**
      * GPS打卡信息
      */

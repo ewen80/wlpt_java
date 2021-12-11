@@ -23,7 +23,7 @@ public abstract class BaseResource {
     @OneToOne(cascade = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn
     private ResourceCheckIn resourceCheckIn;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ResourceReadInfo> readInfoList = new ArrayList<>();
 
     public long getId(){

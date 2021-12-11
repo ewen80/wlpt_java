@@ -1,6 +1,5 @@
 package pw.ewen.WLPT.services;
 
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
+import pw.ewen.WLPT.domains.entities.Role;
+import pw.ewen.WLPT.domains.entities.resources.BaseResource;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
@@ -165,9 +166,19 @@ public class PermissionService {
      * @param roleId 角色id
      * @param resource 资源对象
      */
-    public ResourceRangePermissionWrapper getByRoleAndResource(String roleId, Object resource) {
+    public ResourceRangePermissionWrapper getByRoleAndResource(String roleId, BaseResource resource) {
         ResourceRange resourceRange = resourceRangeService.findByResourceAndRole(resource, roleId);
         return this.getByResourceRange(resourceRange.getId());
+    }
+
+    /**
+     * 读取指定角色和资源的对应权限
+     * @param role 角色
+     * @param resource 资源对象
+     * @return 权限集合
+     */
+    public Set<Permission> getPermissionsByRolesAndResource(Role role, BaseResource resource) {
+        return getByRoleAndResource(role.getId(), resource).getPermissions();
     }
 
     //ACL中该ResourceRange是否存在记录

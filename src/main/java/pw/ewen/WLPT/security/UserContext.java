@@ -18,17 +18,7 @@ import pw.ewen.WLPT.repositories.UserRepository;
  */
 @Component
 public class UserContext {
-    private final UserRepository userRepository;
-    private final UserDetailsService userDetailsService;
-
-    @Autowired
-    public UserContext(UserRepository userRepository, UserDetailsService userDetailsService) {
-        Assert.notNull(userRepository, "userRepository cannot be null");
-        Assert.notNull(userDetailsService, "userDetailsService cannot be null");
-
-        this.userRepository = userRepository;
-        this.userDetailsService = userDetailsService;
-    }
+    private User currentUser;
 
     //没有找到用户返回null
     public User getCurrentUser() {
@@ -42,15 +32,20 @@ public class UserContext {
             return null;
         }
 
-        return userRepository.findById(userId).orElse(null);
+//        return userRepository.findById(userId).orElse(null);
+        return this.currentUser;
     }
 
-    public void setCurrentUser(User user) {
-        Assert.notNull(user, "user cannot be null");
+//    public void setCurrentUser(User user) {
+//        Assert.notNull(user, "user cannot be null");
+//
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getId());
+//        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
+//                user.getPassword(),userDetails.getAuthorities());
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//    }
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getId());
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
-                user.getPassword(),userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
     }
 }

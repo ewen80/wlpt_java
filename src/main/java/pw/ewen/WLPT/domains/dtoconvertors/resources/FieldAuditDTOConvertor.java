@@ -30,7 +30,7 @@ public class FieldAuditDTOConvertor {
         this.signatureDTOConvertor = signatureDTOConvertor;
         this.userRepository = userRepository;
 
-        this.localDateFormat = DateTimeFormatter.ofPattern(bizConfig.getLocalDateFormat());
+        this.localDateFormat = DateTimeFormatter.ofPattern(bizConfig.getDateFormat().getLocalDateFormat());
     }
 
 

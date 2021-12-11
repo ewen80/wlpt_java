@@ -1,6 +1,5 @@
 package pw.ewen.WLPT.domains.entities.resources;
 
-import org.hibernate.annotations.Type;
 import pw.ewen.WLPT.domains.entities.User;
 
 import javax.persistence.*;

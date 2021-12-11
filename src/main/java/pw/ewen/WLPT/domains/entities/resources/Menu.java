@@ -1,9 +1,12 @@
 package pw.ewen.WLPT.domains.entities.resources;
 
+import pw.ewen.WLPT.domains.entities.ResourceType;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by wen on 17-5-7.
@@ -41,6 +44,13 @@ public class Menu implements Serializable {
      */
     @Column
     private int orderId = 0;
+
+    /**
+     * 资源类型
+     */
+    @OneToOne
+    @JoinColumn
+    private ResourceType resourceType;
 
     /**
      * 子节点
@@ -132,5 +142,26 @@ public class Menu implements Serializable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public ResourceType getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Menu menu = (Menu) o;
+        return id == menu.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

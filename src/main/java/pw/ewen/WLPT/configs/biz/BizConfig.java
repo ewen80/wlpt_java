@@ -16,6 +16,9 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "bizconfig")
 public class BizConfig {
 
+    /**
+     * 用户相关配置
+     */
     public static class User {
         // 管理员角色id
         private   String adminRoleId;
@@ -28,15 +31,13 @@ public class BizConfig {
         // 管理员用户id
         private   String adminUserId;
         private   String adminUserName;
-        private   String adminDefaultPassword;
 
         // 游客用户id
         private   String guestUserId;
         private   String guestUserName;
-        private String guestDefaultPassword;
 
         // 新用户默认密码
-        private String newUserDefaultPassword;
+        private String defaultPassword;
 
         public String getAdminRoleId() {
             return adminRoleId;
@@ -102,32 +103,19 @@ public class BizConfig {
             this.guestUserName = guestUserName;
         }
 
-        public String getNewUserDefaultPassword() {
-            return newUserDefaultPassword;
+        public String getDefaultPassword() {
+            return defaultPassword;
         }
 
-        public void setNewUserDefaultPassword(String newUserDefaultPassword) {
-            this.newUserDefaultPassword = newUserDefaultPassword;
-        }
-
-        public String getAdminDefaultPassword() {
-            return adminDefaultPassword;
-        }
-
-        public void setAdminDefaultPassword(String adminDefaultPassword) {
-            this.adminDefaultPassword = adminDefaultPassword;
-        }
-
-        public String getGuestDefaultPassword() {
-            return guestDefaultPassword;
-        }
-
-        public void setGuestDefaultPassword(String guestDefaultPassword) {
-            this.guestDefaultPassword = guestDefaultPassword;
+        public void setDefaultPassword(String defaultPassword) {
+            this.defaultPassword = defaultPassword;
         }
     }
     private User user;
 
+    /**
+     * 文件相关配置
+     */
     public static class File {
         // 文件上传路径
         private   String fileUploadRootPath;
@@ -162,6 +150,9 @@ public class BizConfig {
     }
     private File file;
 
+    /**
+     * 权限相关配置
+     */
     public static class Permission {
         // 系统支持的权限
         private String allPermissions;
@@ -206,6 +197,9 @@ public class BizConfig {
     }
     private Permission permission;
 
+    /**
+     * 序列号相关配置
+     */
     public static class SerialNumber {
         //序列号相关
         //  卫星场地核查序列号名
@@ -251,11 +245,16 @@ public class BizConfig {
     }
     private SerialNumber serialNumber;
 
+    /**
+     * 资源相关配置
+     */
     public static class Resource {
         // 资源
         private String name;
         private String path;
         private String type;
+        private String repositoryBeanName;
+        private String serviceBeanName;
         private String typeName;
         private String description;
 
@@ -298,12 +297,59 @@ public class BizConfig {
         public void setTypeName(String typeName) {
             this.typeName = typeName;
         }
+
+        public String getRepositoryBeanName() {
+            return repositoryBeanName;
+        }
+
+        public void setRepositoryBeanName(String repositoryBeanName) {
+            this.repositoryBeanName = repositoryBeanName;
+        }
+
+        public String getServiceBeanName() {
+            return serviceBeanName;
+        }
+
+        public void setServiceBeanName(String serviceBeanName) {
+            this.serviceBeanName = serviceBeanName;
+        }
     }
     private List<Resource> resources;
 
-    private String localDateTimeFormat;
-    private String localDateFormat;
-    private String printDateFormat;
+    /**
+     * 日期格式相关配置
+     */
+    public static class DateFormat {
+        private String localDateTimeFormat;
+        private String localDateFormat;
+        private String printDateFormat;
+
+        public String getLocalDateTimeFormat() {
+            return localDateTimeFormat;
+        }
+
+        public void setLocalDateTimeFormat(String localDateTimeFormat) {
+            this.localDateTimeFormat = localDateTimeFormat;
+        }
+
+        public String getLocalDateFormat() {
+            return localDateFormat;
+        }
+
+        public void setLocalDateFormat(String localDateFormat) {
+            this.localDateFormat = localDateFormat;
+        }
+
+        public String getPrintDateFormat() {
+            return printDateFormat;
+        }
+
+        public void setPrintDateFormat(String printDateFormat) {
+            this.printDateFormat = printDateFormat;
+        }
+    }
+    private DateFormat dateFormat;
+
     private Map<String,String> regionMap;
 
     public User getUser() {
@@ -346,22 +392,6 @@ public class BizConfig {
         this.resources = resources;
     }
 
-    public String getLocalDateTimeFormat() {
-        return localDateTimeFormat;
-    }
-
-    public void setLocalDateTimeFormat(String localDateTimeFormat) {
-        this.localDateTimeFormat = localDateTimeFormat;
-    }
-
-    public String getLocalDateFormat() {
-        return localDateFormat;
-    }
-
-    public void setLocalDateFormat(String localDateFormat) {
-        this.localDateFormat = localDateFormat;
-    }
-
     public Map<String, String> getRegionMap() {
         return regionMap;
     }
@@ -370,11 +400,11 @@ public class BizConfig {
         this.regionMap = regionMap;
     }
 
-    public String getPrintDateFormat() {
-        return printDateFormat;
+    public DateFormat getDateFormat() {
+        return dateFormat;
     }
 
-    public void setPrintDateFormat(String printDateFormat) {
-        this.printDateFormat = printDateFormat;
+    public void setDateFormat(DateFormat dateFormat) {
+        this.dateFormat = dateFormat;
     }
 }

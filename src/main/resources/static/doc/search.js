@@ -147,27 +147,27 @@ api[5].list.push({
 });
 api[5].list.push({
     order: '5',
-    desc: '获取指定角色的用户',
-});
-api[5].list.push({
-    order: '6',
     desc: '获取所有有效用户（未删除的用户）',
 });
 api[5].list.push({
-    order: '7',
+    order: '6',
     desc: '保存',
 });
 api[5].list.push({
-    order: '8',
+    order: '7',
     desc: '设置用户密码',
 });
 api[5].list.push({
-    order: '9',
+    order: '8',
     desc: '检查用户密码',
 });
 api[5].list.push({
-    order: '10',
+    order: '9',
     desc: '删除用户',
+});
+api[5].list.push({
+    order: '10',
+    desc: '变更当前角色',
 });
 api.push({
     alias: 'AttachmentBagController',
@@ -250,239 +250,181 @@ api[9].list.push({
     desc: '删除菜单',
 });
 api.push({
-    alias: 'MyResourceController',
-    order: '11',
-    link: '我的资源',
-    desc: '我的资源',
-    list: []
-})
-api[10].list.push({
-    order: '1',
-    desc: '获取资源',
-});
-api[10].list.push({
-    order: '2',
-    desc: '获取资源',
-});
-api[10].list.push({
-    order: '3',
-    desc: '获取单个资源',
-});
-api[10].list.push({
-    order: '4',
-    desc: '删除资源',
-});
-api[10].list.push({
-    order: '5',
-    desc: '修改资源',
-});
-api[10].list.push({
-    order: '6',
-    desc: '新增资源',
-});
-api[10].list.push({
-    order: '7',
-    desc: '办结资源',
-});
-api.push({
-    alias: 'MyResourceRoomController',
-    order: '12',
-    link: '我的资源-房间明细',
-    desc: '我的资源-房间明细',
-    list: []
-})
-api[11].list.push({
-    order: '1',
-    desc: '保存',
-});
-api[11].list.push({
-    order: '2',
-    desc: '获取一个房间明细',
-});
-api[11].list.push({
-    order: '3',
-    desc: '获取我的资源对应的房间',
-});
-api[11].list.push({
-    order: '4',
-    desc: '删除房间',
-});
-api.push({
     alias: 'WeixingResourceController',
-    order: '13',
+    order: '11',
     link: '卫星场地',
     desc: '卫星场地',
     list: []
 })
-api[12].list.push({
+api[10].list.push({
     order: '1',
     desc: '获取卫星场地信息',
 });
-api[12].list.push({
+api[10].list.push({
     order: '2',
     desc: '获取资源',
 });
-api[12].list.push({
+api[10].list.push({
     order: '3',
     desc: '获取单个卫星场地信息',
 });
-api[12].list.push({
+api[10].list.push({
     order: '4',
     desc: '删除卫星场地信息',
 });
-api[12].list.push({
+api[10].list.push({
     order: '5',
     desc: '新增卫星场地',
 });
-api[12].list.push({
+api[10].list.push({
     order: '6',
     desc: '修改卫星场地',
 });
-api[12].list.push({
+api[10].list.push({
     order: '7',
     desc: '获取场地审核意见表pdf',
 });
-api[12].list.push({
+api[10].list.push({
     order: '8',
     desc: '设置已读',
 });
 api.push({
     alias: 'WeixingResourceFieldAuditController',
-    order: '14',
+    order: '12',
     link: '卫星场地-现场审核信息',
     desc: '卫星场地-现场审核信息',
     list: []
 })
-api[13].list.push({
+api[11].list.push({
     order: '1',
     desc: '保存卫星场地审核信息',
 });
-api[13].list.push({
+api[11].list.push({
     order: '2',
     desc: '根据卫星场地id获取现场审核意见',
 });
-api[13].list.push({
+api[11].list.push({
     order: '3',
     desc: '删除卫星场地现场审核意见',
 });
 api.push({
     alias: 'YuleGwRoomController',
-    order: '15',
-    link: 'created_by_wenliang_on_2021/10/10',
-    desc: 'created by wenliang on 2021/10/10',
+    order: '13',
+    link: '娱乐场所-歌舞包房',
+    desc: '娱乐场所-歌舞包房',
     list: []
 })
-api[14].list.push({
+api[12].list.push({
     order: '1',
-    desc: '',
+    desc: '保存',
 });
-api[14].list.push({
+api[12].list.push({
     order: '2',
-    desc: '',
+    desc: '获取包房信息',
 });
-api[14].list.push({
+api[12].list.push({
     order: '3',
-    desc: '',
+    desc: '获取一个包房信息',
 });
-api[14].list.push({
+api[12].list.push({
     order: '4',
-    desc: '',
+    desc: '删除包房',
 });
 api.push({
     alias: 'YuleGwWcController',
-    order: '16',
-    link: 'created_by_wenliang_on_2021/10/12',
-    desc: 'created by wenliang on 2021/10/12',
+    order: '14',
+    link: '娱乐场所-舞池',
+    desc: '娱乐场所-舞池',
     list: []
 })
-api[15].list.push({
+api[13].list.push({
     order: '1',
-    desc: '',
+    desc: '保存',
 });
-api[15].list.push({
+api[13].list.push({
     order: '2',
-    desc: '',
+    desc: '获取舞池信息',
 });
-api[15].list.push({
+api[13].list.push({
     order: '3',
-    desc: '',
+    desc: '获取一个舞池信息',
 });
-api[15].list.push({
+api[13].list.push({
     order: '4',
-    desc: '',
+    desc: '删除舞池信息',
 });
 api.push({
     alias: 'YuleResourceBaseController',
-    order: '17',
+    order: '15',
     link: '娱乐场所',
     desc: '娱乐场所',
     list: []
 })
-api[16].list.push({
+api[14].list.push({
     order: '1',
     desc: '获取娱乐场所分页数据',
 });
-api[16].list.push({
+api[14].list.push({
     order: '2',
     desc: '获取单个娱乐场地信息',
 });
-api[16].list.push({
+api[14].list.push({
     order: '3',
     desc: '新增娱乐场地',
 });
-api[16].list.push({
+api[14].list.push({
     order: '4',
     desc: '修改卫星场地',
 });
-api[16].list.push({
+api[14].list.push({
     order: '5',
     desc: '删除娱乐场地信息',
 });
-api[16].list.push({
+api[14].list.push({
     order: '6',
     desc: '获取场地审核意见表pdf',
 });
-api[16].list.push({
+api[14].list.push({
     order: '7',
     desc: '设置已读',
 });
 api.push({
     alias: 'YuleResourceFieldAuditController',
-    order: '18',
+    order: '16',
     link: '娱乐场地-现场审核信息',
     desc: '娱乐场地-现场审核信息',
     list: []
 })
-api[17].list.push({
+api[15].list.push({
     order: '1',
     desc: '保存场地审核信息',
 });
-api[17].list.push({
+api[15].list.push({
     order: '2',
     desc: '根据场地id获取现场审核意见',
 });
-api[17].list.push({
+api[15].list.push({
     order: '3',
     desc: '删除场地现场审核意见',
 });
 api.push({
     alias: 'FileController',
-    order: '19',
+    order: '17',
     link: '文件上传，删除等操作',
     desc: '文件上传，删除等操作',
     list: []
 })
-api[18].list.push({
+api[16].list.push({
     order: '1',
     desc: '上传文件按照年月分文件夹存储',
 });
-api[18].list.push({
+api[16].list.push({
     order: '2',
     desc: '删除文件',
 });
 api.push({
     alias: 'dict',
-    order: '20',
+    order: '18',
     link: 'dict_list',
     desc: '数据字典',
     list: []

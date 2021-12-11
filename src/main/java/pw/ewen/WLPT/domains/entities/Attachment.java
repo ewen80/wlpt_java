@@ -1,15 +1,10 @@
 package pw.ewen.WLPT.domains.entities;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * created by wenliang on 2021-05-17
@@ -24,8 +19,9 @@ public class Attachment implements Serializable {
      */
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "BINARY(16)")
-    private UUID id;
+//    @Column(columnDefinition = "BINARY(16)")
+//    private UUID id;
+    private long id;
     /**
      * 附件名称
      */
@@ -39,11 +35,11 @@ public class Attachment implements Serializable {
      */
     private String date;
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -78,7 +74,7 @@ public class Attachment implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Attachment that = (Attachment) o;
-        return id.equals(that.id);
+        return id == that.id;
     }
 
     @Override

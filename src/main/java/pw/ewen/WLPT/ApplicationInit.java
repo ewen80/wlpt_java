@@ -11,8 +11,8 @@ import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.UserRepository;
-import pw.ewen.WLPT.services.MenuService;
 
+import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -23,17 +23,15 @@ import java.util.Optional;
 public class ApplicationInit implements ApplicationRunner {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-    private final MenuService menuService;
     private final BizConfig bizConfig;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public ApplicationInit(RoleRepository roleRepository,
                            UserRepository userRepository,
-                           MenuService menuService, BizConfig bizConfig, PasswordEncoder passwordEncoder) {
+                          BizConfig bizConfig, PasswordEncoder passwordEncoder) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
-        this.menuService = menuService;
         this.bizConfig = bizConfig;
         this.passwordEncoder = passwordEncoder;
     }
@@ -57,9 +55,11 @@ public class ApplicationInit implements ApplicationRunner {
         Optional<User> adminUserOpt = userRepository.findById(bizConfig.getUser().getAdminUserId());
         User adminUser = adminUserOpt.orElseGet(() -> {
             //新建用户admin
-            User user = new User(bizConfig.getUser().getAdminUserId(), bizConfig.getUser().getAdminUserName(), adminRole);
-            String passwordMD5 = DigestUtils.md5DigestAsHex(bizConfig.getUser().getAdminDefaultPassword().getBytes()).toUpperCase();
+            User user = new User(bizConfig.getUser().getAdminUserId(), bizConfig.getUser().getAdminUserName());
+            String passwordMD5 = DigestUtils.md5DigestAsHex("admin".getBytes()).toUpperCase();
             user.setPassword(passwordEncoder.encode(passwordMD5));
+            user.setRoles(Collections.singleton(adminRole));
+            user.setDefaultRole(adminRole);
             return userRepository.save(user);
         });
 
@@ -67,13 +67,12 @@ public class ApplicationInit implements ApplicationRunner {
         Optional<User> guestUserOpt = userRepository.findById(bizConfig.getUser().getGuestUserId());
         User guestUser = guestUserOpt.orElseGet(() -> {
             // 新建用户guest
-            User user = new User(bizConfig.getUser().getGuestUserId(), bizConfig.getUser().getGuestUserName(), anonymousRole);
-            String passwordMD5 = DigestUtils.md5DigestAsHex(bizConfig.getUser().getGuestDefaultPassword().getBytes()).toUpperCase();
+            User user = new User(bizConfig.getUser().getGuestUserId(), bizConfig.getUser().getGuestUserName());
+            String passwordMD5 = DigestUtils.md5DigestAsHex("guest".getBytes()).toUpperCase();
             user.setPassword(passwordEncoder.encode(passwordMD5));
+            user.setRoles(Collections.singleton(anonymousRole));
+            user.setDefaultRole(anonymousRole);
             return userRepository.save(user);
         });
     }
-
-
-
 }

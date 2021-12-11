@@ -25,6 +25,14 @@ public class ResourceTypeDTO {
      * 资源类型描述
      */
     private String description;
+    /**
+     * 仓库类名
+     */
+    private String repositoryBeanName;
+    /**
+     * 服务类名
+     */
+    private String serviceBeanName;
 
     /**
      * 资源范围
@@ -80,5 +88,21 @@ public class ResourceTypeDTO {
 
     public void setResourceRanges(Set<ResourceRangeDTO> resourceRanges) {
         this.resourceRanges = resourceRanges;
+    }
+
+    public String getRepositoryBeanName() {
+        return repositoryBeanName;
+    }
+
+    public void setRepositoryBeanName(String repositoryBeanName) {
+        this.repositoryBeanName = repositoryBeanName;
+    }
+
+    public String getServiceBeanName() {
+        return serviceBeanName;
+    }
+
+    public void setServiceBeanName(String serviceBeanName) {
+        this.serviceBeanName = serviceBeanName;
     }
 }

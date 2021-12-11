@@ -119,9 +119,12 @@ public class PermissionController {
         if(rangeDTO.getId() == 0) {
             // 保存ResourceRange
             this.resourceRangeService.save(range);
+        } else {
+            // 如果resourceRange已经存在，先删除所有已有权限
+            this.permissionService.deleteResourceRangeAllPermissions(wrapperDTO.getResourceRangeDTO().getId());
         }
 
-        this.permissionService.deleteResourceRangeAllPermissions(wrapperDTO.getResourceRangeDTO().getId());
+
 
         int insertNumber = 0;
 

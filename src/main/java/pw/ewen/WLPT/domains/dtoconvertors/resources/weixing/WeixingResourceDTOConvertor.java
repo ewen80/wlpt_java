@@ -1,6 +1,7 @@
 package pw.ewen.WLPT.domains.dtoconvertors.resources.weixing;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Component;
 import pw.ewen.WLPT.domains.DTOs.permissions.PermissionDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO;
@@ -20,6 +21,7 @@ import pw.ewen.WLPT.services.PermissionService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -103,9 +105,9 @@ public class WeixingResourceDTOConvertor {
             }
 
             // 添加权限列表
-            ResourceRangePermissionWrapper wrapper = permissionService.getByRoleAndResource(userContext.getCurrentUser().getRole().getId(), weixingResource);
-            List<PermissionDTO> permissionDTOS = wrapper.getPermissions().stream().map(permissionDTOConvertor::toDTO).collect(Collectors.toList());
-            dto.setPermissions(permissionDTOS);
+            Set<Permission> permissions =  permissionService.getPermissionsByRolesAndResource(userContext.getCurrentUser().getCurrentRole(), weixingResource);
+            List<PermissionDTO> permissionDTOs = permissions.stream().map(permissionDTOConvertor::toDTO).collect(Collectors.toList());
+            dto.setPermissions(permissionDTOs);
 
         }
 

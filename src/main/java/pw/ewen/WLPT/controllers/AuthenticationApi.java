@@ -1,6 +1,8 @@
 package pw.ewen.WLPT.controllers;
 
 import org.springframework.web.bind.annotation.*;
+import pw.ewen.WLPT.security.UserContext;
+import pw.ewen.WLPT.services.utils.UserReadedService;
 
 /**
  * 用户认证
@@ -8,11 +10,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/authentication")
 public class AuthenticationApi {
+
     /**
      * 客户端刷新服务器认证接口
+     * 获取未读信息
      */
-    @RequestMapping(method = RequestMethod.PUT, value = "refresh", produces = "application/json")
+    @PutMapping(value = "/refresh")
     public boolean refresh() {
+
         return true;
     }
 

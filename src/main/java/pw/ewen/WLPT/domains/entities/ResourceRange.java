@@ -1,6 +1,9 @@
 package pw.ewen.WLPT.domains.entities;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Created by wen on 17-2-26.
@@ -9,6 +12,7 @@ import javax.persistence.*;
  * Role和ResourceType不能为空,如果filter为空，表示角色对该对象有全部权限
  */
 @Entity
+@Cacheable @org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Table(uniqueConstraints = @UniqueConstraint(columnNames={"role_Id", "resourceType_Id"}))
 public class ResourceRange {
 
@@ -80,13 +84,27 @@ public class ResourceRange {
         this.filter = "";
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj) return true;
+//        if (obj == null || getClass() != obj.getClass()) return false;
+//
+//        // 如果role,filter和type都一样则认为两个range相等
+//        ResourceRange rangeObj = (ResourceRange)obj;
+//        return this.role.equals(rangeObj.getRole()) && this.filter.equals(rangeObj.getFilter()) && this.resourceType.equals(rangeObj.resourceType);
+//    }
 
-        // 如果role,filter和type都一样则认为两个range相等
-        ResourceRange rangeObj = (ResourceRange)obj;
-        return this.role.equals(rangeObj.getRole()) && this.filter.equals(rangeObj.getFilter()) && this.resourceType.equals(rangeObj.resourceType);
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ResourceRange that = (ResourceRange) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

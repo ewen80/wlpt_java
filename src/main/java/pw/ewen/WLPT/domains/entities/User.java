@@ -1,13 +1,17 @@
 package pw.ewen.WLPT.domains.entities;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.*;
 
 /**
  * 系统用户
- * 一个用户只能且必须属于一个角色（后期可以扩展至属于多个角色）
  */
 @Entity
+@Cacheable
+@org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User implements Serializable {
 	private static final long serialVersionUID = 5844614718392473692L;
 
@@ -17,14 +21,35 @@ public class User implements Serializable {
 	@Column(nullable = false)
 	private String name;	//用户姓名
 
-	@ManyToOne
-	@JoinColumn(name="role_Id", nullable = false)
-	private Role role;	// 用户角色
+//	@ManyToOne
+//	@JoinColumn(name="role_Id", nullable = false)
+//	private Role role;	// 用户角色
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "role_user",
+			joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id")
+	)
+	private Set<Role> roles = new HashSet<>(); //用户所属角色
+
+	/**
+	 * 默认使用的角色
+	 */
+	@OneToOne
+	@JoinColumn(nullable = false)
+	private Role defaultRole;
+
+	/**
+	 * 当前使用的角色
+	 */
+	@Transient
+	private Role currentRole;
 
 	@Column(nullable = false)
 	private String password = "";
 
-	@Column(nullable = true)
+	@Column
 	private String avatar;
 
 	@Column(nullable = false)
@@ -39,16 +64,16 @@ public class User implements Serializable {
 
 	protected  User(){}
 
-	public User(String id, String name, Role role) {
+	public User(String id, String name) {
 		this.id = id;
 		this.name = name;
-		this.role = role;
+//		this.roles = roles;
 	}
 
-	public User(String id, String name, Role role, String qxId){
+	public User(String id, String name, String qxId){
 		this.id = id;
 		this.name = name;
-		this.role = role;
+//		this.roles = roles;
 		this.qxId = qxId;
 	}
 
@@ -77,11 +102,11 @@ public class User implements Serializable {
 		this.avatar = avatar;
 	}
 
-	public Role getRole() {
-		return role;
+	public Set<Role> getRoles() {
+		return roles;
 	}
-	public void setRole(Role role) {
- 		this.role = role;
+	public void setRoles(Set<Role> roles) {
+ 		this.roles = roles;
 	}
 
 	public String getQxId() {
@@ -94,6 +119,27 @@ public class User implements Serializable {
 
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
+	}
+
+	public Role getDefaultRole() {
+		return defaultRole;
+	}
+
+	public void setDefaultRole(Role defaultRole) {
+		this.defaultRole = defaultRole;
+	}
+
+	public Role getCurrentRole() {
+		return currentRole;
+	}
+
+	public void setCurrentRole(Role currentRole) {
+		this.currentRole = currentRole;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 
 	@Override

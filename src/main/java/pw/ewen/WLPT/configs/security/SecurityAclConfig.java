@@ -1,7 +1,6 @@
 package pw.ewen.WLPT.configs.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.PermissionEvaluator;
@@ -14,7 +13,6 @@ import org.springframework.security.acls.jdbc.LookupStrategy;
 import org.springframework.security.acls.model.AclCache;
 import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.security.acl.ChangdiPermission;
@@ -78,7 +76,6 @@ public class SecurityAclConfig {
 
     /**
      * 有管理ACL权限的角色(能进行添加、修改、删除acl操作)，默认：admin组
-     * @return
      */
     @Bean
     AclAuthorizationStrategy getAclAuthorizationStrategy(){

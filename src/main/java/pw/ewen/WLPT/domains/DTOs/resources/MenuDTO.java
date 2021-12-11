@@ -38,22 +38,26 @@ public class MenuDTO {
      * 上级菜单id
      */
     private long parentId; //默认0,表示无上级节点
-
     /**
-     * 转化为Menu对象
+     * 未读数
      */
-    public Menu convertToMenu(MenuService menuService) {
-        MenuDTOConvertor converter = new MenuDTOConvertor();
-        return converter.toMenu(this, menuService);
-    }
+    private int unReadCount;
 
-    /**
-     * 转换为MenuDTO对象
-     */
-    public static MenuDTO convertFromMenu(Menu menu) {
-        MenuDTOConvertor converter = new MenuDTOConvertor();
-        return converter.toDTO(menu);
-    }
+//    /**
+//     * 转化为Menu对象
+//     */
+//    public Menu convertToMenu(MenuService menuService) {
+//        MenuDTOConvertor converter = new MenuDTOConvertor(userContext);
+//        return converter.toMenu(this, menuService);
+//    }
+//
+//    /**
+//     * 转换为MenuDTO对象
+//     */
+//    public static MenuDTO convertFromMenu(Menu menu) {
+//        MenuDTOConvertor converter = new MenuDTOConvertor(userContext);
+//        return converter.toDTO(menu);
+//    }
 
     public String getName() {
         return name;
@@ -109,5 +113,13 @@ public class MenuDTO {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public int getUnReadCount() {
+        return unReadCount;
+    }
+
+    public void setUnReadCount(int unReadCount) {
+        this.unReadCount = unReadCount;
     }
 }

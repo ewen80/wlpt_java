@@ -1,8 +1,8 @@
 server:
   port: 9001
   ssl:
-    key-store: classpath:cert/6175226_aliyun.ewen.pw.jks
-    key-store-password: fXo5r985
+    key-store: classpath:cert/6746214_test.changdi.shssgc.org.cn.jks
+    key-store-password: FNkhrxX9
     key-store-type: JKS
 
 logging:
@@ -32,5 +32,13 @@ bizconfig:
     weixing_field_audit_template: ./FieldAuditPrintTemplates/weixing.docx
     # 娱乐场地审核单模板
     yule_field_audit_template: ./FieldAuditPrintTemplates/yule.docx
+
+  # 定时任务相关配置
+  schedules:
+    # 定时更新资源阅读情况任务
+    resource_readed_info:
+      # 每隔30分钟执行一次， - 表示禁用
+      cron: 0 */30 * * * ?
+      do_startup: true
 
 frontendUrls: https://aliyun.ewen.pw:9101  # 前端程序部署地址

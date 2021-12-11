@@ -49,7 +49,7 @@ public class FieldAudit implements Serializable {
      * 场地负责人签名信息
      */
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Signature> auditorSignatures;
+    private List<Signature> auditorSignatures = new ArrayList<>();
     /**
      * 审核单位名称
      */

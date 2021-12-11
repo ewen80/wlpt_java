@@ -9,17 +9,16 @@ import org.springframework.web.bind.annotation.RestController;
 import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.domains.DTOs.resources.MenuDTO;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
+import pw.ewen.WLPT.domains.dtoconvertors.resources.MenuDTOConvertor;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
+import pw.ewen.WLPT.security.acl.ChangdiPermission;
 import pw.ewen.WLPT.services.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,26 +33,28 @@ public class OnceInitController {
     private final ResourceRangeService resourceRangeService;
     private final MenuService menuService;
     private final BizConfig bizConfig;
+    private final MenuDTOConvertor menuDTOConvertor;
 
     @Autowired
     public OnceInitController(ResourceTypeService resourceTypeService,
                               ResourceRangeService resourceRangeService,
                               PermissionService permissionService,
                               MenuService menuService,
-                              RoleService roleService, BizConfig bizConfig) {
+                              RoleService roleService, BizConfig bizConfig, MenuDTOConvertor menuDTOConvertor) {
         this.resourceTypeService = resourceTypeService;
         this.permissionService = permissionService;
         this.roleService = roleService;
         this.resourceRangeService = resourceRangeService;
         this.menuService = menuService;
         this.bizConfig = bizConfig;
+        this.menuDTOConvertor = menuDTOConvertor;
     }
 
 
     //初始化菜单权限
     //admin角色对所有菜单都有权限
     private void authorizeMenu(Role role){
-        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "系统菜单");
+        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "系统菜单", "", "");
         this.resourceTypeService.save(menuResourceType);
 
         ResourceRange range = this.resourceRangeService.findByResourceTypeAndRole(menuResourceType.getClassName(), role.getId());
@@ -62,11 +63,14 @@ public class OnceInitController {
             this.resourceRangeService.save(range);
         }
 
-        //添加ACL权限,对所有菜单有权限(READ WHITE)
+        //添加ACL权限,对所有菜单有权限(READ WHITE NEW DELETE等)
         ResourceRangePermissionWrapper wrapper = permissionService.getByResourceRange(range.getId());
         HashSet<Permission> permissions = new HashSet<>();
         permissions.add(BasePermission.READ);
         permissions.add(BasePermission.WRITE);
+        permissions.add(BasePermission.CREATE);
+        permissions.add(BasePermission.DELETE);
+        permissions.add(ChangdiPermission.FINISH);
 
         permissionService.insertPermissions(range.getId(), permissions);
     }
@@ -94,7 +98,7 @@ public class OnceInitController {
     private void authorizeResources(Role role) {
         List<BizConfig.Resource> resources = bizConfig.getResources();
         for(BizConfig.Resource resource: resources) {
-            ResourceType resourceType = new ResourceType(resource.getType(), resource.getTypeName(), resource.getDescription());
+            ResourceType resourceType = new ResourceType(resource.getType(), resource.getTypeName(), resource.getDescription(), resource.getRepositoryBeanName(), resource.getServiceBeanName());
             this.resourceTypeService.save(resourceType);
 
             ResourceRange range = this.resourceRangeService.findByResourceTypeAndRole(resourceType.getClassName(), role.getId());
@@ -103,11 +107,14 @@ public class OnceInitController {
                 this.resourceRangeService.save(range);
             }
 
-            //添加ACL权限,对所有菜单有权限(READ WHITE)
+            //添加ACL权限,对所有菜单有权限
             ResourceRangePermissionWrapper wrapper = permissionService.getByResourceRange(range.getId());
             HashSet<Permission> permissions = new HashSet<>();
             permissions.add(BasePermission.READ);
             permissions.add(BasePermission.WRITE);
+            permissions.add(BasePermission.CREATE);
+            permissions.add(BasePermission.DELETE);
+            permissions.add(ChangdiPermission.FINISH);
 
             permissionService.insertPermissions(range.getId(), permissions);
         }
@@ -141,16 +148,16 @@ public class OnceInitController {
         }
 
 
-        builder.reset();
-        List<Menu> myResourceMenus = menuService.findAll(builder.build("name:我的资源"));
-        Menu myResourceMenu;
-        if(myResourceMenus.size() == 0) {
-            myResourceMenu = new Menu();
-            myResourceMenu.setName("我的资源");
-            myResourceMenu.setPath("/resources/myresources");
-            myResourceMenu.setParent(bizMenu);
-            this.menuService.save(myResourceMenu);
-        }
+//        builder.reset();
+//        List<Menu> myResourceMenus = menuService.findAll(builder.build("name:我的资源"));
+//        Menu myResourceMenu;
+//        if(myResourceMenus.size() == 0) {
+//            myResourceMenu = new Menu();
+//            myResourceMenu.setName("我的资源");
+//            myResourceMenu.setPath("/resources/myresources");
+//            myResourceMenu.setParent(bizMenu);
+//            this.menuService.save(myResourceMenu);
+//        }
 
         List<BizConfig.Resource> resources = bizConfig.getResources();
         for(BizConfig.Resource resource: resources) {
@@ -161,6 +168,8 @@ public class OnceInitController {
                 menu = new Menu();
                 menu.setName(resource.getName());
                 menu.setPath(resource.getPath());
+                resourceTypeService.findOne(resource.getType())
+                                .ifPresent(menu::setResourceType);
                 menu.setParent(bizMenu);
                 this.menuService.save(menu);
             }
@@ -241,7 +250,7 @@ public class OnceInitController {
             this.initialMenu();
             this.authorizeMenu(adminRole.get());
             this.authorizeResources(adminRole.get());
-            return this.menuService.findPermissionMenuTree(adminRole.get()).stream().map(MenuDTO::convertFromMenu).collect(Collectors.toList());
+            return this.menuService.findPermissionMenuTree(adminRole.get()).stream().map(menuDTOConvertor::toDTO).collect(Collectors.toList());
         } else {
             return new ArrayList<>();
         }

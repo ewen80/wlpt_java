@@ -1,8 +1,6 @@
 package pw.ewen.WLPT.domains.DTOs;
 
-import pw.ewen.WLPT.domains.dtoconvertors.UserDTOConvertor;
-import pw.ewen.WLPT.domains.entities.User;
-import pw.ewen.WLPT.services.RoleService;
+import java.util.*;
 
 /**
  * Created by wenliang on 17-4-14.
@@ -18,9 +16,17 @@ public class UserDTO {
      */
     private String name;
     /**
-     * 角色id
+     * 角色ids
      */
-    private String roleId;
+    private Set<String> roleIds = new HashSet<>();
+    /**
+     * 当前使用角色id
+     */
+    private String currentRoleId;
+    /**
+     * 默认使用的角色id
+     */
+    private String defaultRoleId;
     /**
      * 头像
      */
@@ -30,35 +36,32 @@ public class UserDTO {
      */
     private String qxId = "0";
 
-    public UserDTO(String id, String name, String roleId, String avatar, String qxId) {
+    public UserDTO(String id, String name, String avatar, String qxId) {
         this.id = id;
         this.name = name;
-        this.roleId = roleId;
+//        this.roles = roles;
         this.avatar = avatar;
         this.qxId = qxId;
     }
 
     public UserDTO() {  }
 
-
-
-
-    /**
-     * 转化User对象为UserDTO对象
-     * @param user 用户对象
-     * @return 用户DTO对象
-     */
-    public static UserDTO convertFromUser(User user){
-        return new UserDTOConvertor().toDTO(user);
-    }
-
-    /**
-     * 转化UserDTO对象为User对象
-     */
-    public User convertToUser(RoleService roleService){
-        UserDTOConvertor converter = new UserDTOConvertor();
-        return converter.toUser(this, roleService);
-    }
+//    /**
+//     * 转化User对象为UserDTO对象
+//     * @param user 用户对象
+//     * @return 用户DTO对象
+//     */
+//    public static UserDTO convertFromUser(User user){
+//        return new UserDTOConvertor(roleDTOConvertor).toDTO(user);
+//    }
+//
+//    /**
+//     * 转化UserDTO对象为User对象
+//     */
+//    public User convertToUser(RoleService roleService){
+//        UserDTOConvertor converter = new UserDTOConvertor(roleDTOConvertor);
+//        return converter.toUser(this, roleService);
+//    }
 
     public String getId() {
         return id;
@@ -76,12 +79,12 @@ public class UserDTO {
         this.name = name;
     }
 
-    public String getRoleId() {
-        return roleId;
+    public Set<String> getRoleIds() {
+        return roleIds;
     }
 
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
+    public void setRoleIds(Set<String> roleIds) {
+        this.roleIds = roleIds;
     }
 
     public String getAvatar() {
@@ -98,5 +101,34 @@ public class UserDTO {
 
     public void setQxId(String qxId) {
         this.qxId = qxId;
+    }
+
+    public String getCurrentRoleId() {
+        return currentRoleId;
+    }
+
+    public void setCurrentRoleId(String currentRoleId) {
+        this.currentRoleId = currentRoleId;
+    }
+
+    public String getDefaultRoleId() {
+        return defaultRoleId;
+    }
+
+    public void setDefaultRoleId(String defaultRoleId) {
+        this.defaultRoleId = defaultRoleId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDTO userDTO = (UserDTO) o;
+        return id.equals(userDTO.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

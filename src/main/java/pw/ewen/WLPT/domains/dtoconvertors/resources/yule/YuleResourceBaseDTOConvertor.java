@@ -1,5 +1,6 @@
 package pw.ewen.WLPT.domains.dtoconvertors.resources.yule;
 
+import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Component;
 import pw.ewen.WLPT.domains.DTOs.permissions.PermissionDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO;
@@ -24,6 +25,7 @@ import pw.ewen.WLPT.services.resources.yule.YuleResourceYyBaseService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +33,6 @@ import java.util.stream.Collectors;
  */
 @Component
 public class YuleResourceBaseDTOConvertor {
-    private final YuleResourceYyBaseService yuleResourceYyBaseService;
     private final ResourceCheckInDTOConvertor resourceCheckInDTOConvertor;
     private final PermissionService permissionService;
     private final UserContext userContext;
@@ -41,8 +42,7 @@ public class YuleResourceBaseDTOConvertor {
     private final YuleResourceYyDTOConvertor yyDTOConvertor;
     private final FieldAuditDTOConvertor fieldAuditDTOConvertor;
 
-    public YuleResourceBaseDTOConvertor(YuleResourceYyBaseService yuleResourceYyBaseService, ResourceCheckInDTOConvertor resourceCheckInDTOConvertor, PermissionService permissionService, UserContext userContext, PermissionDTOConvertor permissionDTOConvertor, YuleResourceGwRoomDTOConvertor yuleResourceGwRoomDTOConvertor, YuleResourceGwWcDTOConvertor wcDTOConvertor, YuleResourceYyDTOConvertor yyDTOConvertor, FieldAuditDTOConvertor fieldAuditDTOConvertor) {
-        this.yuleResourceYyBaseService = yuleResourceYyBaseService;
+    public YuleResourceBaseDTOConvertor(ResourceCheckInDTOConvertor resourceCheckInDTOConvertor, PermissionService permissionService, UserContext userContext, PermissionDTOConvertor permissionDTOConvertor, YuleResourceGwRoomDTOConvertor yuleResourceGwRoomDTOConvertor, YuleResourceGwWcDTOConvertor wcDTOConvertor, YuleResourceYyDTOConvertor yyDTOConvertor, FieldAuditDTOConvertor fieldAuditDTOConvertor) {
         this.resourceCheckInDTOConvertor = resourceCheckInDTOConvertor;
         this.permissionService = permissionService;
         this.userContext = userContext;
@@ -145,9 +145,9 @@ public class YuleResourceBaseDTOConvertor {
             dto.setFieldAudits(fieldAuditDTOS);
 
             // 添加权限列表
-            ResourceRangePermissionWrapper wrapper = permissionService.getByRoleAndResource(userContext.getCurrentUser().getRole().getId(), yule);
-            List<PermissionDTO> permissionDTOS = wrapper.getPermissions().stream().map(permissionDTOConvertor::toDTO).collect(Collectors.toList());
-            dto.setPermissions(permissionDTOS);
+            Set<Permission> permissions =  permissionService.getPermissionsByRolesAndResource(userContext.getCurrentUser().getCurrentRole(), yule);
+            List<PermissionDTO> permissionDTOs = permissions.stream().map(permissionDTOConvertor::toDTO).collect(Collectors.toList());
+            dto.setPermissions(permissionDTOs);
         }
         return dto;
     }

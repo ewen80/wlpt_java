@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class ResouceTypeDTOConvertor {
 
     public ResourceType toResourceType(ResourceTypeDTO dto, RoleService roleService, ResourceTypeService resourceTypeService) {
-        ResourceType resourceType = new ResourceType(dto.getClassName(), dto.getName(), dto.getDescription());
+        ResourceType resourceType = new ResourceType(dto.getClassName(), dto.getName(), dto.getDescription(), dto.getRepositoryBeanName(), dto.getServiceBeanName());
         if(dto.getResourceRanges() != null) {
             Set<ResourceRange> resourceRanges = dto.getResourceRanges().stream().map( (d) -> d.convertToResourceRange(roleService, resourceTypeService)).collect(Collectors.toSet());
             resourceType.setResourceRanges(resourceRanges);
@@ -28,6 +28,8 @@ public class ResouceTypeDTOConvertor {
     public ResourceTypeDTO toDTO(ResourceType resourceType) {
         ResourceTypeDTO resourceTypeDTO = new ResourceTypeDTO(resourceType.getClassName(), resourceType.getName());
         resourceTypeDTO.setDescription(resourceType.getDescription());
+        resourceTypeDTO.setRepositoryBeanName(resourceType.getRepositoryBeanName());
+        resourceTypeDTO.setServiceBeanName(resourceType.getServiceBeanName());
         Set<ResourceRange> resourceRanges = resourceType.getResourceRanges();
         Set<ResourceRangeDTO>  resourceRangeDTOS = new HashSet<>();
         resourceRanges.forEach( (r) -> resourceRangeDTOS.add(ResourceRangeDTO.convertFromResourceRange(r)));

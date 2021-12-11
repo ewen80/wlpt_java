@@ -1,6 +1,5 @@
 package pw.ewen.WLPT.security.acl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.IdentityUnavailableException;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.ObjectIdentity;
@@ -20,19 +19,24 @@ import pw.ewen.WLPT.services.ResourceRangeService;
  */
 @Component
 public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRetrievalStrategy {
-    @Autowired
-    private UserContext userContext;
-    @Autowired
-    private ResourceRangeService resourceRangeService;
+
+    private final UserContext userContext;
+    private final ResourceRangeService resourceRangeService;
+
+    public ObjectIdentityRetrievalStrategyWLPTImpl(UserContext userContext, ResourceRangeService resourceRangeService) {
+        this.userContext = userContext;
+        this.resourceRangeService = resourceRangeService;
+    }
 
     @Override
     public ObjectIdentity getObjectIdentity(Object domainObject) throws IdentityUnavailableException {
         //查找ResourceRepository中当前SID对应的ResourceRange
-        Role currentUserRole = userContext.getCurrentUser().getRole();
-        ResourceRange resourceRange = getResourceRange(domainObject, currentUserRole);
+        Role role = userContext.getCurrentUser().getCurrentRole();
+        ResourceRange resourceRange = getResourceRange(domainObject, role);
+
 //        if(resourceRange.getClass().equals(NeverMatchedResourceRange.class)) throw new IdentityUnavailableException("从Resource未匹配到对应的ResourceRange");
 //        else{
-            return new ObjectIdentityImpl(resourceRange);
+        return new ObjectIdentityImpl(resourceRange);
 //        }
 //        return null;
     }

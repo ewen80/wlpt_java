@@ -18,6 +18,7 @@ import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.services.FileService;
 import pw.ewen.WLPT.services.SerialNumberService;
 import pw.ewen.WLPT.services.UserService;
+import pw.ewen.WLPT.services.resources.ResourceServiceFunction;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,7 +30,7 @@ import java.util.*;
  * created by wenliang on 2021/10/6
  */
 @Service
-public class YuleResourceBaseService {
+public class YuleResourceBaseService implements ResourceServiceFunction<YuleResourceBase> {
     private final YuleResourceBaseRepository yuleResourceBaseRepository;
     private final SerialNumberService serialNumberService;
     private final BizConfig bizConfig;
@@ -46,7 +47,7 @@ public class YuleResourceBaseService {
         this.userService = userService;
     }
 
-    @PostAuthorize("hasPermission(returnObject.get(), 'read')")
+    @PostAuthorize("hasPermission(returnObject.orElse(null), 'read')")
     public Optional<YuleResourceBase> findOne(long id) {
         return this.yuleResourceBaseRepository.findById(id);
     }
@@ -132,7 +133,7 @@ public class YuleResourceBaseService {
                                         textFieldMap.put("auditer", audit.getUser().getName());
                                         textFieldMap.put("auditDepartment", audit.getAuditDepartment());
 
-                                        DateTimeFormatter formatter =  DateTimeFormatter.ofPattern(bizConfig.getPrintDateFormat());
+                                        DateTimeFormatter formatter =  DateTimeFormatter.ofPattern(bizConfig.getDateFormat().getPrintDateFormat());
                                         textFieldMap.put("auditDate", audit.getAuditDate().format(formatter));
 
                                         if(audit.getFzrSignature() != null && audit.getFzrSignature().getBytes() != null) {

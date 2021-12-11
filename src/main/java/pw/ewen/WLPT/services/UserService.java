@@ -54,6 +54,7 @@ public class UserService {
 
     /**
      * 返回所有用户，没有过滤条件
+     * @apiNote 过滤软删除用户
      */
     public List<User> findAll() {
         // 默认过滤已删除用户
@@ -61,6 +62,11 @@ public class UserService {
         return this.userRepository.findAll(spec);
     }
 
+    /**
+     * 返回所有用户
+     * @param filter 过滤器
+     * @apiNote 过滤软删除用户
+     */
     public List<User> findAll(String filter) {
         SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
         String filterStr = "deleted:false," + filter;
@@ -79,12 +85,14 @@ public class UserService {
     }
 
     public User save(User user){
-        Optional<User> dbUser = this.findOne(user.getId());
+        Optional<User> dbUser = this.findOne((user.getId()));
         if(dbUser.isPresent()) {
+            // 如果当前数据库存在数据,取出密码字段值
             user.setPassword(dbUser.get().getPassword());
         } else {
-            String passwordMD5 = DigestUtils.md5DigestAsHex(bizConfig.getUser().getNewUserDefaultPassword().getBytes()).toUpperCase();
-            user.setPassword(passwordEncoder.encode(passwordMD5));
+            // 给新用户设置默认密码
+            String defaultPasswordMD5 = DigestUtils.md5DigestAsHex(bizConfig.getUser().getDefaultPassword().getBytes()).toUpperCase();
+            user.setPassword(passwordEncoder.encode(defaultPasswordMD5));
         }
         return this.userRepository.save(user);
     }
@@ -93,7 +101,7 @@ public class UserService {
      * 修改密码
      * @param userId 用户id
      * @param passwordMD5 md5编码后的用户密码
-     * @throws FindUserException 找不到指定的用户
+     * @throws FindUserException 找不到指定用户
      */
     public void setPassword(String userId, String passwordMD5) throws  FindUserException {
         Optional<User> user = this.userRepository.findById(userId);

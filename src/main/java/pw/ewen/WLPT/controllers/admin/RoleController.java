@@ -1,7 +1,7 @@
 package pw.ewen.WLPT.controllers.admin;
 
+import org.bouncycastle.util.Iterable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -10,15 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.DTOs.RoleDTO;
+import pw.ewen.WLPT.domains.dtoconvertors.RoleDTOConvertor;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.services.RoleService;
 import pw.ewen.WLPT.services.UserService;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -30,21 +28,15 @@ public class RoleController {
     private final RoleService roleService;
     private final UserService userService;
     private final BizConfig bizConfig;
+    private final RoleDTOConvertor roleDTOConvertor;
 
     @Autowired
-    public RoleController(RoleService roleService, UserService userService, BizConfig bizConfig) {
+    public RoleController(RoleService roleService, UserService userService, BizConfig bizConfig, RoleDTOConvertor roleDTOConvertor) {
         this.roleService = roleService;
         this.userService = userService;
         this.bizConfig = bizConfig;
+        this.roleDTOConvertor = roleDTOConvertor;
     }
-
-//    //将role对象转为DTO对象的内部辅助类
-//    static class RoleDTOConverter implements Converter<Role, RoleDTO> {
-//        @Override
-//        public RoleDTO convert(Role source) {
-//            return  RoleDTO.convertFromRole(source);
-//        }
-//    }
 
     /**
      * 获取全部角色
@@ -52,7 +44,7 @@ public class RoleController {
      */
     @RequestMapping(value="/all", method=RequestMethod.GET, produces="application/json")
     public List<RoleDTO> getAllRoles(){
-        return this.roleService.findAll().stream().map(RoleDTO::convertFromRole).collect(Collectors.toList());
+        return this.roleService.findAll().stream().map(roleDTOConvertor::toDTO).collect(Collectors.toList());
     }
 
     /**
@@ -69,8 +61,7 @@ public class RoleController {
         }else{
             roles =  this.roleService.findAll(pageInfo.getFilter(), pr);
         }
-
-        return roles.map(RoleDTO::convertFromRole);
+        return roles.map(roleDTOConvertor::toDTO);
     }
 
     /**
@@ -81,7 +72,7 @@ public class RoleController {
     @RequestMapping(value="/{roleId}", method=RequestMethod.GET, produces="application/json")
     public ResponseEntity<RoleDTO> getOneRole(@PathVariable("roleId") String roleId){
         return roleService.findOne(roleId)
-                .map((role) -> new ResponseEntity<>(RoleDTO.convertFromRole(role), HttpStatus.OK))
+                .map((role) -> new ResponseEntity<>(roleDTOConvertor.toDTO(role), HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -100,8 +91,8 @@ public class RoleController {
      */
     @RequestMapping(method=RequestMethod.POST, produces = "application/json")
     public RoleDTO save(@RequestBody RoleDTO roleDTO) {
-        Role role = RoleDTO.convertToRole(roleDTO, roleService);
-        return RoleDTO.convertFromRole(this.roleService.save(role));
+        Role role = roleDTOConvertor.toRole(roleDTO);
+        return roleDTOConvertor.toDTO(this.roleService.save(role));
     }
 
 //    /**
@@ -135,19 +126,30 @@ public class RoleController {
     public void setUsers(@PathVariable("roleId") String roleId, @RequestBody String[] userIds) {
         Optional<Role> anonymousRole = roleService.findOne(bizConfig.getUser().getAnonymousRoleId());
         Optional<Role> role = roleService.findOne(roleId);
-        if( role.isPresent() ) {
-            // 清空该角色原本的用户,被清空的用户角色归入anonymous组
+        if( role.isPresent() && anonymousRole.isPresent() ) {
+            // 清空该角色原本用户，如被清空用户无其他角色，则归入anonymous组
             Set<User> users = role.get().getUsers();
-            users.forEach( (user -> user.setRole(anonymousRole.orElse(null))));
+            users.forEach( user -> {
+                Set<Role> roles = user.getRoles();
+                if(roles.size() > 1){
+                    roles.remove((anonymousRole.get()));
+                    user.setRoles(roles);
+                    userService.save(user);
+                } else if(!roles.contains(anonymousRole.get())){
+                    user.setRoles(Collections.singleton(anonymousRole.get()));
+                    userService.save(user);
+                }
+            });
             // 将指定用户加入该角色
             for (String userId : userIds ) {
                 Optional<User> user = this.userService.findOne(userId);
                 if(user.isPresent()){
-                    user.get().setRole(role.get());
+                    Set<Role> roles = user.get().getRoles();
+                    roles.add(role.get());
                     this.userService.save(user.get());
                 }
             }
-            roleService.save(role.get());
+//            roleService.save(role.get());
         }
     }
 }

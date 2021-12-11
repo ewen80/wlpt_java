@@ -21,7 +21,7 @@ public class SignatureDTOConvertor {
     @Autowired
     public SignatureDTOConvertor(BizConfig bizConfig) {
         this.bizConfig = bizConfig;
-        formatter = DateTimeFormatter.ofPattern(bizConfig.getLocalDateTimeFormat());
+        formatter = DateTimeFormatter.ofPattern(bizConfig.getDateFormat().getLocalDateTimeFormat());
     }
 
     public SignatureDTO toDTO(Signature sign) {

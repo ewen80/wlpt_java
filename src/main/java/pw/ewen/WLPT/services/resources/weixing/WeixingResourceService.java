@@ -17,6 +17,7 @@ import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.services.FileService;
 import pw.ewen.WLPT.services.SerialNumberService;
 import pw.ewen.WLPT.services.UserService;
+import pw.ewen.WLPT.services.resources.ResourceServiceFunction;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,7 +32,7 @@ import java.util.Optional;
  * created by wenliang on 2021-07-21
  */
 @Service
-public class WeixingResourceService {
+public class WeixingResourceService implements ResourceServiceFunction<WeixingResource> {
 
     private final WeixingResourceRepository weixingResourceRepository;
     private final SerialNumberService serialNumberService;
@@ -61,7 +62,7 @@ public class WeixingResourceService {
         return this.weixingResourceRepository.findAll(builder.build(filter));
     }
 
-    @PostAuthorize("hasPermission(returnObject.get(), 'read')")
+    @PostAuthorize("hasPermission(returnObject.orElse(null), 'read')")
     public Optional<WeixingResource> findOne(long id) {
         return this.weixingResourceRepository.findById(id);
     }
@@ -213,7 +214,7 @@ public class WeixingResourceService {
                         textFieldMap.put("auditContent", audit.getContent());
                         textFieldMap.put("auditer", audit.getUser().getName());
                         textFieldMap.put("auditDepartment", audit.getAuditDepartment());
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(bizConfig.getPrintDateFormat());
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(bizConfig.getDateFormat().getPrintDateFormat());
                         textFieldMap.put("auditDate", audit.getAuditDate().format(formatter));
                         if (audit.getFzrSignature() != null && audit.getFzrSignature().getBytes() != null) {
                             imageFieldMap.put("signature", audit.getFzrSignature().getBytes());

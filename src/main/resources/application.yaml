@@ -10,7 +10,7 @@ spring:
           use_second_level_cache: true  #打开二级缓存
           use_query_cache: true #打开查询缓存，可以缓存列表集合
           region:
-            factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+            factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
       javax:
         persistence:
           sharedCache:
@@ -34,13 +34,11 @@ bizconfig:
   #   管理员用户id
     admin_user_id: admin
     admin_user_name: admin
-    admin_default_password: admin
   #   游客用户id
     guest_user_id: guest
     guest_user_name: guest
-    guest_default_password: guest
   # 新用户默认密码
-    new_user_default_password: 123456
+    defaultPassword: 123456
 
   #   序列号相关
   serial_number:
@@ -55,26 +53,32 @@ bizconfig:
 
   # 资源类型(用于项目初始化用)
   resources:
-      - name: 我的资源
-        path: /resources/myresources
-        type: pw.ewen.WLPT.domains.entities.resources.myresource.MyResource
-        typeName: MyResource
-        description: 我的资源
+#      - name: 我的资源
+#        path: /resources/myresources
+#        type: pw.ewen.WLPT.domains.entities.resources.myresource.MyResource
+#        typeName: MyResource
+#        description: 我的资源
       - name: 卫星场地
         path: /resources/weixings
         type: pw.ewen.WLPT.domains.entities.resources.weixing.WeixingResource
+        repository_bean_name: weixingResourceRepository
+        service_bean_name: weixingResourceService
         typeName: WeixingResource
         description: 卫星场地
       - name: 娱乐场地
         path: /resources/yules
         type: pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceBase
+        repository_bean_name: yuleResourceBaseRepository
+        service_bean_name: yuleResourceBaseService
         typeName: YuleResource
         description: 娱乐场地
 
   # 系统使用的日期时间格式
-  localDateTimeFormat: yyyy-MM-dd HH:mm:ss
-  localDateFormat: yyyy-MM-dd
-  printDateFormat: yyyy年MM月dd日
+  date_format:
+    localDateTimeFormat: yyyy-MM-dd HH:mm:ss
+    localDateFormat: yyyy-MM-dd
+    printDateFormat: yyyy年MM月dd日
+
   # 各区id对应Map
   regionMap:
    0: 市属

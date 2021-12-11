@@ -2,6 +2,7 @@ package pw.ewen.WLPT.services;
 
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,15 +11,22 @@ import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.IdentityUnavailableException;
 import org.springframework.security.acls.model.*;
 import org.springframework.stereotype.Service;
+import pw.ewen.WLPT.domains.DTOs.resources.MenuDTO;
 import pw.ewen.WLPT.domains.entities.Role;
-import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
+import pw.ewen.WLPT.domains.entities.utils.userunreaded.UserReaded;
+import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
 import pw.ewen.WLPT.security.acl.ObjectIdentityRetrievalStrategyWLPTImpl;
-import pw.ewen.WLPT.services.UserService;
+import pw.ewen.WLPT.services.resources.ResourceServiceFunction;
+import pw.ewen.WLPT.services.utils.UserReadedService;
 
 import javax.persistence.EntityManager;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by wenliang on 17-5-9.
@@ -28,15 +36,15 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
     private final MutableAclService aclService;
-    private final UserService userService;
+    private final RoleService roleService;
     private final EntityManager entityManager;
     private final ObjectIdentityRetrievalStrategyWLPTImpl objectIdentityRetrieval;
 
     @Autowired
-    public MenuService(MenuRepository menuRepository, MutableAclService aclService, UserService userService, EntityManager entityManager, ObjectIdentityRetrievalStrategyWLPTImpl objectIdentityRetrieval) {
+    public MenuService(MenuRepository menuRepository, MutableAclService aclService, RoleService roleService, EntityManager entityManager, ObjectIdentityRetrievalStrategyWLPTImpl objectIdentityRetrieval) {
         this.menuRepository = menuRepository;
         this.aclService = aclService;
-        this.userService = userService;
+        this.roleService = roleService;
         this.entityManager = entityManager;
         this.objectIdentityRetrieval = objectIdentityRetrieval;
     }
@@ -87,26 +95,26 @@ public class MenuService {
      */
     public List<Menu> findPermissionMenuTree(Role role){
         List<Menu> allMenus = this.findAll();
-        List<Menu> myMenus = this.authorizedmenus(allMenus, role, Arrays.asList(BasePermission.READ, BasePermission.WRITE));
-        List<Menu> authorizedLeafMenus = this.generatePermissionLeafMenus(myMenus, role);
+        List<Menu> myMenus = this.authorizedmenus(allMenus, role, Collections.singletonList(BasePermission.READ));
+        // 多个角色之间的菜单项会重复，此处删除重复项
+        List<Menu> myDistinctMenus = myMenus.stream().distinct().collect(Collectors.toList());
+        List<Menu> authorizedLeafMenus = this.generatePermissionLeafMenus(myDistinctMenus, role);
         return this.generateUpflowTree(authorizedLeafMenus);
     }
+//    /**
+//     * 获取用户有权限的菜单节点
+//     * @param user  用户
+//     */
+//    public List<Menu> findPermissionMenuTree(User user){
+//        return this.findPermissionMenuTree(user.getDefaultRole());
+//    }
+
     /**
      * 获取用户有权限的菜单节点
-     * @param user  用户
-     */
-    public List<Menu> findPermissionMenuTree(User user){
-        return this.findPermissionMenuTree(user.getRole());
-    }
-    /**
-     * 获取用户有权限的菜单节点
-     * @param userId  用户id
+     * @param roleId  角色id
      * @return  userId对应的有权限的菜单树，如果userId没有对应的用户则返回null
      */
-    public List<Menu> findPermissionMenuTree(String userId){
-        Optional<User> user = this.userService.findOne(userId);
-        return user.map(this::findPermissionMenuTree).orElse(null);
-    }
+    public List<Menu> findPermissionMenuTree(String roleId){ Optional<Role> role = this.roleService.findOne(roleId); return role.map(this::findPermissionMenuTree).orElse(null); }
 
     @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
     public Menu save(Menu  menu) {
@@ -228,12 +236,14 @@ public class MenuService {
      * 菜单(s)是否已经被授权,菜单没有设置对应的ResouceRange或者有ResourceRange但是没有配置acl权限，均认为没有授权
      * @return  被授权的菜单列表
      */
-    private List<Menu> authorizedmenus(List<Menu> menus, Role myRole, List<Permission> permissions) {
+    private List<Menu> authorizedmenus(List<Menu> menus, Role role, List<Permission> permissions) {
         List<Menu> authorizedMenus = new ArrayList<>();
         for(Menu menu: menus){
             try{
                 ObjectIdentity menuOI = objectIdentityRetrieval.getObjectIdentity(menu);
-                GrantedAuthoritySid sid = new GrantedAuthoritySid(myRole.getId());
+                GrantedAuthoritySid sid = new GrantedAuthoritySid(role.getId());
+//                List<Sid> sids = new ArrayList<>();
+//                myRoles.forEach(role -> sids.add(new GrantedAuthoritySid(role.getId())));
 
                 try{
                     Acl acl = aclService.readAclById(menuOI, Collections.singletonList(sid));

@@ -1,10 +1,7 @@
 package pw.ewen.WLPT.domains.DTOs;
 
-import pw.ewen.WLPT.domains.dtoconvertors.RoleDTOConvertor;
-import pw.ewen.WLPT.domains.entities.Role;
-import pw.ewen.WLPT.services.RoleService;
-
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -15,7 +12,7 @@ public class RoleDTO {
     private String id;
     private String name;
     private String description;
-    private Set<UserDTO> users = new HashSet<>();
+    private Set<String> userIds = new HashSet<>();
 
     public RoleDTO() {  }
 
@@ -54,21 +51,42 @@ public class RoleDTO {
         this.description = description;
     }
 
-    public Set<UserDTO> getUsers() {
-        return users;
+    public Set<String> getUserIds() {
+        return userIds;
     }
 
-    public void setUsers(Set<UserDTO> users) {
-        this.users = users;
+    public void setUserIds(Set<String> userIds) {
+        this.userIds = userIds;
     }
 
-    public static RoleDTO convertFromRole(Role role) {
-        RoleDTOConvertor converter = new RoleDTOConvertor();
-        return converter.toDTO(role);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RoleDTO roleDTO = (RoleDTO) o;
+        return id.equals(roleDTO.id);
     }
 
-    public static Role convertToRole(RoleDTO roleDTO, RoleService roleService) {
-        RoleDTOConvertor converter = new RoleDTOConvertor();
-        return converter.toRole(roleDTO, roleService);
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
+
+    //    public Set<UserDTO> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(Set<UserDTO> users) {
+//        this.users = users;
+//    }
+
+//    public static RoleDTO convertFromRole(Role role) {
+//        RoleDTOConvertor converter = new RoleDTOConvertor(roleService, userDTOConvertor);
+//        return converter.toDTO(role);
+//    }
+//
+//    public static Role convertToRole(RoleDTO roleDTO, RoleService roleService) {
+//        RoleDTOConvertor converter = new RoleDTOConvertor(roleService, userDTOConvertor);
+//        return converter.toRole(roleDTO, roleService);
+//    }
 }

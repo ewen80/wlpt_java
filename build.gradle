@@ -1,15 +1,20 @@
-buildscript {
-    repositories {
-        //阿里云仓库
-        maven { url 'https://maven.aliyun.com/repository/public/' }
+//buildscript {
+//    repositories {
+//        //阿里云仓库
+//        maven { url 'https://maven.aliyun.com/repository/public/' }
+//
+//        mavenCentral()
+//    }
+//    dependencies {
+//        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.3.12.RELEASE")
+//        //自动生成API文档
+//        classpath("com.github.shalousun:smart-doc-gradle-plugin:2.1.4")
+//    }
+//}
 
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.3.12.RELEASE")
-        //自动生成API文档
-        classpath("com.github.shalousun:smart-doc-gradle-plugin:2.1.4")
-    }
+plugins {
+    id "org.springframework.boot" version "2.6.1"
+    id "com.github.shalousun.smart-doc" version "2.2.7"
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -20,17 +25,17 @@ repositories {
 }
 
 group = 'WLPT'
-version = '2.3.12.12'
+version = '2.6.2'
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
+//apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: "com.github.shalousun.smart-doc"
+//apply plugin: "com.github.shalousun.smart-doc"
 
-springBoot  {
-    mainClassName = 'pw.ewen.WLPT.Application'
-}
+//springBoot  {
+//    mainClassName = 'pw.ewen.WLPT.Application'
+//}
 
 compileJava {
     options.compilerArgs << '-Xlint:deprecation'
@@ -42,14 +47,16 @@ test {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    compile (
+    implementation (
             "org.springframework.boot:spring-boot-devtools",
             "org.springframework.boot:spring-boot-starter-data-jpa",
             "org.springframework.boot:spring-boot-starter-web",
             "org.springframework.boot:spring-boot-starter-security",
             "org.springframework.boot:spring-boot-starter-cache",
             "org.springframework.security:spring-security-acl",
-            "net.sf.ehcache:ehcache",
+//            "net.sf.ehcache:ehcache",
+            "org.ehcache:ehcache",
+            "org.hibernate:hibernate-jcache",
             "org.apache.commons:commons-lang3",
             "org.hibernate:hibernate-java8",
             "mysql:mysql-connector-java",
@@ -57,10 +64,11 @@ dependencies {
 //            "com.itextpdf:itext7-core:7.1.16",
             "org.apache.poi:poi:5.0.0",
             'org.apache.poi:poi-ooxml:5.0.0',
+            'javax.cache:cache-api'
     )
-    compile("org.hibernate:hibernate-ehcache"){
-        exclude group: "net.sf.ehcache", module: "ehcache-core"
-    }
+//    implementation("org.hibernate:hibernate-ehcache"){
+//        exclude group: "net.sf.ehcache", module: "ehcache-core"
+//    }
     runtimeOnly("org.springframework.boot:spring-boot-properties-migrator")
 
     testImplementation (
@@ -73,4 +81,16 @@ dependencies {
 smartdoc {
     configFile = file("src/main/resources/smart-doc.json")
 }
+
+bootBuildImage{
+    imageName = "ewen80/${project.name}:${project.version}"
+    publish = true
+    docker {
+        publishRegistry {
+            username = "ewen80"
+            password = "wenliang831018"
+        }
+    }
+}
+
 

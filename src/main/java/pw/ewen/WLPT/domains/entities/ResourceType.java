@@ -1,13 +1,11 @@
 package pw.ewen.WLPT.domains.entities;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import pw.ewen.WLPT.domains.entities.resources.BaseResource;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
@@ -18,6 +16,7 @@ import java.util.Set;
  * 保存当前系统中的资源类别列表
  */
 @Entity
+@Cacheable @org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ResourceType implements Serializable {
 
     private static final long serialVersionUID = -2617247962702444217L;
@@ -33,6 +32,14 @@ public class ResourceType implements Serializable {
      */
     private String name;
     private String description;
+    /**
+     * 仓库类名
+     */
+    private String repositoryBeanName;
+    /**
+     * 服务类名
+     */
+    private String serviceBeanName;
 
     /**
      * 资源范围
@@ -42,15 +49,18 @@ public class ResourceType implements Serializable {
 
     protected ResourceType(){}
 
-    public ResourceType(String className, String name, String description) {
+    public ResourceType(String className, String name, String description, String repositoryClassName, String serviceBeanName) {
         this.className = className;
         this.name = name;
         this.description = description;
+        this.repositoryBeanName = repositoryClassName;
+        this.serviceBeanName = serviceBeanName;
 //        this.deleted = deleted;
     }
 
     public ResourceType(String className, String name){
-        this(className,name,"");
+        this.className = className;
+        this.name = name;
     }
 
 
@@ -81,13 +91,29 @@ public class ResourceType implements Serializable {
     public Set<ResourceRange> getResourceRanges() { return this.resourceRanges;}
     public void setResourceRanges(Set<ResourceRange> resourceRanges) { this.resourceRanges = resourceRanges;}
 
+    public String getRepositoryBeanName() {
+        return repositoryBeanName;
+    }
+
+    public void setRepositoryBeanName(String repositoryBeanName) {
+        this.repositoryBeanName = repositoryBeanName;
+    }
+
+    public String getServiceBeanName() {
+        return serviceBeanName;
+    }
+
+    public void setServiceBeanName(String serviceBeanName) {
+        this.serviceBeanName = serviceBeanName;
+    }
+
     /**
      * 根据Resource返回对应的ResourceType
      */
     @Autowired
     public static ResourceType getFromResouce(BaseResource resource, ResourceTypeRepository repository){
         String resourceTypeName = resource.getClass().getTypeName();
-        return repository.getOne(resourceTypeName);
+        return repository.getById(resourceTypeName);
     }
 
     @Override

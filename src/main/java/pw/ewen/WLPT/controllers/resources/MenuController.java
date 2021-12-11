@@ -1,7 +1,6 @@
 package pw.ewen.WLPT.controllers.resources;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.DTOs.resources.MenuDTO;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.MenuDTOConvertor;
@@ -36,16 +35,17 @@ public class MenuController {
      */
     @GetMapping
     public List<MenuDTO> getTree() {
-        return this.menuService.findTree().stream().map(MenuDTO::convertFromMenu).collect(Collectors.toList());
+        return this.menuService.findTree().stream().map(menuDTOConvertor::toDTO).collect(Collectors.toList());
     }
 
     /**
      * 返回有权限的菜单树
+     * @param roleId 角色id
      * @apiNote   返回树形json格式
      */
-    @GetMapping(value = "/{userId}")
-    public List<MenuDTO> getAuthorizedMenuTree(@PathVariable("userId") String userId){
-        return this.menuService.findPermissionMenuTree(userId).stream().map(MenuDTO::convertFromMenu).collect(Collectors.toList());
+    @GetMapping(value = "/{roleId}")
+    public List<MenuDTO> getAuthorizedMenuTree(@PathVariable("roleId") String roleId){
+        return this.menuService.findPermissionMenuTree(roleId).stream().map(menuDTOConvertor::toDTO).collect(Collectors.toList());
     }
 
     /**
@@ -54,8 +54,8 @@ public class MenuController {
      */
     @PutMapping()
     public MenuDTO save(@RequestBody MenuDTO dto){
-        Menu menu = dto.convertToMenu(this.menuService);
-        return MenuDTO.convertFromMenu(this.menuService.save(menu));
+        Menu menu = menuDTOConvertor.toMenu(dto, menuService);
+        return menuDTOConvertor.toDTO(this.menuService.save(menu));
     }
 
     /**
@@ -66,13 +66,13 @@ public class MenuController {
     public List<MenuDTO> saveAll(@RequestBody List<MenuDTO> dtos) {
         List<Menu> menus = new ArrayList<>();
         dtos.forEach(dto->{
-            Menu menu = dto.convertToMenu(this.menuService);
+            Menu menu = menuDTOConvertor.toMenu(dto, menuService);
             menus.add(menu);
         });
         List<Menu> saveMenus = this.menuService.batchSave(menus);
         List<MenuDTO> saveMenuDTOs = new ArrayList<>();
         saveMenus.forEach(menu -> {
-            MenuDTO dto = MenuDTO.convertFromMenu(menu);
+            MenuDTO dto = menuDTOConvertor.toDTO(menu);
             saveMenuDTOs.add(dto);
         });
         return saveMenuDTOs;
