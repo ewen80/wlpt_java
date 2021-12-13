@@ -1,9 +1,9 @@
-server:
-  port: 9001
-  ssl:
-    key-store: classpath:cert/6746214_test.changdi.shssgc.org.cn.jks
-    key-store-password: FNkhrxX9
-    key-store-type: JKS
+#server:
+#  port: 9001
+#  ssl:
+#    key-store: classpath:cert/6746214_test.changdi.shssgc.org.cn.jks
+#    key-store-password: FNkhrxX9
+#    key-store-type: JKS
 
 logging:
   level:
@@ -19,7 +19,7 @@ spring:
         format_sql: false
 
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/changdi?useSSL=false&characterEncoding=utf8
+    url: jdbc:mysql://mysql:3306/changdi?useSSL=false&characterEncoding=utf8
     username: wenliang
     password: wenliang
 
@@ -41,4 +41,4 @@ bizconfig:
       cron: 0 */30 * * * ?
       do_startup: true
 
-frontendUrls: https://aliyun.ewen.pw:9101  # 前端程序部署地址
+frontendUrls: http://192.168.0.51  # 前端程序部署地址

@@ -1,7 +1,4 @@
 /.gradle/*
 /.idea/*
-/.settings/*
-/bin/*
 /build/*
-/log/
-/src/jpaModelgen/
+log
