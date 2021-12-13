@@ -34,7 +34,7 @@ public class UserDTOConvertor {
             roleService.findOne(dto.getDefaultRoleId()).ifPresent(user::setDefaultRole);
         }
         if(dto.getCurrentRoleId() != null) {
-            roleService.findOne(dto.getCurrentRoleId()).ifPresent(user::setDefaultRole);
+            roleService.findOne(dto.getCurrentRoleId()).ifPresent(user::setCurrentRole);
         }
 
         return user;

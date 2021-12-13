@@ -1,6 +1,6 @@
 logging:
   level:
-    root: INFO
+    root: debug
 
 spring:
   output:
@@ -8,7 +8,7 @@ spring:
       enabled: DETECT
 
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: update
     properties:

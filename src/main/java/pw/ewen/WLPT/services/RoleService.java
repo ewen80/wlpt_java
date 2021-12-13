@@ -19,7 +19,6 @@ import java.util.Optional;
  * created by wenliang on 20210226
  */
 @Service
-@PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
 public class RoleService {
 
     private final RoleRepository roleRepository;
@@ -34,6 +33,7 @@ public class RoleService {
      * @param id    角色id
      * @return  如果没有找到返回null
      */
+    @PreAuthorize("#id == @userContext.getCurrentUser().getCurrentRole().getId() or hasAuthority(@bizConfig.user.adminRoleId)")
     public Optional<Role> findOne(String id) {
         return this.roleRepository.findById(id);
     }
@@ -41,6 +41,7 @@ public class RoleService {
     /**
      * 返回所有角色(不分页）
      */
+    @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
     public List<Role> findAll() {
         // 默认过滤软删除角色
         Specification<Role> spec = (root, query, cb) -> cb.isFalse(root.get("deleted"));
@@ -52,12 +53,14 @@ public class RoleService {
      * @param pr    分页对象
      * @return  角色
      */
+    @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
     public Page<Role> findAll(PageRequest pr)  {
         // 默认过滤软删除角色
         Specification<Role> spec = (root, query, cb) -> cb.isFalse(root.get("deleted"));
         return this.roleRepository.findAll(spec, pr);
     }
 
+    @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
     public Page<Role> findAll(String filter, PageRequest pr) {
         SearchSpecificationsBuilder<Role> builder = new SearchSpecificationsBuilder<>();
         // 默认过滤软删除角色
@@ -69,6 +72,7 @@ public class RoleService {
      * 保存
      * @param role 角色
      */
+    @PreAuthorize("#role.getId() == @userContext.getCurrentUser().getCurrentRole().getId() or hasAuthority(@bizConfig.user.adminRoleId)")
     public Role save(Role role) {
         return this.roleRepository.save(role);
     }
@@ -77,6 +81,7 @@ public class RoleService {
      * 通过角色ids删除角色，如果没有用户则硬删除，如果有软删除用户则软删除，如果角色下有用户和权限配置则抛出异常
      * @param roleIds   角色id数组
      */
+    @PreAuthorize("hasAuthority(@bizConfig.user.adminRoleId)")
     public void delete(List<String> roleIds) throws DeleteRoleException {
         for(String id : roleIds) {
             this.delete(id);
@@ -87,6 +92,7 @@ public class RoleService {
      * 通过角色id软删除角色，
      * @param roleId    角色id
      */
+    @PreAuthorize("#roleId == @userContext.getCurrentUser().getCurrentRole().getId() or hasAuthority(@bizConfig.user.adminRoleId)")
     public void delete(String roleId) {
 //        Optional<Role> role = this.roleRepository.findById(roleId);
 //        if(role.isPresent()) {

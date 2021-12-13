@@ -5,6 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
@@ -188,12 +191,6 @@ public class UserController {
 	@PutMapping("/{userId}/{currentRoleId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void changeCurrentRole(@PathVariable("userId") String userId, @PathVariable("currentRoleId") String currentRoleId) {
-		this.userService.findOne(userId).ifPresent(user -> {
-			this.roleService.findOne(currentRoleId).ifPresent(role -> {
-				user.setCurrentRole(role);
-				userContext.setCurrentUser(user);
-			});
-
-		});
+		userService.changeCurrentRole(userId, currentRoleId);
 	}
 }

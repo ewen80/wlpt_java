@@ -39,9 +39,9 @@ public class SecurityUserService implements UserDetailsService {
         Optional<User> user = userRepository.findById(userId);
         if(user.isPresent()){
             Role role = user.get().getDefaultRole();
+            user.get().setCurrentRole(role);
             List<GrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority(role.getId()));
-            user.get().setCurrentRole(role);
             userContext.setCurrentUser(user.get());
             return new org.springframework.security.core.userdetails.User(user.get().getId(), user.get().getPassword(), authorities);
         }
