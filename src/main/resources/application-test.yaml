@@ -32,6 +32,8 @@ bizconfig:
     weixing_field_audit_template: ./FieldAuditPrintTemplates/weixing.docx
     # 娱乐场地审核单模板
     yule_field_audit_template: ./FieldAuditPrintTemplates/yule.docx
+    # vod审核单模板
+    vod_field_audit_template: ./FieldAuditPrintTemplates/vod.docx
 
   # 定时任务相关配置
   schedules:

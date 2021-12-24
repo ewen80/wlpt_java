@@ -39,7 +39,7 @@ public class FieldAuditDTO {
      */
     private List<AttachmentBag> attachmentBags = new ArrayList<>();
     /**
-     * 签名信息
+     * 场地负责人签名信息
      */
     private SignatureDTO fzrSignature;
     /**

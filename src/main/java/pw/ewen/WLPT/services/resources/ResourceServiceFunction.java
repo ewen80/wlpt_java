@@ -1,5 +1,6 @@
 package pw.ewen.WLPT.services.resources;
 
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,4 +15,7 @@ public interface ResourceServiceFunction<T> {
     T add(T t);
     void update(T t);
     void delete(T t);
+
+    void tagReaded(long resourceId, String userId);
+    void getFieldAuditWord(long resourceId, long fieldAuditId, OutputStream output);
 }

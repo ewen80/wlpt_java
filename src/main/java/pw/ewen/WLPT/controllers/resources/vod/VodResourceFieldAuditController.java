@@ -1,54 +1,37 @@
-package pw.ewen.WLPT.controllers.resources.weixings;
+package pw.ewen.WLPT.controllers.resources.vod;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pw.ewen.WLPT.controllers.utils.SaveFieldAuditParam;
 import pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.FieldAuditDTOConvertor;
-import pw.ewen.WLPT.domains.entities.AttachmentBag;
 import pw.ewen.WLPT.domains.entities.resources.FieldAudit;
-import pw.ewen.WLPT.domains.entities.resources.weixing.WeixingResource;
 import pw.ewen.WLPT.services.resources.FieldAuditService;
-import pw.ewen.WLPT.services.resources.weixing.WeixingResourceService;
+import pw.ewen.WLPT.services.resources.vod.VodResourceService;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 /**
- * 卫星场地-现场审核信息
+ * 视频点播-现场审核信息
  */
 @RestController
-@RequestMapping(value = "/resources/weixings/fieldaudits")
-public class WeixingResourceFieldAuditController {
-
-    private final WeixingResourceService weixingResourceService;
-    private final FieldAuditService fieldAuditService;
+@RequestMapping(value = "/resources/vods/fieldaudits")
+public class VodResourceFieldAuditController {
+    private final VodResourceService vodResourceService;
     private final FieldAuditDTOConvertor fieldAuditDTOConvertor;
+    private final FieldAuditService fieldAuditService;
 
-    @Autowired
-    public WeixingResourceFieldAuditController(WeixingResourceService weixingResourceService, FieldAuditService fieldAuditService, FieldAuditDTOConvertor fieldAuditDTOConvertor) {
-        this.weixingResourceService = weixingResourceService;
-        this.fieldAuditService = fieldAuditService;
+    public VodResourceFieldAuditController(VodResourceService vodResourceService, FieldAuditDTOConvertor fieldAuditDTOConvertor, FieldAuditService fieldAuditService) {
+        this.vodResourceService = vodResourceService;
         this.fieldAuditDTOConvertor = fieldAuditDTOConvertor;
+        this.fieldAuditService = fieldAuditService;
     }
 
     /**
-     * 保存现场审核信息参数包装类
-     */
-    private static class SaveFieldAuditParam {
-        /**
-         * 现场审核信息
-         */
-        public FieldAuditDTO fieldAudit;
-        /**
-         * 卫星场地id
-         */
-        public long resourceId;
-    }
-    /**
-     * 保存卫星场地审核信息
+     * 保存场地审核信息
      * @param saveFieldAuditParam  保存参数 ， {
      *         public FieldAuditDTO fieldAudit;
      *         public long resourceId;
@@ -57,17 +40,17 @@ public class WeixingResourceFieldAuditController {
      */
     @PutMapping()
     public ResponseEntity<FieldAuditDTO> save(@RequestBody SaveFieldAuditParam saveFieldAuditParam) {
-        return this.weixingResourceService.findOne(saveFieldAuditParam.resourceId)
-                .map(weixingResource -> {
+        return this.vodResourceService.findOne(saveFieldAuditParam.resourceId)
+                .map(resource -> {
                     FieldAudit fieldAudit = fieldAuditDTOConvertor.toFieldAudit(saveFieldAuditParam.fieldAudit);
                     fieldAuditService.save(fieldAudit);
                     if(saveFieldAuditParam.fieldAudit.getId() > 0){
-                        int index = weixingResource.getFieldAudits().indexOf(fieldAudit);
-                        weixingResource.getFieldAudits().set(index, fieldAudit);
+                        int index = resource.getFieldAudits().indexOf(fieldAudit);
+                        resource.getFieldAudits().set(index, fieldAudit);
                     } else {
-                        weixingResource.getFieldAudits().add(fieldAudit);
+                        resource.getFieldAudits().add(fieldAudit);
                     }
-                    weixingResourceService.update(weixingResource);
+                    vodResourceService.update(resource);
 
                     return new ResponseEntity<>(fieldAuditDTOConvertor.toDTO(fieldAudit), HttpStatus.OK);
                 })
@@ -77,14 +60,14 @@ public class WeixingResourceFieldAuditController {
 
 
     /**
-     * 根据卫星场地id获取现场审核意见
-     * @param resourceId 卫星场地id
+     * 根据场地id获取现场审核意见
+     * @param resourceId 场地id
      */
     @GetMapping()
-    public List<FieldAuditDTO> findByWeixingResourceId(@RequestParam("resourceId") long resourceId) {
-        return weixingResourceService.findOne(resourceId)
-                .map(weixingResource -> {
-                    List<FieldAudit> fieldAudits = weixingResource.getFieldAudits();
+    public List<FieldAuditDTO> findByResourceId(@RequestParam("resourceId") long resourceId) {
+        return vodResourceService.findOne(resourceId)
+                .map(resource -> {
+                    List<FieldAudit> fieldAudits = resource.getFieldAudits();
                     fieldAudits.sort(Comparator.comparing(FieldAudit::getAuditDate));
                     List<FieldAuditDTO> fieldAuditDTOS = new ArrayList<>();
                     for(FieldAudit fieldAudit : fieldAudits) {
@@ -97,20 +80,20 @@ public class WeixingResourceFieldAuditController {
     }
 
     /**
-     * 删除卫星场地现场审核意见
+     * 删除场地现场审核意见
      * @param ids 用逗号分隔的意见id
-     * @param resourceId 卫星场地id
+     * @param resourceId 场地id
      */
     @DeleteMapping(value = "/{ids}")
     public void delete(@PathVariable("ids") String ids, @RequestParam("resourceId") long resourceId){
         String[] idArr = ids.split(",");
         try{
-            weixingResourceService.findOne(resourceId).ifPresent(weixingResource -> {
-                List<FieldAudit> fieldAudits = weixingResource.getFieldAudits();
+            vodResourceService.findOne(resourceId).ifPresent(resource -> {
+                List<FieldAudit> fieldAudits = resource.getFieldAudits();
                 for(String id : idArr){
                     fieldAudits.removeIf(fieldAudit -> Long.parseLong(id) == fieldAudit.getId());
                 }
-                weixingResourceService.update(weixingResource);
+                vodResourceService.update(resource);
             });
         }catch (Exception ignored){}
     }

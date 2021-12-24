@@ -1,4 +1,4 @@
-package pw.ewen.WLPT.controllers.resources.weixings;
+package pw.ewen.WLPT.controllers.resources.weixing;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

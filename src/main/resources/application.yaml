@@ -46,6 +46,8 @@ bizconfig:
     weixing_basis: "WX[date:yyyy]{4}"
     yule_name: yule
     yule_basis: "YL[date:yyyy]{4}"
+    vod_name: vod
+    vod_basis: "VOD[date:yyyy]{4}"
 
   #   权限
   permission:
@@ -53,11 +55,6 @@ bizconfig:
 
   # 资源类型(用于项目初始化用)
   resources:
-#      - name: 我的资源
-#        path: /resources/myresources
-#        type: pw.ewen.WLPT.domains.entities.resources.myresource.MyResource
-#        typeName: MyResource
-#        description: 我的资源
       - name: 卫星场地
         path: /resources/weixings
         type: pw.ewen.WLPT.domains.entities.resources.weixing.WeixingResource
@@ -72,6 +69,13 @@ bizconfig:
         service_bean_name: yuleResourceBaseService
         typeName: YuleResource
         description: 娱乐场地
+      - name: 视频点播
+        path: /resources/vods
+        type: pw.ewen.WLPT.domains.entities.resources.vod.VodResource
+        repository_bean_name: vodResourceRepository
+        service_bean_name: vodResourceService
+        typeName: VodResource
+        description: 视频点播
 
   # 系统使用的日期时间格式
   date_format:

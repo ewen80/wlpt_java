@@ -3,15 +3,10 @@ package pw.ewen.WLPT.domains.entities.resources.weixing;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import pw.ewen.WLPT.domains.entities.resources.BaseResource;
-import pw.ewen.WLPT.domains.entities.resources.FieldAudit;
 
 import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * created by wenliang on 2021/7/19
@@ -130,11 +125,6 @@ public class WeixingResource extends BaseResource implements Serializable {
      * 终端数
      */
     private int zds;
-    /**
-     * 场地核查信息
-     */
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FieldAudit> fieldAudits = new ArrayList<>();
 
     public String getBh() {
         return bh;
@@ -310,14 +300,6 @@ public class WeixingResource extends BaseResource implements Serializable {
 
     public void setXhtzfs(String xhtzfs) {
         this.xhtzfs = xhtzfs;
-    }
-
-    public List<FieldAudit> getFieldAudits() {
-        return fieldAudits;
-    }
-
-    public void setFieldAudits(List<FieldAudit> fieldAudits) {
-        this.fieldAudits = fieldAudits;
     }
 
     public String getWxmc() {

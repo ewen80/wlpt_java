@@ -26,6 +26,13 @@ public abstract class BaseResource {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ResourceReadInfo> readInfoList = new ArrayList<>();
 
+
+    /**
+     * 场地核查信息
+     */
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FieldAudit> fieldAudits = new ArrayList<>();
+
     public long getId(){
         return this.id;
     }
@@ -45,6 +52,14 @@ public abstract class BaseResource {
 
     public void setReadInfoList(List<ResourceReadInfo> readInfoList) {
         this.readInfoList = readInfoList;
+    }
+
+    public List<FieldAudit> getFieldAudits() {
+        return fieldAudits;
+    }
+
+    public void setFieldAudits(List<FieldAudit> fieldAudits) {
+        this.fieldAudits = fieldAudits;
     }
 
     /**

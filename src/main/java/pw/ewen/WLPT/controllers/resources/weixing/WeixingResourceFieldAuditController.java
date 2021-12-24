@@ -1,5 +1,6 @@
-package pw.ewen.WLPT.controllers.resources.yule;
+package pw.ewen.WLPT.controllers.resources.weixing;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,24 +9,26 @@ import pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.FieldAuditDTOConvertor;
 import pw.ewen.WLPT.domains.entities.resources.FieldAudit;
 import pw.ewen.WLPT.services.resources.FieldAuditService;
-import pw.ewen.WLPT.services.resources.yule.YuleResourceBaseService;
+import pw.ewen.WLPT.services.resources.weixing.WeixingResourceService;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 /**
- * 娱乐场地-现场审核信息
+ * 卫星场地-现场审核信息
  */
 @RestController
-@RequestMapping(value = "/resources/yules/fieldaudits")
-public class YuleResourceFieldAuditController {
-    private final YuleResourceBaseService yuleResourceBaseService;
+@RequestMapping(value = "/resources/weixings/fieldaudits")
+public class WeixingResourceFieldAuditController {
+
+    private final WeixingResourceService weixingResourceService;
     private final FieldAuditService fieldAuditService;
     private final FieldAuditDTOConvertor fieldAuditDTOConvertor;
 
-    public YuleResourceFieldAuditController(YuleResourceBaseService yuleResourceBaseService, FieldAuditService fieldAuditService, FieldAuditDTOConvertor fieldAuditDTOConvertor) {
-        this.yuleResourceBaseService = yuleResourceBaseService;
+    @Autowired
+    public WeixingResourceFieldAuditController(WeixingResourceService weixingResourceService, FieldAuditService fieldAuditService, FieldAuditDTOConvertor fieldAuditDTOConvertor) {
+        this.weixingResourceService = weixingResourceService;
         this.fieldAuditService = fieldAuditService;
         this.fieldAuditDTOConvertor = fieldAuditDTOConvertor;
     }
@@ -39,12 +42,12 @@ public class YuleResourceFieldAuditController {
 //         */
 //        public FieldAuditDTO fieldAudit;
 //        /**
-//         * 场地id
+//         * 卫星场地id
 //         */
 //        public long resourceId;
 //    }
     /**
-     * 保存场地审核信息
+     * 保存卫星场地审核信息
      * @param saveFieldAuditParam  保存参数 ， {
      *         public FieldAuditDTO fieldAudit;
      *         public long resourceId;
@@ -53,17 +56,17 @@ public class YuleResourceFieldAuditController {
      */
     @PutMapping()
     public ResponseEntity<FieldAuditDTO> save(@RequestBody SaveFieldAuditParam saveFieldAuditParam) {
-        return this.yuleResourceBaseService.findOne(saveFieldAuditParam.resourceId)
-                .map(yule -> {
+        return this.weixingResourceService.findOne(saveFieldAuditParam.resourceId)
+                .map(weixingResource -> {
                     FieldAudit fieldAudit = fieldAuditDTOConvertor.toFieldAudit(saveFieldAuditParam.fieldAudit);
                     fieldAuditService.save(fieldAudit);
                     if(saveFieldAuditParam.fieldAudit.getId() > 0){
-                        int index = yule.getFieldAudits().indexOf(fieldAudit);
-                        yule.getFieldAudits().set(index, fieldAudit);
+                        int index = weixingResource.getFieldAudits().indexOf(fieldAudit);
+                        weixingResource.getFieldAudits().set(index, fieldAudit);
                     } else {
-                        yule.getFieldAudits().add(fieldAudit);
+                        weixingResource.getFieldAudits().add(fieldAudit);
                     }
-                    yuleResourceBaseService.update(yule);
+                    weixingResourceService.update(weixingResource);
 
                     return new ResponseEntity<>(fieldAuditDTOConvertor.toDTO(fieldAudit), HttpStatus.OK);
                 })
@@ -73,14 +76,14 @@ public class YuleResourceFieldAuditController {
 
 
     /**
-     * 根据场地id获取现场审核意见
-     * @param resourceId 场地id
+     * 根据卫星场地id获取现场审核意见
+     * @param resourceId 卫星场地id
      */
     @GetMapping()
-    public List<FieldAuditDTO> findByYuleResourceId(@RequestParam("resourceId") long resourceId) {
-        return yuleResourceBaseService.findOne(resourceId)
-                .map(yule -> {
-                    List<FieldAudit> fieldAudits = yule.getFieldAudits();
+    public List<FieldAuditDTO> findByWeixingResourceId(@RequestParam("resourceId") long resourceId) {
+        return weixingResourceService.findOne(resourceId)
+                .map(weixingResource -> {
+                    List<FieldAudit> fieldAudits = weixingResource.getFieldAudits();
                     fieldAudits.sort(Comparator.comparing(FieldAudit::getAuditDate));
                     List<FieldAuditDTO> fieldAuditDTOS = new ArrayList<>();
                     for(FieldAudit fieldAudit : fieldAudits) {
@@ -93,20 +96,20 @@ public class YuleResourceFieldAuditController {
     }
 
     /**
-     * 删除场地现场审核意见
+     * 删除卫星场地现场审核意见
      * @param ids 用逗号分隔的意见id
-     * @param resourceId 场地id
+     * @param resourceId 卫星场地id
      */
     @DeleteMapping(value = "/{ids}")
     public void delete(@PathVariable("ids") String ids, @RequestParam("resourceId") long resourceId){
         String[] idArr = ids.split(",");
         try{
-            yuleResourceBaseService.findOne(resourceId).ifPresent(yule -> {
-                List<FieldAudit> fieldAudits = yule.getFieldAudits();
+            weixingResourceService.findOne(resourceId).ifPresent(weixingResource -> {
+                List<FieldAudit> fieldAudits = weixingResource.getFieldAudits();
                 for(String id : idArr){
                     fieldAudits.removeIf(fieldAudit -> Long.parseLong(id) == fieldAudit.getId());
                 }
-                yuleResourceBaseService.update(yule);
+                weixingResourceService.update(weixingResource);
             });
         }catch (Exception ignored){}
     }

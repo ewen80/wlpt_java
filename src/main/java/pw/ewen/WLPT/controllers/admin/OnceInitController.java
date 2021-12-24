@@ -148,17 +148,6 @@ public class OnceInitController {
         }
 
 
-//        builder.reset();
-//        List<Menu> myResourceMenus = menuService.findAll(builder.build("name:我的资源"));
-//        Menu myResourceMenu;
-//        if(myResourceMenus.size() == 0) {
-//            myResourceMenu = new Menu();
-//            myResourceMenu.setName("我的资源");
-//            myResourceMenu.setPath("/resources/myresources");
-//            myResourceMenu.setParent(bizMenu);
-//            this.menuService.save(myResourceMenu);
-//        }
-
         List<BizConfig.Resource> resources = bizConfig.getResources();
         for(BizConfig.Resource resource: resources) {
             builder.reset();

@@ -40,13 +40,13 @@ public class FieldAudit implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AttachmentBag> attachmentBags = new ArrayList<>();
     /**
-     * 签名信息
+     * 场地负责人签名信息
      */
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn
     private Signature fzrSignature;
     /**
-     * 场地负责人签名信息
+     * 场地审核人签名信息
      */
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Signature> auditorSignatures = new ArrayList<>();

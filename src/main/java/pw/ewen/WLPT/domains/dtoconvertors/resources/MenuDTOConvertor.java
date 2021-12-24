@@ -41,6 +41,10 @@ public class MenuDTOConvertor {
         menu.setOrderId(menuDTO.getOrderId());
         menu.setIconClass(menuDTO.getIconClass());
         menu.setPath(menuDTO.getPath());
+        if(menuDTO.getResourceType() != null) {
+            resourceTypeRepository.findById(menuDTO.getResourceType())
+                    .ifPresent(menu::setResourceType);
+        }
 
         Optional<Menu> parent;
         if(menuDTO.getParentId() != 0 ) {
@@ -57,6 +61,9 @@ public class MenuDTOConvertor {
         dto.setOrderId(menu.getOrderId());
         dto.setIconClass(menu.getIconClass());
         dto.setPath(menu.getPath());
+        if(menu.getResourceType() != null) {
+            dto.setResourceType(menu.getResourceType().getClassName());
+        }
 
         if(menu.getParent() != null){
             dto.setParentId(menu.getParent().getId());

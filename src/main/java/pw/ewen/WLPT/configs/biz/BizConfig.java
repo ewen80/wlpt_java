@@ -123,6 +123,8 @@ public class BizConfig {
         private String weixingFieldAuditTemplate;
         // 娱乐场地审核意见表模板文件路径
         private String yuleFieldAuditTemplate;
+        // vod审核意见表模板文件路径
+        private String vodFieldAuditTemplate;
 
         public String getFileUploadRootPath() {
             return fileUploadRootPath;
@@ -146,6 +148,14 @@ public class BizConfig {
 
         public void setYuleFieldAuditTemplate(String yuleFieldAuditTemplate) {
             this.yuleFieldAuditTemplate = yuleFieldAuditTemplate;
+        }
+
+        public String getVodFieldAuditTemplate() {
+            return vodFieldAuditTemplate;
+        }
+
+        public void setVodFieldAuditTemplate(String vodFieldAuditTemplate) {
+            this.vodFieldAuditTemplate = vodFieldAuditTemplate;
         }
     }
     private File file;
@@ -210,6 +220,10 @@ public class BizConfig {
         private String yuleName;
         //  娱乐场地核查序列号根据
         private String yuleBasis;
+        //  视频点播场地核查序列号名
+        private String vodName;
+        //  视频点播场地核查序列号根据
+        private String vodBasis;
 
         public String getWeixingName() {
             return weixingName;
@@ -241,6 +255,22 @@ public class BizConfig {
 
         public void setYuleBasis(String yuleBasis) {
             this.yuleBasis = yuleBasis;
+        }
+
+        public String getVodName() {
+            return vodName;
+        }
+
+        public void setVodName(String vodName) {
+            this.vodName = vodName;
+        }
+
+        public String getVodBasis() {
+            return vodBasis;
+        }
+
+        public void setVodBasis(String vodBasis) {
+            this.vodBasis = vodBasis;
         }
     }
     private SerialNumber serialNumber;

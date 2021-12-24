@@ -3,7 +3,6 @@ package pw.ewen.WLPT.domains.entities.resources.yule;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import pw.ewen.WLPT.domains.entities.resources.BaseResource;
-import pw.ewen.WLPT.domains.entities.resources.FieldAudit;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -68,12 +67,6 @@ public class YuleResourceBase extends BaseResource implements Serializable {
 
     @OneToOne(mappedBy = "yuleResourceBase", cascade = CascadeType.ALL, orphanRemoval = true)
     private YuleResourceYyBase yyBase;
-
-    /**
-     * 场地核查信息
-     */
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FieldAudit> fieldAudits = new ArrayList<>();
 
     public String getBh() {
         return bh;
@@ -179,11 +172,4 @@ public class YuleResourceBase extends BaseResource implements Serializable {
         this.wcs = wcs;
     }
 
-    public List<FieldAudit> getFieldAudits() {
-        return fieldAudits;
-    }
-
-    public void setFieldAudits(List<FieldAudit> fieldAudits) {
-        this.fieldAudits = fieldAudits;
-    }
 }

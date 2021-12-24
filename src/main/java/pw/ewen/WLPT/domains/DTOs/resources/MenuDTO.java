@@ -31,6 +31,10 @@ public class MenuDTO {
      */
     private String iconClass;
     /**
+     * 资源类型名
+     */
+    private String resourceType;
+    /**
      * 子菜单
      */
     private List<MenuDTO> children = new ArrayList<>();
@@ -121,5 +125,13 @@ public class MenuDTO {
 
     public void setUnReadCount(int unReadCount) {
         this.unReadCount = unReadCount;
+    }
+
+    public String getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(String resourceType) {
+        this.resourceType = resourceType;
     }
 }

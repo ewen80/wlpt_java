@@ -1,56 +1,39 @@
 package pw.ewen.WLPT.domains.dtoconvertors.resources.yule;
 
-import org.springframework.security.acls.model.Permission;
 import org.springframework.stereotype.Component;
-import pw.ewen.WLPT.domains.DTOs.permissions.PermissionDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO;
-import pw.ewen.WLPT.domains.DTOs.resources.ResourceCheckInDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.yule.YuleResourceBaseDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.yule.YuleResourceGwRoomDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.yule.YuleResourceGwWcDTO;
-import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.domains.dtoconvertors.PermissionDTOConvertor;
+import pw.ewen.WLPT.domains.dtoconvertors.resources.DTOBaseConvertor;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.FieldAuditDTOConvertor;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.ResourceCheckInDTOConvertor;
 import pw.ewen.WLPT.domains.entities.resources.FieldAudit;
-import pw.ewen.WLPT.domains.entities.resources.ResourceCheckIn;
-import pw.ewen.WLPT.domains.entities.resources.ResourceReadInfo;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceBase;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceGwRoom;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceGwWc;
 import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.services.PermissionService;
-import pw.ewen.WLPT.services.resources.yule.YuleResourceYyBaseService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * created by wenliang on 2021/10/6
  */
 @Component
-public class YuleResourceBaseDTOConvertor {
-    private final ResourceCheckInDTOConvertor resourceCheckInDTOConvertor;
-    private final PermissionService permissionService;
-    private final UserContext userContext;
-    private final PermissionDTOConvertor permissionDTOConvertor;
+public class YuleResourceBaseDTOConvertor extends DTOBaseConvertor<YuleResourceBase, YuleResourceBaseDTO> {
+
     private final YuleResourceGwRoomDTOConvertor roomDTOConvertor;
     private final YuleResourceGwWcDTOConvertor wcDTOConvertor;
     private final YuleResourceYyDTOConvertor yyDTOConvertor;
-    private final FieldAuditDTOConvertor fieldAuditDTOConvertor;
 
-    public YuleResourceBaseDTOConvertor(ResourceCheckInDTOConvertor resourceCheckInDTOConvertor, PermissionService permissionService, UserContext userContext, PermissionDTOConvertor permissionDTOConvertor, YuleResourceGwRoomDTOConvertor yuleResourceGwRoomDTOConvertor, YuleResourceGwWcDTOConvertor wcDTOConvertor, YuleResourceYyDTOConvertor yyDTOConvertor, FieldAuditDTOConvertor fieldAuditDTOConvertor) {
-        this.resourceCheckInDTOConvertor = resourceCheckInDTOConvertor;
-        this.permissionService = permissionService;
-        this.userContext = userContext;
-        this.permissionDTOConvertor = permissionDTOConvertor;
-        this.roomDTOConvertor = yuleResourceGwRoomDTOConvertor;
+    protected YuleResourceBaseDTOConvertor(FieldAuditDTOConvertor fieldAuditDTOConvertor, ResourceCheckInDTOConvertor resourceCheckInDTOConvertor, PermissionService permissionService, PermissionDTOConvertor permissionDTOConvertor, UserContext userContext, YuleResourceGwRoomDTOConvertor roomDTOConvertor, YuleResourceGwWcDTOConvertor wcDTOConvertor, YuleResourceYyDTOConvertor yyDTOConvertor) {
+        super(fieldAuditDTOConvertor, resourceCheckInDTOConvertor, permissionService, permissionDTOConvertor, userContext);
+        this.roomDTOConvertor = roomDTOConvertor;
         this.wcDTOConvertor = wcDTOConvertor;
         this.yyDTOConvertor = yyDTOConvertor;
-        this.fieldAuditDTOConvertor = fieldAuditDTOConvertor;
     }
 
     public YuleResourceBase toYuleBase(YuleResourceBaseDTO dto) {
@@ -83,13 +66,7 @@ public class YuleResourceBaseDTOConvertor {
             yule.setYyBase(yyDTOConvertor.toYyBase(dto.getYyBase()));
         }
 
-        // 添加现场审核信息
-        List<FieldAuditDTO> fieldAuditDTOS = dto.getFieldAudits();
-        List<FieldAudit> fieldAudits = new ArrayList<>();
-        for (FieldAuditDTO fieldAuditDTO : fieldAuditDTOS) {
-            fieldAudits.add(this.fieldAuditDTOConvertor.toFieldAudit(fieldAuditDTO));
-        }
-        yule.setFieldAudits(fieldAudits);
+        this.setExtraInfoToResource(dto, yule);
 
         return  yule;
     }
@@ -113,9 +90,7 @@ public class YuleResourceBaseDTOConvertor {
         dto.setQxId(yule.getQxId());
 
         // 是否已读
-        List<ResourceReadInfo> readedInfos = yule.getReadInfoList();
-        boolean haveReaded = readedInfos.stream().anyMatch(readInfo -> Objects.equals(readInfo.getUser().getId(), userContext.getCurrentUser().getId()));
-        dto.setReaded(haveReaded);
+        this.setReadedInfoToDTO(yule, dto);
 
         if(!fetchLazy) {
             // 添加歌舞娱乐场所包房信息
@@ -130,24 +105,8 @@ public class YuleResourceBaseDTOConvertor {
             if(yule.getYyBase() != null) {
                 dto.setYyBase(yyDTOConvertor.toDTO(yule.getYyBase()));
             }
-            // 添加登记信息
-            ResourceCheckIn resourceCheckIn = yule.getResourceCheckIn();
-            if(resourceCheckIn != null) {
-                ResourceCheckInDTO resourceCheckInDTO = resourceCheckInDTOConvertor.toDTO(resourceCheckIn);
-                dto.setResourceCheckIn(resourceCheckInDTO);
-            }
-            // 添加场地核查信息
-            List<FieldAudit> fieldAudits = yule.getFieldAudits();
-            List<FieldAuditDTO> fieldAuditDTOS = new ArrayList<>();
-            for (FieldAudit fieldAudit : fieldAudits) {
-                fieldAuditDTOS.add(this.fieldAuditDTOConvertor.toDTO(fieldAudit));
-            }
-            dto.setFieldAudits(fieldAuditDTOS);
 
-            // 添加权限列表
-            Set<Permission> permissions =  permissionService.getPermissionsByRolesAndResource(userContext.getCurrentUser().getCurrentRole(), yule);
-            List<PermissionDTO> permissionDTOs = permissions.stream().map(permissionDTOConvertor::toDTO).collect(Collectors.toList());
-            dto.setPermissions(permissionDTOs);
+            this.setExtraInfoToDTO(yule, dto);
         }
         return dto;
     }
