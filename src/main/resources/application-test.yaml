@@ -43,4 +43,4 @@ bizconfig:
       cron: 0 */30 * * * ?
       do_startup: true
 
-frontendUrls: http://192.168.0.51  # 前端程序部署地址
+frontendUrls: http://changditest.shssgc.org.cn  # 前端程序部署地址
