@@ -8,10 +8,6 @@ import pw.ewen.WLPT.domains.DTOs.resources.BaseResourceDTO;
 public class WeixingResourceDTO extends BaseResourceDTO {
 
     /**
-     * 编号
-     */
-    private String bh;
-    /**
      * 申请单位
      */
     private String sqdw;
@@ -107,18 +103,6 @@ public class WeixingResourceDTO extends BaseResourceDTO {
      * 收视单位类型
      */
     private String ssdwlx;
-
-
-//    private List<FieldAuditDTO> fieldAudits = new ArrayList<>();
-
-
-    public String getBh() {
-        return bh;
-    }
-
-    public void setBh(String bh) {
-        this.bh = bh;
-    }
 
     public String getSqdw() {
         return sqdw;

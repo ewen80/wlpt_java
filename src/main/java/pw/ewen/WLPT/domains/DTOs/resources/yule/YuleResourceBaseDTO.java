@@ -11,10 +11,6 @@ import java.util.List;
 public class YuleResourceBaseDTO extends BaseResourceDTO {
 
     /**
-     * 编号
-     */
-    private String bh;
-    /**
      * 各区Id
      */
     private String qxId;
@@ -63,14 +59,6 @@ public class YuleResourceBaseDTO extends BaseResourceDTO {
      * 游艺娱乐场所信息
      */
     private YuleResourceYyBaseDTO yyBase;
-
-    public String getBh() {
-        return bh;
-    }
-
-    public void setBh(String bh) {
-        this.bh = bh;
-    }
 
     public String getDwmc() {
         return dwmc;

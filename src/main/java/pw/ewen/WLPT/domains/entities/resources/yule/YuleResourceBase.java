@@ -18,10 +18,7 @@ import java.util.List;
 @Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class YuleResourceBase extends BaseResource implements Serializable {
     private static final long serialVersionUID = -201238539135369721L;
-    /**
-     * 编号
-     */
-    private String bh;
+
     /**
      * 各区Id
      */
@@ -67,14 +64,6 @@ public class YuleResourceBase extends BaseResource implements Serializable {
 
     @OneToOne(mappedBy = "yuleResourceBase", cascade = CascadeType.ALL, orphanRemoval = true)
     private YuleResourceYyBase yyBase;
-
-    public String getBh() {
-        return bh;
-    }
-
-    public void setBh(String bh) {
-        this.bh = bh;
-    }
 
     public String getDwmc() {
         return dwmc;

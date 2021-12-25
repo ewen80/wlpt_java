@@ -18,6 +18,11 @@ public abstract class BaseResource {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    /**
+     * 编号
+     */
+    private String bh;
+
     protected BaseResource() {}
 
     @OneToOne(cascade = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
@@ -37,6 +42,14 @@ public abstract class BaseResource {
         return this.id;
     }
     public void setId(long id){ this.id = id;}
+
+    public String getBh() {
+        return bh;
+    }
+
+    public void setBh(String bh) {
+        this.bh = bh;
+    }
 
     public ResourceCheckIn getResourceCheckIn() {
         return resourceCheckIn;

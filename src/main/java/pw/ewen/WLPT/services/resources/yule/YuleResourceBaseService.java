@@ -2,66 +2,42 @@ package pw.ewen.WLPT.services.resources.yule;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.xmlbeans.XmlException;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pw.ewen.WLPT.configs.biz.BizConfig;
-import pw.ewen.WLPT.domains.entities.resources.ResourceCheckIn;
-import pw.ewen.WLPT.domains.entities.resources.ResourceReadInfo;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceBase;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceGwRoom;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceGwWc;
-import pw.ewen.WLPT.repositories.resources.yule.YuleResourceBaseRepository;
-import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
+import pw.ewen.WLPT.repositories.UserRepository;
+import pw.ewen.WLPT.repositories.resources.ResourceRepository;
 import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.services.FileService;
 import pw.ewen.WLPT.services.SerialNumberService;
-import pw.ewen.WLPT.services.UserService;
-import pw.ewen.WLPT.services.resources.ResourceServiceFunction;
+import pw.ewen.WLPT.services.resources.ResourceServiceBase;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * created by wenliang on 2021/10/6
  */
 @Service
-public class YuleResourceBaseService implements ResourceServiceFunction<YuleResourceBase> {
-    private final YuleResourceBaseRepository yuleResourceBaseRepository;
-    private final SerialNumberService serialNumberService;
+public class YuleResourceBaseService extends ResourceServiceBase<YuleResourceBase> {
+
     private final BizConfig bizConfig;
-    private final UserContext userContext;
     private final FileService fileService;
-    private final UserService userService;
 
-    public YuleResourceBaseService(YuleResourceBaseRepository yuleResourceBaseRepository, SerialNumberService serialNumberService, BizConfig bizConfig, UserContext userContext, FileService fileService, UserService userService) {
-        this.yuleResourceBaseRepository = yuleResourceBaseRepository;
-        this.serialNumberService = serialNumberService;
+    protected YuleResourceBaseService(UserRepository userRepository, ResourceRepository<YuleResourceBase, Long> repository, SerialNumberService serialNumberService, UserContext userContext, BizConfig bizConfig, FileService fileService) {
+        super(userRepository, repository, serialNumberService, userContext);
         this.bizConfig = bizConfig;
-        this.userContext = userContext;
         this.fileService = fileService;
-        this.userService = userService;
     }
 
-    @PostAuthorize("hasPermission(returnObject.orElse(null), 'read')")
-    public Optional<YuleResourceBase> findOne(long id) {
-        return this.yuleResourceBaseRepository.findById(id);
-    }
 
-    @PostFilter("hasPermission(filterObject, 'read')")
-    public List<YuleResourceBase> findAll() {
-        return this.yuleResourceBaseRepository.findAll();
-    }
-
-    @PostFilter("hasPermission(filterObject, 'read')")
-    public List<YuleResourceBase> findAll(String filter) {
-        SearchSpecificationsBuilder<YuleResourceBase> builder = new SearchSpecificationsBuilder<>();
-        return this.yuleResourceBaseRepository.findAll(builder.build(filter));
-    }
 
     // 通过娱乐id找到对应房间
     public List<YuleResourceGwRoom> findRoomsByResourceId(long resourceId) {
@@ -73,35 +49,6 @@ public class YuleResourceBaseService implements ResourceServiceFunction<YuleReso
         return this.findOne(resourceId).map(YuleResourceBase::getWcs).orElse(new ArrayList<>());
     }
 
-    @PreAuthorize("hasPermission(#yuleResourceBase, 'create')")
-    public YuleResourceBase add(YuleResourceBase yuleResourceBase) {
-        // 新增生成一条新的ResourceCheckIn记录
-        if(yuleResourceBase.getId() == 0) {
-            // 生成编号
-            String serialNumber = serialNumberService.generate(bizConfig.getSerialNumber().getYuleName(), bizConfig.getSerialNumber().getYuleBasis());
-            yuleResourceBase.setBh(serialNumber);
-
-            ResourceCheckIn resourceCheckIn = new ResourceCheckIn(LocalDateTime.now(), userContext.getCurrentUser());
-            yuleResourceBase.setResourceCheckIn(resourceCheckIn);
-
-            this.yuleResourceBaseRepository.save(yuleResourceBase);
-            return yuleResourceBase;
-        } else {
-            return null;
-        }
-    }
-
-    @PreAuthorize("hasPermission(#yuleResourceBase, 'write')")
-    public void update(YuleResourceBase yuleResourceBase) {
-        if(yuleResourceBase.getId() > 0) {
-            this.yuleResourceBaseRepository.save(yuleResourceBase);
-        }
-    }
-
-    @PreAuthorize("hasPermission(#yuleResourceBase, 'delete')")
-    public void delete(YuleResourceBase yuleResourceBase) {
-        this.yuleResourceBaseRepository.deleteById(yuleResourceBase.getId());
-    }
 
     public void getFieldAuditWord(long resourceId, long fieldAuditId, OutputStream output) {
         this.findOne(resourceId).ifPresent(yule -> {
@@ -184,18 +131,8 @@ public class YuleResourceBaseService implements ResourceServiceFunction<YuleReso
         });
     }
 
-    /**
-     * 标记资源为已读
-     * @param resourceId    资源id
-     * @param userId    读取用户id
-     */
-    public void tagReaded(long resourceId, String userId) {
-        this.yuleResourceBaseRepository.findById(resourceId).ifPresent(yule -> {
-            ResourceReadInfo readInfo = new ResourceReadInfo();
-            readInfo.setReadAt(LocalDateTime.now());
-            userService.findOne(userId).ifPresent(readInfo::setUser);
-            yule.getReadInfoList().add(readInfo);
-            this.yuleResourceBaseRepository.save(yule);
-        });
+    @Override
+    public YuleResourceBase add(YuleResourceBase yuleResourceBase) {
+        return this.add(yuleResourceBase, bizConfig.getSerialNumber().getYuleName(), bizConfig.getSerialNumber().getYuleBasis());
     }
 }

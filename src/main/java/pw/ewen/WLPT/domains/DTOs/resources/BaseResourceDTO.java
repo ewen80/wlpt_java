@@ -15,6 +15,10 @@ public abstract class BaseResourceDTO {
      */
     private long id;
     /**
+     * 编号
+     */
+    private String bh;
+    /**
      * 资源对应的权限列表
      */
     private List<PermissionDTO> permissions;
@@ -70,6 +74,14 @@ public abstract class BaseResourceDTO {
 
     public void setReaded(boolean readed) {
         this.readed = readed;
+    }
+
+    public String getBh() {
+        return bh;
+    }
+
+    public void setBh(String bh) {
+        this.bh = bh;
     }
 
     @Override

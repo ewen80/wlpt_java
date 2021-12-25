@@ -48,6 +48,8 @@ bizconfig:
     yule_basis: "YL[date:yyyy]{4}"
     vod_name: vod
     vod_basis: "VOD[date:yyyy]{4}"
+    artifactshop_name: artifactshop
+    artifactshop_basis: "AS[date:yyyy]{4}"
 
   #   权限
   permission:
@@ -76,6 +78,13 @@ bizconfig:
         service_bean_name: vodResourceService
         typeName: VodResource
         description: 视频点播
+      - name: 文物商店
+        path: /resources/artifactshops
+        type: pw.ewen.WLPT.domains.entities.resources.artifactshop.ArtifactShopResource
+        repository_bean_name: artifactShopResourceRepository
+        service_bian_name: artifactShopResourceService
+        typeName: ArtifactShopResource
+        description: 文物商店
 
   # 系统使用的日期时间格式
   date_format:

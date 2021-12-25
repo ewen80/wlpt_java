@@ -45,11 +45,11 @@ public class VodResourceDTOConvertor extends DTOBaseConvertor<VodResource, VodRe
         return dto;
     }
 
-    public VodResource toVodResource(VodResourceDTO dto) {
+    public VodResource toResource(VodResourceDTO dto) {
         VodResource vod = new VodResource();
         this.setExtraInfoToResource(dto, vod);
-        vod.setId(dto.getId());
         vod.setBh(dto.getBh());
+        vod.setId(dto.getId());
         vod.setDetectBasis(dto.getDetectBasis());
         vod.setDetectLocation(dto.getDetectLocation());
         vod.setDetectOverview(dto.getDetectOverview());

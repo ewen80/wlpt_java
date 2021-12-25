@@ -125,6 +125,8 @@ public class BizConfig {
         private String yuleFieldAuditTemplate;
         // vod审核意见表模板文件路径
         private String vodFieldAuditTemplate;
+        // 文物商店场地审核意见表模板文件路径
+        private String artifactshopFieldAuditTemplate;
 
         public String getFileUploadRootPath() {
             return fileUploadRootPath;
@@ -156,6 +158,14 @@ public class BizConfig {
 
         public void setVodFieldAuditTemplate(String vodFieldAuditTemplate) {
             this.vodFieldAuditTemplate = vodFieldAuditTemplate;
+        }
+
+        public String getArtifactshopFieldAuditTemplate() {
+            return artifactshopFieldAuditTemplate;
+        }
+
+        public void setArtifactshopFieldAuditTemplate(String artifactshopFieldAuditTemplate) {
+            this.artifactshopFieldAuditTemplate = artifactshopFieldAuditTemplate;
         }
     }
     private File file;
@@ -224,6 +234,10 @@ public class BizConfig {
         private String vodName;
         //  视频点播场地核查序列号根据
         private String vodBasis;
+        //  文物商店场地核查序列号名
+        private String artifactshopName;
+        //  文物商店场地核查序列号根据
+        private String artifactshopBasis;
 
         public String getWeixingName() {
             return weixingName;
@@ -271,6 +285,22 @@ public class BizConfig {
 
         public void setVodBasis(String vodBasis) {
             this.vodBasis = vodBasis;
+        }
+
+        public String getArtifactshopName() {
+            return artifactshopName;
+        }
+
+        public void setArtifactshopName(String artifactshopName) {
+            this.artifactshopName = artifactshopName;
+        }
+
+        public String getArtifactshopBasis() {
+            return artifactshopBasis;
+        }
+
+        public void setArtifactshopBasis(String artifactshopBasis) {
+            this.artifactshopBasis = artifactshopBasis;
         }
     }
     private SerialNumber serialNumber;

@@ -1,11 +1,11 @@
-package pw.ewen.WLPT.services.resources.vod;
+package pw.ewen.WLPT.services.resources.artifactshop;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.xmlbeans.XmlException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pw.ewen.WLPT.configs.biz.BizConfig;
-import pw.ewen.WLPT.domains.entities.resources.vod.VodResource;
+import pw.ewen.WLPT.domains.entities.resources.artifactshop.ArtifactShopResource;
 import pw.ewen.WLPT.repositories.UserRepository;
 import pw.ewen.WLPT.repositories.resources.ResourceRepository;
 import pw.ewen.WLPT.security.UserContext;
@@ -20,39 +20,41 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * created by wenliang on 2021-12-21
+ * created by wenliang on 2021-12-24
  */
 @Service
-public class VodResourceService extends ResourceServiceBase<VodResource> {
+public class ArtifactShopResourceService extends ResourceServiceBase<ArtifactShopResource> {
 
     private final BizConfig bizConfig;
     private final FileService fileService;
 
-    protected VodResourceService(UserRepository userRepository, ResourceRepository<VodResource, Long> repository, SerialNumberService serialNumberService, UserContext userContext, BizConfig bizConfig, FileService fileService) {
+    protected ArtifactShopResourceService(UserRepository userRepository, ResourceRepository<ArtifactShopResource, Long> repository, SerialNumberService serialNumberService, UserContext userContext, BizConfig bizConfig, FileService fileService) {
         super(userRepository, repository, serialNumberService, userContext);
         this.bizConfig = bizConfig;
         this.fileService = fileService;
     }
 
+    @Override
+    @PreAuthorize("hasPermission(#resource, 'create')")
+    public ArtifactShopResource add(ArtifactShopResource resource) {
+        return this.add(resource, bizConfig.getSerialNumber().getArtifactshopName(), bizConfig.getSerialNumber().getArtifactshopBasis());
+    }
+
 
     public void getFieldAuditWord(long resourceId, long fieldAuditId, OutputStream output) {
-        this.findOne(resourceId).ifPresent(vod -> {
+        this.findOne(resourceId).ifPresent(resource -> {
             Map<String, String> textFieldMap = new HashMap<>();
             Map<String, byte[]> imageFieldMap = new HashMap<>();
             Map<String, byte[][]> rowImageMap = new HashMap<>();
 
-            textFieldMap.put("sysName", vod.getSysName());
-            textFieldMap.put("deviceName", vod.getDeviceName());
-            textFieldMap.put("manufacturer", vod.getManufacturer());
-            textFieldMap.put("deviceModel", vod.getDeviceModel());
-            textFieldMap.put("samplingMethod", vod.getSamplingMethod());
-            textFieldMap.put("detectLocation", vod.getDetectLocation());
-            textFieldMap.put("detectUnit", vod.getDetectUnit());
-            textFieldMap.put("sysExplanation", vod.getSysExplanation());
-            textFieldMap.put("detectBasis", vod.getDetectBasis());
-            textFieldMap.put("detectOverview", vod.getDetectOverview());
+            textFieldMap.put("sqdw", resource.getSqdw());
+            textFieldMap.put("faren", resource.getFaren());
+            textFieldMap.put("csdz", resource.getCsdz());
+            textFieldMap.put("lxr", resource.getLxr());
+            textFieldMap.put("sbxm", resource.getSbxm());
+            textFieldMap.put("lxdh", resource.getLxdh());
 
-            vod.getFieldAudits()
+            resource.getFieldAudits()
                     .stream()
                     .filter(audit -> audit.getId() == fieldAuditId)
                     .findFirst()
@@ -67,7 +69,7 @@ public class VodResourceService extends ResourceServiceBase<VodResource> {
                         }
 
                     });
-            String template = bizConfig.getFile().getVodFieldAuditTemplate();
+            String template = bizConfig.getFile().getArtifactshopFieldAuditTemplate();
 
             try {
                 this.fileService.getWord(template, textFieldMap, imageFieldMap, new HashMap<>(), rowImageMap, output);
@@ -76,12 +78,6 @@ public class VodResourceService extends ResourceServiceBase<VodResource> {
             }
 
         });
-    }
-
-    @Override
-    @PreAuthorize("hasPermission(#resource, 'create')")
-    public VodResource add(VodResource resource) {
-        return this.add(resource, bizConfig.getSerialNumber().getVodName(), bizConfig.getSerialNumber().getVodBasis());
     }
 
 }

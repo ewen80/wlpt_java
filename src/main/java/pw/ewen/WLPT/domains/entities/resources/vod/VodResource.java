@@ -20,10 +20,6 @@ public class VodResource extends BaseResource implements Serializable {
     private static final long serialVersionUID = -4212081608770995760L;
 
     /**
-     * 编号
-     */
-    private String bh;
-    /**
      * 系统名称
      */
     private String sysName;
@@ -63,14 +59,6 @@ public class VodResource extends BaseResource implements Serializable {
      * 检测概况
      */
     private String detectOverview;
-
-    public String getBh() {
-        return bh;
-    }
-
-    public void setBh(String bh) {
-        this.bh = bh;
-    }
 
     public String getSysName() {
         return sysName;

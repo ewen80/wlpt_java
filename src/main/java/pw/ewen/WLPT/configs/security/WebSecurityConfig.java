@@ -36,8 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
     @Autowired
     private BizConfig bizConfig;
-    @Value("${frontendUrls}")
-    private String frontendUrls;
+//    @Value("${frontendUrls}")
+//    private String frontendUrls;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web)  {
 
     }
 
@@ -69,20 +69,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.csrf().disable(); //关闭CSRF检查
-        http.cors().configurationSource(this.getCorsConfigurationSource()); //允许CORS跨域请求
+//        http.cors().configurationSource(this.getCorsConfigurationSource()); //允许CORS跨域请求
     }
 
-    // TODO 改用angular cli代理解决CORS问题，参见 https://ng-alain.com/docs/server/zh
-    CorsConfigurationSource getCorsConfigurationSource() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type", "x-requested-with", "token"));
-        corsConfiguration.setAllowedOrigins(Arrays.asList(this.frontendUrls.split(",")));
-        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setExposedHeaders(Collections.singletonList("Authorization"));
-        source.registerCorsConfiguration("/**", corsConfiguration);
-        return source;
-    }
+//    CorsConfigurationSource getCorsConfigurationSource() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//        corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type", "x-requested-with", "token"));
+//        corsConfiguration.setAllowedOrigins(Arrays.asList(this.frontendUrls.split(",")));
+//        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
+//        corsConfiguration.setAllowCredentials(true);
+//        corsConfiguration.setExposedHeaders(Collections.singletonList("Authorization"));
+//        source.registerCorsConfiguration("/**", corsConfiguration);
+//        return source;
+//    }
 
 }

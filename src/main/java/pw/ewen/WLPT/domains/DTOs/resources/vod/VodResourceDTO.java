@@ -8,10 +8,6 @@ import pw.ewen.WLPT.domains.DTOs.resources.BaseResourceDTO;
 public class VodResourceDTO extends BaseResourceDTO {
 
     /**
-     * 编号
-     */
-    private String bh;
-    /**
      * 系统名称
      */
     private String sysName;
@@ -51,14 +47,6 @@ public class VodResourceDTO extends BaseResourceDTO {
      * 检测概况
      */
     private String detectOverview;
-
-    public String getBh() {
-        return bh;
-    }
-
-    public void setBh(String bh) {
-        this.bh = bh;
-    }
 
     public String getSysName() {
         return sysName;

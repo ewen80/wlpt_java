@@ -2,7 +2,6 @@ package pw.ewen.WLPT.services;
 
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,20 +10,12 @@ import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.IdentityUnavailableException;
 import org.springframework.security.acls.model.*;
 import org.springframework.stereotype.Service;
-import pw.ewen.WLPT.domains.DTOs.resources.MenuDTO;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
-import pw.ewen.WLPT.domains.entities.utils.userunreaded.UserReaded;
-import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
 import pw.ewen.WLPT.security.acl.ObjectIdentityRetrievalStrategyWLPTImpl;
-import pw.ewen.WLPT.services.resources.ResourceServiceFunction;
-import pw.ewen.WLPT.services.utils.UserReadedService;
 
 import javax.persistence.EntityManager;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 

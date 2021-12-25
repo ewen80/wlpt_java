@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.web.context.annotation.SessionScope;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.UserRepository;
 
@@ -22,6 +23,7 @@ import java.util.List;
  * 当前登录用户上下文
  */
 @Component
+@SessionScope
 public class UserContext {
     private User currentUser;
 

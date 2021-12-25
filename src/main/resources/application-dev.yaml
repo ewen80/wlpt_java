@@ -33,6 +33,8 @@ bizconfig:
     yule_field_audit_template: E:\\MyVIFs\\场地查看表单\\娱乐场所.docx
     # vod场地审核单模板
     vod_field_audit_template: E:\\MyVIFs\\场地查看表单\\vod.docx
+    # 文物商店场地审核单模板
+    artifactshop_field_audit_template: E:\\MyVIFs\\场地查看表单\\文物商店.docx
 
   # 定时任务相关配置
   schedules:
@@ -43,4 +45,4 @@ bizconfig:
       # 系统启动时是否执行
       do_startup: true
 
-frontendUrls: http://localhost:4200  # 前端程序部署地址
+#frontendUrls: http://localhost:4200  # 前端程序部署地址

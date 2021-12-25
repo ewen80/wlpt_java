@@ -23,6 +23,12 @@ spring:
     username: wenliang
     password: wenliang
 
+#server:
+#  servlet:
+#    session:
+#      cookie:
+#        domain: shssgc.org.cn
+
 
 bizconfig:
   file:
@@ -43,4 +49,4 @@ bizconfig:
       cron: 0 */30 * * * ?
       do_startup: true
 
-frontendUrls: http://changditest.shssgc.org.cn  # 前端程序部署地址
+#frontendUrls: http://changditest.shssgc.org.cn  # 前端程序部署地址

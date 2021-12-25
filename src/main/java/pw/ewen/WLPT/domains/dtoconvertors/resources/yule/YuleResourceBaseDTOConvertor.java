@@ -1,7 +1,6 @@
 package pw.ewen.WLPT.domains.dtoconvertors.resources.yule;
 
 import org.springframework.stereotype.Component;
-import pw.ewen.WLPT.domains.DTOs.resources.FieldAuditDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.yule.YuleResourceBaseDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.yule.YuleResourceGwRoomDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.yule.YuleResourceGwWcDTO;
@@ -9,7 +8,6 @@ import pw.ewen.WLPT.domains.dtoconvertors.PermissionDTOConvertor;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.DTOBaseConvertor;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.FieldAuditDTOConvertor;
 import pw.ewen.WLPT.domains.dtoconvertors.resources.ResourceCheckInDTOConvertor;
-import pw.ewen.WLPT.domains.entities.resources.FieldAudit;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceBase;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceGwRoom;
 import pw.ewen.WLPT.domains.entities.resources.yule.YuleResourceGwWc;
@@ -36,10 +34,11 @@ public class YuleResourceBaseDTOConvertor extends DTOBaseConvertor<YuleResourceB
         this.yyDTOConvertor = yyDTOConvertor;
     }
 
-    public YuleResourceBase toYuleBase(YuleResourceBaseDTO dto) {
+    public YuleResourceBase toResource(YuleResourceBaseDTO dto) {
         YuleResourceBase yule = new YuleResourceBase();
-        yule.setAqtd(dto.getAqtd());
+        yule.setId(dto.getId());
         yule.setBh(dto.getBh());
+        yule.setAqtd(dto.getAqtd());
         yule.setCsdz(dto.getCsdz());
         yule.setDwmc(dto.getDwmc());
         yule.setJyfw(dto.getJyfw());
@@ -48,7 +47,6 @@ public class YuleResourceBaseDTOConvertor extends DTOBaseConvertor<YuleResourceB
         yule.setSbxm(dto.getSbxm());
         yule.setLxdh(dto.getLxdh());
         yule.setSymj(dto.getSymj());
-        yule.setId(dto.getId());
         yule.setQxId(dto.getQxId());
         // 添加歌舞娱乐包房
         List<YuleResourceGwRoom> rooms = new ArrayList<>();
@@ -77,8 +75,9 @@ public class YuleResourceBaseDTOConvertor extends DTOBaseConvertor<YuleResourceB
 
     public YuleResourceBaseDTO toDTO(YuleResourceBase yule, boolean fetchLazy) {
         YuleResourceBaseDTO dto = new YuleResourceBaseDTO();
-        dto.setAqtd(yule.getAqtd());
+        dto.setId(yule.getId());
         dto.setBh(yule.getBh());
+        dto.setAqtd(yule.getAqtd());
         dto.setCsdz(yule.getCsdz());
         dto.setDwmc(yule.getDwmc());
         dto.setJyfw(yule.getJyfw());
@@ -86,7 +85,6 @@ public class YuleResourceBaseDTOConvertor extends DTOBaseConvertor<YuleResourceB
         dto.setLxdh(yule.getLxdh());
         dto.setSbxm(yule.getSbxm());
         dto.setSymj(yule.getSymj());
-        dto.setId(yule.getId());
         dto.setQxId(yule.getQxId());
 
         // 是否已读

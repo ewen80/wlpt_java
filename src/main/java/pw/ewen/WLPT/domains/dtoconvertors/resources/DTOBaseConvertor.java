@@ -38,12 +38,15 @@ public abstract class DTOBaseConvertor<T extends BaseResource, D extends BaseRes
         this.userContext = userContext;
     }
 
+    abstract  public D toDTO(T t);
+    abstract public D toDTO(T t, boolean fetchLazy);
+
     /**
      * 设置额外信息到DTO，如场地核查信息，资源登记信息，权限信息等
      * @param t 资源对象
      * @param dto dto对象
      */
-    public void setExtraInfoToDTO(T t, D dto) {
+    protected void setExtraInfoToDTO(T t, D dto) {
         // 添加场地核查信息
         List<FieldAudit> fieldAudits = t.getFieldAudits();
         List<FieldAuditDTO> fieldAuditDTOS = new ArrayList<>();
@@ -70,19 +73,21 @@ public abstract class DTOBaseConvertor<T extends BaseResource, D extends BaseRes
      * @param t 资源对象
      * @param dto dto对象
      */
-    public void setReadedInfoToDTO(T t, D dto){
+    protected void setReadedInfoToDTO(T t, D dto){
         // 是否已读
         List<ResourceReadInfo> readedInfos = t.getReadInfoList();
         boolean haveReaded = readedInfos.stream().anyMatch(readInfo -> Objects.equals(readInfo.getUser().getId(), userContext.getCurrentUser().getId()));
         dto.setReaded(haveReaded);
     }
 
+    abstract public T  toResource(D dto);
+
     /**
      * 设置额外信息到资源对象
      * @param dto dto对象
      * @param t 资源对象
      */
-    public void setExtraInfoToResource(D dto, T t) {
+    protected void setExtraInfoToResource(D dto, T t) {
         // 添加现场审核信息
         List<FieldAuditDTO> fieldAuditDTOS = dto.getFieldAudits();
         List<FieldAudit> fieldAudits = new ArrayList<>();

@@ -18,7 +18,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/resources/yules/rooms")
-public class YuleGwRoomController {
+public class YuleGwRoomController  {
     private final YuleResourceGwRoomService yuleResourceGwRoomService;
     private final YuleResourceBaseService yuleResourceBaseService;
     private final YuleResourceGwRoomDTOConvertor yuleResourceGwRoomDTOConvertor;

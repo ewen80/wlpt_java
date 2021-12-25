@@ -19,10 +19,6 @@ public class WeixingResource extends BaseResource implements Serializable {
     private static final long serialVersionUID = -5924003097388262942L;
 
     /**
-     * 编号
-     */
-    private String bh;
-    /**
      * 申请单位
      */
     private String sqdw;
@@ -125,14 +121,6 @@ public class WeixingResource extends BaseResource implements Serializable {
      * 终端数
      */
     private int zds;
-
-    public String getBh() {
-        return bh;
-    }
-
-    public void setBh(String bh) {
-        this.bh = bh;
-    }
 
     public String getSqdw() {
         return sqdw;
