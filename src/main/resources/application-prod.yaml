@@ -1,19 +1,40 @@
 
+logging:
+  level:
+    root: info
+
 spring:
   jpa:
     show-sql: false
     hibernate:
       ddl-auto: update
-  properties:
-    hibernate:
-      format_sql: false
+    properties:
+      hibernate:
+        format_sql: false
 
   datasource:
-    url: jdbc:mysql://aliyun.ewen.pw:3306/changdi?useSSL=false&characterEncoding=utf8
+    url: jdbc:mysql://192.168.0.59:3306/changdi?useSSL=false&characterEncoding=utf8
     username: wenliang
     password: wenliang
 
   #   文件上传路径
 bizconfig:
   file:
-    file_upload_root_path: /home/wenliang/Webs/frontends/wlpt_ng_alain/downloads/
+    # 文件上传路径
+    file_upload_root_path: /uploads/
+    # 卫星场地审核单模板
+    weixing_field_audit_template: ./templates/weixing.docx
+    # 娱乐场地审核单模板
+    yule_field_audit_template: ./templates/yule.docx
+    # vod审核单模板
+    vod_field_audit_template: ./templates/vod.docx
+    # 文物商店场地审核单模板
+    artifactshop_field_audit_template: ./templates/wenwu.docx
+
+  # 定时任务相关配置
+  schedules:
+    # 定时更新资源阅读情况任务
+    resource_readed_info:
+      # 每隔30分钟执行一次， - 表示禁用
+      cron: 0 */30 * * * ?
+      do_startup: true

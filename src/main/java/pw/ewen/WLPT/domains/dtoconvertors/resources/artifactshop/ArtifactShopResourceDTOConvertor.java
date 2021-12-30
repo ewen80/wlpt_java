@@ -34,6 +34,7 @@ public class ArtifactShopResourceDTOConvertor extends DTOBaseConvertor<ArtifactS
         dto.setLxdh(artifactShopResource.getLxdh());
         dto.setSbxm(artifactShopResource.getSbxm());
         dto.setSqdw(artifactShopResource.getSqdw());
+        dto.setLxr(artifactShopResource.getLxr());
 
         this.setReadedInfoToDTO(artifactShopResource, dto);
         if(!fetchLazy) this.setExtraInfoToDTO(artifactShopResource, dto);

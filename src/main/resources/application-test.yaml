@@ -1,9 +1,3 @@
-#server:
-#  port: 9001
-#  ssl:
-#    key-store: classpath:cert/6746214_test.changdi.shssgc.org.cn.jks
-#    key-store-password: FNkhrxX9
-#    key-store-type: JKS
 
 logging:
   level:
@@ -23,13 +17,6 @@ spring:
     username: wenliang
     password: wenliang
 
-#server:
-#  servlet:
-#    session:
-#      cookie:
-#        domain: shssgc.org.cn
-
-
 bizconfig:
   file:
     # 文件上传路径
@@ -40,6 +27,8 @@ bizconfig:
     yule_field_audit_template: ./FieldAuditPrintTemplates/yule.docx
     # vod审核单模板
     vod_field_audit_template: ./FieldAuditPrintTemplates/vod.docx
+    # 文物商店场地审核单模板
+    artifactshop_field_audit_template: ./FieldAuditPrintTemplates/wenwu.docx
 
   # 定时任务相关配置
   schedules:
@@ -48,5 +37,3 @@ bizconfig:
       # 每隔30分钟执行一次， - 表示禁用
       cron: 0 */30 * * * ?
       do_startup: true
-
-#frontendUrls: http://changditest.shssgc.org.cn  # 前端程序部署地址
