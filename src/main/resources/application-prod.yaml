@@ -17,7 +17,6 @@ spring:
     username: wenliang
     password: wenliang
 
-  #   文件上传路径
 bizconfig:
   file:
     # 文件上传路径
