@@ -5,16 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.dtoconvertors.UserDTOConvertor;
 import pw.ewen.WLPT.domains.entities.User;
-import pw.ewen.WLPT.security.UserContext;
-import pw.ewen.WLPT.services.RoleService;
 import pw.ewen.WLPT.services.UserService;
 
 import java.util.ArrayList;
@@ -31,15 +26,11 @@ public class UserController {
 
 	private final UserService userService;
 	private final UserDTOConvertor userDTOConvertor;
-	private final RoleService roleService;
-	private final UserContext userContext;
 
 	@Autowired
-	public UserController(UserService userService, UserDTOConvertor userDTOConvertor, RoleService roleService, UserContext userContext){
+	public UserController(UserService userService, UserDTOConvertor userDTOConvertor){
 		this.userService = userService;
 		this.userDTOConvertor = userDTOConvertor;
-		this.roleService = roleService;
-		this.userContext = userContext;
 	}
 
 //	//将user对象转为DTO对象的内部辅助类

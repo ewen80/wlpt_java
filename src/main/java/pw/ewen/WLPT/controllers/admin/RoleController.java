@@ -1,6 +1,5 @@
 package pw.ewen.WLPT.controllers.admin;
 
-import org.bouncycastle.util.Iterable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -132,11 +131,12 @@ public class RoleController {
             users.forEach( user -> {
                 Set<Role> roles = user.getRoles();
                 if(roles.size() > 1){
-                    roles.remove((anonymousRole.get()));
+                    roles.remove((role.get()));
                     user.setRoles(roles);
                     userService.save(user);
                 } else if(!roles.contains(anonymousRole.get())){
-                    user.setRoles(Collections.singleton(anonymousRole.get()));
+                    roles.add(anonymousRole.get());
+                    user.setRoles(roles);
                     userService.save(user);
                 }
             });
