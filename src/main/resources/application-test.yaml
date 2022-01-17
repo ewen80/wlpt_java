@@ -20,15 +20,15 @@ spring:
 bizconfig:
   file:
     # 文件上传路径
-    file_upload_root_path: /home/wenliang/Webs/frontends/wlpt_ng_alain/downloads/
+    file_upload_root_path: /uploads/
     # 卫星场地审核单模板
-    weixing_field_audit_template: ./FieldAuditPrintTemplates/weixing.docx
+    weixing_field_audit_template: ./templates/weixing.docx
     # 娱乐场地审核单模板
-    yule_field_audit_template: ./FieldAuditPrintTemplates/yule.docx
+    yule_field_audit_template: ./templates/yule.docx
     # vod审核单模板
-    vod_field_audit_template: ./FieldAuditPrintTemplates/vod.docx
+    vod_field_audit_template: ./templates/vod.docx
     # 文物商店场地审核单模板
-    artifactshop_field_audit_template: ./FieldAuditPrintTemplates/wenwu.docx
+    artifactshop_field_audit_template: ./templates/wenwu.docx
 
   # 定时任务相关配置
   schedules:

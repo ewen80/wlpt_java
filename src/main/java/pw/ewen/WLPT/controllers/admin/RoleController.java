@@ -134,7 +134,9 @@ public class RoleController {
                     roles.remove((role.get()));
                     user.setRoles(roles);
                     userService.save(user);
+                    // 用户仅有一个角色且这个角色不是anonymous,则删除这个角色并添加到anonymous组
                 } else if(!roles.contains(anonymousRole.get())){
+                    roles.clear();
                     roles.add(anonymousRole.get());
                     user.setRoles(roles);
                     userService.save(user);
