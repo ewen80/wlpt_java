@@ -39,7 +39,7 @@ public class ResourceCheckInDTOConvertor {
                                                                 resourceFinish,
                                                                 LocalDateTime.parse(dto.getCreatedDateTime(), formatter),
                                                                 userService.findOne(dto.getCreatedUserId()).orElse(null));
-        resourceCheckIn.setId(UUID.fromString(dto.getId()));
+        resourceCheckIn.setId(dto.getId());
         return resourceCheckIn;
     }
 
@@ -51,7 +51,7 @@ public class ResourceCheckInDTOConvertor {
         }
 
 
-        return new ResourceCheckInDTO(resourceCheckIn.getId().toString(),
+        return new ResourceCheckInDTO(resourceCheckIn.getId(),
                                     resourceCheckIn.getCreatedDateTime().format(formatter),
                                     resourceCheckIn.getCreatedUser().getId(),
                                     resourceCheckIn.isFinished(),

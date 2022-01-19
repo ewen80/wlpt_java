@@ -18,8 +18,7 @@ public class ResourceCheckIn implements Serializable {
 
     @Id
     @GeneratedValue
-    @Column(columnDefinition = "BINARY(16)")
-    private UUID id;
+    private long id;
 
     // 是否办结
     private boolean finished = false;
@@ -68,11 +67,11 @@ public class ResourceCheckIn implements Serializable {
         this.createdUser = createdUser;
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(long id) {
         this.id = id;
     }
 
