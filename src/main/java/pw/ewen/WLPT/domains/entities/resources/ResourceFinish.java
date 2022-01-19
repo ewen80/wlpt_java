@@ -15,7 +15,7 @@ public class ResourceFinish implements Serializable {
     private static final long serialVersionUID = 6010912594564317222L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private LocalDateTime finishDateTime;

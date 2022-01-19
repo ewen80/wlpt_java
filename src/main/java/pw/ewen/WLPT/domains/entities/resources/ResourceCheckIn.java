@@ -17,7 +17,7 @@ public class ResourceCheckIn implements Serializable {
     private static final long serialVersionUID = -4471764985878738470L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     // 是否办结
