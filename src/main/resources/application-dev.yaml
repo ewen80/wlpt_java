@@ -28,13 +28,13 @@ bizconfig:
     # 文件上传路径
     file_upload_root_path: D:\\开发项目\\WLPT\\wlpt_angular_alain\\downloads\\  #以斜杠结尾，表示目录
     # 卫星场地审核单模板
-    weixing_field_audit_template: E:\\MyVIFs\\场地查看表单\\卫星场地.docx
+    weixing_field_audit_template: E:\\MyVIFs\\场地查看表单\\weixing.docx
     # 娱乐场地审核单模板
-    yule_field_audit_template: E:\\MyVIFs\\场地查看表单\\娱乐场所.docx
+    yule_field_audit_template: E:\\MyVIFs\\场地查看表单\\yule.docx
     # vod场地审核单模板
     vod_field_audit_template: E:\\MyVIFs\\场地查看表单\\vod.docx
     # 文物商店场地审核单模板
-    artifactshop_field_audit_template: E:\\MyVIFs\\场地查看表单\\文物商店.docx
+    artifactshop_field_audit_template: E:\\MyVIFs\\场地查看表单\\wenwu.docx
 
   # 定时任务相关配置
   schedules:

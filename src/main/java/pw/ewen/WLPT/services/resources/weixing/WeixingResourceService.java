@@ -141,7 +141,12 @@ public class WeixingResourceService extends ResourceServiceBase<WeixingResource>
                         if (audit.getFzrSignature() != null && audit.getFzrSignature().getBytes() != null) {
                             imageFieldMap.put("signature", audit.getFzrSignature().getBytes());
                         }
-
+                        // 核查人签名
+                        byte[][] auditorSignatures = new byte[audit.getAuditorSignatures().size()][1];
+                        for(int i=0; i<audit.getAuditorSignatures().size(); i++) {
+                            auditorSignatures[i] = audit.getAuditorSignatures().get(i).getBytes();
+                        }
+                        rowImageMap.put("auditorSignatures", auditorSignatures);
                     });
             String template = bizConfig.getFile().getWeixingFieldAuditTemplate();
 
