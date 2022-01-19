@@ -119,8 +119,9 @@ public class WeixingResourceService extends ResourceServiceBase<WeixingResource>
             textFieldMap.put("txlx", weixing.getTxlx());
             textFieldMap.put("jnssjmy", weixing.getJnssjmy());
             textFieldMap.put("wxcsfs", weixing.getWxcsfs());
+            textFieldMap.put("xhtzfs", weixing.getXhtzfs());
             textFieldMap.put("wxmc", weixing.getWxmc());
-            textFieldMap.put("ssnr", weixing.getSsnr());
+            textFieldMap.put("ssnr", weixing.getSsnr().replaceAll(",{2,}",",").replaceAll(",$",""));
             textFieldMap.put("sjazdwmc", weixing.getSjazdwmc());
             textFieldMap.put("wxssazxkzh", weixing.getWxssazxkzh());
             textFieldMap.put("ssdwlx", weixing.getSsdwlx());
