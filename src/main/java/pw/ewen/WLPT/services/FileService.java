@@ -15,6 +15,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -87,7 +88,7 @@ public class FileService {
      * @param rowTextMap    行数据体替换Map
      * @param output    输出流
      */
-    public void getWord(String templateFile, Map<String, String> fieldTextValueMap, Map<String, byte[]> fieldImageMap, Map<String, String[][]> rowTextMap, Map<String, byte[][]> rowImageMap, OutputStream output) throws IOException, XmlException, InvalidFormatException {
+    public void getWord(String templateFile, Map<String, String> fieldTextValueMap, Map<String, List<byte[]>> fieldImageMap, Map<String, String[][]> rowTextMap, Map<String, byte[][]> rowImageMap, OutputStream output) throws IOException, XmlException, InvalidFormatException {
         //读取word源文件
         FileInputStream fileInputStream = new FileInputStream(templateFile);
         XWPFDocument document = new XWPFDocument(fileInputStream);
@@ -141,28 +142,15 @@ public class FileService {
                                 p.removeRun(0);
                             }
 
-                            // 实现图片的翻转
-//                            InputStream imageStream = new ByteArrayInputStream(fieldImageMap.get(key));
-//                            BufferedImage image = ImageIO.read(imageStream);
-//                            final double rads = Math.toRadians(rotation);
-//                            final double sin = Math.abs(Math.sin(rads));
-//                            final double cos = Math.abs(Math.cos(rads));
-//                            final int w = (int) Math.floor(image.getWidth() * cos + image.getHeight() * sin);
-//                            final int h = (int) Math.floor(image.getHeight() * cos + image.getWidth() * sin);
-//                            final BufferedImage rotatedImage = new BufferedImage(w, h, image.getType());
-//                            final AffineTransform at = new AffineTransform();
-//                            at.translate(w / 2, h / 2);
-//                            at.rotate(rads,0, 0);
-//                            at.translate(-image.getWidth() / 2, -image.getHeight() / 2);
-//                            final AffineTransformOp rotateOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
-//                            rotateOp.filter(image,rotatedImage);
-//
-//                            ByteArrayOutputStream os = new ByteArrayOutputStream();
-//                            ImageIO.write(rotatedImage, "png", os);
-//
-//                            InputStream is = new ByteArrayInputStream(os.toByteArray());
-                            InputStream is = this.imageRotate(fieldImageMap.get(key), rotation);
-                            p.insertNewRun(0).addPicture(is, XWPFDocument.PICTURE_TYPE_PNG, "signature.png", Units.toEMU(width), Units.toEMU(height));
+                            List<byte[]> images = fieldImageMap.get(key);
+                            for(byte[] image : images) {
+                                InputStream is = this.imageRotate(image, rotation);
+                                if(p.getRuns().size() == 0) {
+                                    p.insertNewRun(0).addPicture(is, XWPFDocument.PICTURE_TYPE_PNG, "signature.png", Units.toEMU(width), Units.toEMU(height));
+                                } else {
+                                    p.getRuns().get(0).addPicture(is, XWPFDocument.PICTURE_TYPE_PNG, "signature.png", Units.toEMU(width), Units.toEMU(height));
+                                }
+                            }
 
                             break;
                         }

@@ -4,6 +4,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.xmlbeans.XmlException;
 import org.springframework.stereotype.Service;
 import pw.ewen.WLPT.configs.biz.BizConfig;
+import pw.ewen.WLPT.domains.entities.resources.Signature;
 import pw.ewen.WLPT.domains.entities.resources.weixing.WeixingResource;
 import pw.ewen.WLPT.repositories.UserRepository;
 import pw.ewen.WLPT.repositories.resources.ResourceRepository;
@@ -15,8 +16,8 @@ import pw.ewen.WLPT.services.resources.ResourceServiceBase;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * created by wenliang on 2021-07-21
@@ -100,7 +101,7 @@ public class WeixingResourceService extends ResourceServiceBase<WeixingResource>
     public void getFieldAuditWord(long resourceId, long fieldAuditId, OutputStream output) {
         this.findOne(resourceId).ifPresent(weixing -> {
             Map<String, String> textFieldMap = new HashMap<>();
-            Map<String, byte[]> imageFieldMap = new HashMap<>();
+            Map<String, List<byte[]>> imageFieldMap = new HashMap<>();
             Map<String, byte[][]> rowImageMap = new HashMap<>();
 
             textFieldMap.put("bh", weixing.getBh());
@@ -140,14 +141,17 @@ public class WeixingResourceService extends ResourceServiceBase<WeixingResource>
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(bizConfig.getDateFormat().getPrintDateFormat());
                         textFieldMap.put("auditDate", audit.getAuditDate().format(formatter));
                         if (audit.getFzrSignature() != null && audit.getFzrSignature().getBytes() != null) {
-                            imageFieldMap.put("signature", audit.getFzrSignature().getBytes());
+                            imageFieldMap.put("fzrSignature", Collections.singletonList(audit.getFzrSignature().getBytes()));
                         }
                         // 核查人签名
-                        byte[][] auditorSignatures = new byte[audit.getAuditorSignatures().size()][1];
-                        for(int i=0; i<audit.getAuditorSignatures().size(); i++) {
-                            auditorSignatures[i] = audit.getAuditorSignatures().get(i).getBytes();
-                        }
-                        rowImageMap.put("auditorSignatures", auditorSignatures);
+//                        List<byte[]> auditorSignatures = new ArrayList<>();
+//
+//                        byte[][] auditorSignatures = new byte[audit.getAuditorSignatures().size()][1];
+//                        for(int i=0; i<audit.getAuditorSignatures().size(); i++) {
+//                            auditorSignatures[i] = audit.getAuditorSignatures().get(i).getBytes();
+//                        }
+////                        rowImageMap.put("auditorSignatures", auditorSignatures);
+                        imageFieldMap.put("auditorSignatures",audit.getAuditorSignatures().stream().map(Signature::getBytes).collect(Collectors.toList()));
                     });
             String template = bizConfig.getFile().getWeixingFieldAuditTemplate();
 
