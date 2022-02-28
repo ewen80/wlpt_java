@@ -53,9 +53,10 @@ public class FieldAuditContoller {
      * @param dto 现场审核意见DTO
      */
     @PutMapping()
-    public void save(@RequestBody  FieldAuditDTO dto) {
+    public FieldAuditDTO save(@RequestBody  FieldAuditDTO dto) {
         FieldAudit fieldAudit = fieldAuditDTOConvertor.toFieldAudit(dto);
         fieldAuditService.save(fieldAudit);
+        return dto;
     }
 
     /**
